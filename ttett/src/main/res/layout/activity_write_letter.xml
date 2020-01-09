@@ -203,12 +203,53 @@
         android:layout_height="2.25dp"
         android:background="@color/xiahua"
         android:layout_alignParentTop="true"/>
-    <EditText
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inputType="textLongMessage|textMultiLine"
-        android:gravity="top"
-    />
+        android:layout_height="match_parent">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textLongMessage|textMultiLine"
+            android:gravity="top" />
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/fab_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            app:fab_addButtonColorNormal="@color/black"
+            app:fab_icon="@mipmap/attachment"
+            app:fab_labelsPosition="left"
+            app:fab_addButtonSize="mini">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fab_attachment"
+                app:fab_colorNormal="@color/colorPrimary"
+                app:fab_icon="@mipmap/attachment"
+                app:fab_size="mini"
+                app:fab_title="附件"/>
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fab_pic"
+                app:fab_colorNormal="@color/colorPrimary"
+                app:fab_icon="@mipmap/pic"
+                app:fab_size="mini"
+                app:fab_title="图片"/>
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fab_timer"
+                app:fab_colorNormal="@color/colorPrimary"
+                app:fab_icon="@mipmap/timer"
+                app:fab_size="mini"
+                app:fab_title="定时发送"/>
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </LinearLayout>
