@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:id="@+id/inbox"
+    android:title="收件箱"
+    android:icon="@mipmap/nav_inbox"
+    />
+    <item
+        android:id="@+id/unread_mail"
+        android:title="未读邮件"
+        android:icon="@mipmap/unread_mail"
+        />
+    <item
+        android:id="@+id/star_mail"
+        android:title="星标邮件"
+        android:icon="@mipmap/star_mail"
+        />
+</menu>

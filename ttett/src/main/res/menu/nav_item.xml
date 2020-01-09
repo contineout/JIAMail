@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <!--    侧边滑动栏菜单元素-->
+        <item
+            android:id="@+id/inbox"
+            android:title="收件箱"
+            android:icon="@mipmap/nav_inbox"/>
+        <item
+            android:id="@+id/sended"
+            android:title="已发送"
+            android:icon="@mipmap/sended"/>
+        <item
+            android:id="@+id/draft"
+            android:title="草稿箱"
+            android:icon="@mipmap/draft"/>
+        <item
+            android:id="@+id/trash"
+            android:title="已删除邮件"
+            android:icon="@mipmap/trash"/>
+        <item
+            android:id="@+id/spam"
+            android:title="垃圾邮件"
+            android:icon="@mipmap/spam"/>
+        <item
+            android:id="@+id/archive"
+            android:title="归档"
+            android:icon="@mipmap/archive"/>
+        <item
+            android:id="@+id/folder"
+            android:title="文件夹"
+            android:icon="@mipmap/folder"/>
+        <item
+            android:id="@+id/log_out"
+            android:title="退出"
+            android:icon="@mipmap/log_out"/>
+    </group>
+</menu>
