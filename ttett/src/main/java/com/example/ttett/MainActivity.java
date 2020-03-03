@@ -1,27 +1,7 @@
 package com.example.ttett;
 
-import androidx.annotation.MenuRes;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuPopupHelper;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
-import android.provider.Contacts;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.example.ttett.fragment.ArchiveFragment;
 import com.example.ttett.fragment.AttachmentFragment;
@@ -34,12 +14,17 @@ import com.example.ttett.fragment.SendedFragment;
 import com.example.ttett.fragment.SpamFragment;
 import com.example.ttett.fragment.TrashFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -161,12 +146,12 @@ public class MainActivity extends AppCompatActivity {
                         lastfragmen = 7;
                     }
                     return true;
-                case R.id.archive:
-                    if(lastfragmen != 8){
-                        switchFragment(lastfragmen,8);
-                        lastfragmen = 8;
-                    }
-                    return true;
+//                case R.id.archive:
+//                    if(lastfragmen != 8){
+//                        switchFragment(lastfragmen,8);
+//                        lastfragmen = 8;
+//                    }
+//                    return true;
                 case R.id.folder:
                     if(lastfragmen != 9){
                         switchFragment(lastfragmen,9);

@@ -46,7 +46,8 @@
             android:layout_gravity="bottom"
             app:itemIconTint="@color/black"
             app:itemTextColor="@color/black"
-            app:menu="@menu/bottomnav_item"/>
+            app:menu="@menu/bottomnav_item"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

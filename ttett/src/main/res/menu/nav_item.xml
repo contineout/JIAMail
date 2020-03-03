@@ -22,10 +22,10 @@
             android:id="@+id/spam"
             android:title="垃圾邮件"
             android:icon="@mipmap/spam"/>
-        <item
-            android:id="@+id/archive"
-            android:title="归档"
-            android:icon="@mipmap/archive"/>
+<!--        <item-->
+<!--            android:id="@+id/archive"-->
+<!--            android:title="归档"-->
+<!--            android:icon="@mipmap/archive"/>-->
         <item
             android:id="@+id/folder"
             android:title="文件夹"

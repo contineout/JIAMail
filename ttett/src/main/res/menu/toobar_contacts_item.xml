@@ -7,5 +7,11 @@
         android:icon="@mipmap/find1"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/contacts_add"
+        android:title="添加联系人"
+        android:icon="@mipmap/c_action"
+        app:showAsAction="always"
+        />
 
 </menu>
