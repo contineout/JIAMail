@@ -2,7 +2,6 @@ package com.example.ttett.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,7 +75,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
         TextView Tv_import = contentView.findViewById(R.id.tv_import);
         TextView Tv_new = contentView.findViewById(R.id.tv_new);
         View rootview = LayoutInflater.from(getContext()).inflate(R.layout.frag_contacts,null);
-        mPopup.showAtLocation(rootview, Gravity.BOTTOM,-50,0);
+        mPopup.showAsDropDown(view,0,250);
 
         Tv_import.setOnClickListener(this);
         Tv_new.setOnClickListener(this);

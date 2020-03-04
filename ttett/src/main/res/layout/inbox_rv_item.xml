@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:id="@+id/mail_cv"
+    app:cardCornerRadius="4dp">
+<RelativeLayout
     android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="90dp">
@@ -57,10 +64,5 @@
             android:maxEms="15"
             android:ellipsize="end"
             />
-    <View
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:background="@color/xiahua"
-        android:layout_height="0.5dp"/>
-
     </RelativeLayout>
+</androidx.cardview.widget.CardView>
