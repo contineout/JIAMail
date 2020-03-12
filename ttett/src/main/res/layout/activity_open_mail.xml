@@ -41,7 +41,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="10dp">
                     <TextView
-                        android:id="@+id/mailsubject"
+                        android:id="@+id/mail_subject"
                         android:layout_width="320dp"
                         android:layout_height="70dp"
                         android:textSize="15dp"
@@ -54,21 +54,21 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@+id/mailsubject"
+                        android:layout_toRightOf="@+id/mail_subject"
                         android:src="@mipmap/mail_menu" />
 
                     <TextView
                         android:id="@+id/ff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/mailsubject"
+                        android:layout_below="@+id/mail_subject"
                         android:text="发件人:"/>
                     <TextView
                         android:id="@+id/from_id"
                         android:layout_marginLeft="30dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/mailsubject"
+                        android:layout_below="@+id/mail_subject"
                         android:layout_toRightOf="@+id/ff"
                         android:textColor="#66B3FF"
                         android:text="112"/>

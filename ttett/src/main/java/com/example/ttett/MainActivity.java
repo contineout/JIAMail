@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+
         setContentView(R.layout.activity_main);
         //Tooldar标题栏
         Toolbar mToolber = findViewById(R.id.inbox_toolbar);

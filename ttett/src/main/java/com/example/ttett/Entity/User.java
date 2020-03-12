@@ -2,14 +2,14 @@ package com.example.ttett.Entity;
 
 public class User {
     private String account,password;
-    private int id;
+    private int user_id;
 
-    public User(){
-
+    public int getUser_id() {
+        return user_id;
     }
-    public User(String account, String password) {
-        this.account = account;
-        this.password = password;
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public String getAccount() {
@@ -28,11 +28,5 @@ public class User {
         this.password = password;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 }
