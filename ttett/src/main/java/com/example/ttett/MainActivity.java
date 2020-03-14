@@ -80,7 +80,11 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-//Fragment初始化
+
+
+    /**
+     * Fragment初始化
+     */
     private void initView(){
         //NavigationView
         inboxFragment = new InboxFragment();

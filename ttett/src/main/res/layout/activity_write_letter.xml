@@ -20,8 +20,8 @@
                 android:layout_height="match_parent">
                 <ImageView
                     android:id="@+id/xdelete"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@mipmap/xdetele"
                     android:layout_marginLeft="5dp"
                     android:layout_centerVertical="true"
@@ -40,8 +40,8 @@
                     />
                 <ImageView
                     android:id="@+id/iv_send1"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@mipmap/send"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
@@ -52,12 +52,13 @@
     </com.google.android.material.appbar.AppBarLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="2.25dp"
+        android:layout_height="0.5dp"
         android:background="@color/xiahua"
         android:layout_alignParentTop="true"/>
     <RelativeLayout
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="45dp">
+        android:layout_height="40dp">
         <ImageView
             android:id="@+id/traingle_more"
             android:layout_width="30dp"
@@ -94,13 +95,13 @@
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="2.25dp"
+        android:layout_height="0.5dp"
         android:background="@color/xiahua"
         android:layout_alignParentTop="true"/>
     <RelativeLayout
         android:id="@+id/RL_cc"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="40dp"
         android:visibility="gone">
 
         <TextView
@@ -133,13 +134,13 @@
         android:id="@+id/Vcc"
         android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="2.25dp"
+        android:layout_height="0.5dp"
         android:background="@color/xiahua"
         android:layout_alignParentTop="true"/>
     <RelativeLayout
         android:id="@+id/RL_bcc"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="40dp"
         android:visibility="gone">
 
         <TextView
@@ -173,12 +174,13 @@
         android:visibility="gone"
         android:id="@+id/Vbcc"
         android:layout_width="match_parent"
-        android:layout_height="2.25dp"
+        android:layout_height="0.5dp"
         android:background="@color/xiahua"
         android:layout_alignParentTop="true"/>
     <RelativeLayout
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="45dp">
+        android:layout_height="40dp">
 
         <TextView
             android:id="@+id/tv_subject"
@@ -200,16 +202,18 @@
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="2.25dp"
+        android:layout_height="0.5dp"
         android:background="@color/xiahua"
         android:layout_alignParentTop="true"/>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textLongMessage|textMultiLine"
+            android:background="@null"
             android:gravity="top" />
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/fab_menu"
