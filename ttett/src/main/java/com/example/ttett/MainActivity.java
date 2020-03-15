@@ -3,6 +3,7 @@ package com.example.ttett;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.ttett.Dao.MailDao;
 import com.example.ttett.fragment.ArchiveFragment;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.ContactsFragment;
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+
+        MailDao mailDao = new MailDao(this);
+        mailDao.CreateMessageTable();
 
         setContentView(R.layout.activity_main);
         //Tooldar标题栏

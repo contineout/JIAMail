@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ttett.Entity.Mail;
+import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.OpenMailActivity;
 import com.example.ttett.R;
 
@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHolder> {
-    private List<Mail> mMailList ;
+    private List<EmailMessage> mMailList ;
     private Context mContext;
 
-    public InboxAdapter(Context context,List<Mail> mailList){
+    public InboxAdapter(Context context,List<EmailMessage> mailList){
         this.mContext = context;
         this.mMailList = mailList;
     }
@@ -38,9 +38,9 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                Mail mail = mMailList.get(position);
+                EmailMessage mail = mMailList.get(position);
                 Intent intent = new Intent(mContext, OpenMailActivity.class);
-                intent.putExtra("mail",mail);
+//                intent.putExtra("mail",mail);
 //                intent.putExtra(OpenMailActivity.MAIL_NAME,mail.getFrom());
 //                intent.putExtra(OpenMailActivity.MAIL_SUBJECT,fruit.getImageId());
                 mContext.startActivity(intent);
@@ -51,10 +51,10 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
 
     @Override
     public void onBindViewHolder(@NonNull InboxAdapter.InboxViewHolder holder, int position) {
-        Mail mail = mMailList.get(position);
+        EmailMessage mail = mMailList.get(position);
         holder.mName.setText(mail.getFrom());
         holder.mSubject.setText(mail.getSubject());
-        holder.mTime.setText(mail.outDate(String.valueOf(mail.getSendDate())));
+//        holder.mTime.setText(mail.outDate(String.valueOf(mail.getSendDate())));
     }
 
     @Override

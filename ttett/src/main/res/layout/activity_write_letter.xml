@@ -20,28 +20,35 @@
                 android:layout_height="match_parent">
                 <ImageView
                     android:id="@+id/xdelete"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@mipmap/xdetele"
                     android:layout_marginLeft="5dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     />
-                <TextView
-                    android:id="@+id/tv_send_user"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@+id/xdelete"
-                    android:layout_toLeftOf="@+id/iv_send1"
+                    android:layout_toLeftOf="@+id/iv_send1">
+                <TextView
+                    android:id="@+id/tv_send_user"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_centerHorizontal="true"
+                    android:text="xl335665873@sina.com"
+                    android:textSize="20sp"
                     android:drawableRight="@mipmap/traingle_down"
                     />
+                </RelativeLayout>
                 <ImageView
                     android:id="@+id/iv_send1"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@mipmap/send"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
@@ -71,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="收件人"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/traingle_more"
             android:layout_marginLeft="15dp"/>
@@ -86,8 +93,8 @@
             android:inputType="textEmailAddress"/>
         <ImageView
             android:id="@+id/iv_to"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/appicon"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -111,7 +118,7 @@
             android:layout_marginLeft="71dp"
             android:layout_centerVertical="true"
             android:text="抄送"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
         <EditText
             android:id="@+id/et_cc"
             android:layout_width="match_parent"
@@ -123,8 +130,8 @@
             android:background="@null"/>
         <ImageView
             android:id="@+id/iv_cc"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/appicon"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -135,7 +142,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/xiahua"
+        android:background="?attr/colorPrimary"
         android:layout_alignParentTop="true"/>
     <RelativeLayout
         android:id="@+id/RL_bcc"
@@ -150,7 +157,7 @@
             android:layout_marginLeft="71dp"
             android:layout_centerVertical="true"
             android:text="密送"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
         <EditText
             android:id="@+id/et_bcc"
             android:layout_width="match_parent"
@@ -163,8 +170,8 @@
 
         <ImageView
             android:id="@+id/iv_bcc"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/appicon"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -189,7 +196,7 @@
             android:layout_marginLeft="71dp"
             android:layout_centerVertical="true"
             android:text="主题"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
         <EditText
             android:id="@+id/et_subject"
             android:layout_width="match_parent"

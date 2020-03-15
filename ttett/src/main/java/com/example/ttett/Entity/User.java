@@ -3,6 +3,23 @@ package com.example.ttett.Entity;
 public class User {
     private String account,password;
     private int user_id;
+    private boolean Registerresult;
+
+//    public boolean isExistUser() {
+//        return isExistUser;
+//    }
+//
+//    public void setExistUser(boolean existUser) {
+//        isExistUser = existUser;
+//    }
+
+    public boolean isRegisterresult() {
+        return Registerresult;
+    }
+
+    public void setRegisterresult(boolean registerresult) {
+        Registerresult = registerresult;
+    }
 
     public int getUser_id() {
         return user_id;
