@@ -52,6 +52,8 @@ public class InboxFragment extends Fragment {
     private List<EmailMessage> MessageList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter inboxAdapter;
+    private Email email;
+    private List<EmailMessage> emailMessages;
 
 
 
@@ -76,38 +78,21 @@ public class InboxFragment extends Fragment {
         ToolbarTitle = view.findViewById(R.id.inbox_ToolbarTitle);
         swipeRefreshLayout = view.findViewById(R.id.sr_inbox);
 
-
         final RecipientMessage receiptMessage = new RecipientMessage();
         final MailService mailService = new MailService(getContext());
-        final Email email = new Email();
-        email.setAddress("xl335665873@sina.com");
-        email.setAuthorizationCode("d8405717ca1664a2");
-        email.setName("xl335665873");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    MessageList = receiptMessage.SinaRecipient(email);
-                    Thread.sleep(5000);
-                        Log.d(TAG,"增加了"+ MessageList.size()+"条新信息");
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-
-
-
-//        final User user = new User();
-//        Intent intent = getActivity().getIntent();
-//        Bundle bundle = intent.getExtras();
-//        int id = bundle.getInt("id");
-//        Log.d("dd",user.toString());
-//        user.setUser_id(id);
-
+        assert getArguments() != null;
+        email = getArguments().getParcelable("email");
+        emailMessages = getArguments().getParcelableArrayList("emailMessages");
+        Log.d(TAG,"email"+email.getAddress() + email.getName()+email.getAuthorizationCode());
+        for (EmailMessage Message: emailMessages){
+            Log.d(TAG,"emailMessages"+Message.getSubject());
+            Log.d(TAG,"emailMessages"+Message.getTo());
+        }
+        InboxRv = view.findViewById(R.id.inbox_rv);
+        InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        inboxAdapter = new InboxAdapter(getContext(),emailMessages);
+        InboxRv.setAdapter(inboxAdapter);
 
         //初始化收件frag
 
@@ -124,17 +109,12 @@ public class InboxFragment extends Fragment {
 //                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        InboxRv = view.findViewById(R.id.inbox_rv);
-//                        InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
-//                        inboxAdapter = new InboxAdapter(getContext(),mailList);
-//                        InboxRv.setAdapter(inboxAdapter);
+
 //                    }
 //                });
 //
 //            }
 //        }).start();
-
-
 
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -249,8 +229,6 @@ public class InboxFragment extends Fragment {
         });
 
         recyclerView.setAdapter(adapter);
-
-
         PopupWindow popupWindow = new PopupWindow(view,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setContentView(view);
         popupWindow.setTouchable(true);
@@ -258,7 +236,6 @@ public class InboxFragment extends Fragment {
         popupWindow.setFocusable(true);
         popupWindow.showAsDropDown(view,500,-100);
     }
-
     //topmenu——item
     private void initMenu() {
             Topmenu inbox = new Topmenu("收件箱",R.mipmap.nav_inbox);
@@ -269,37 +246,4 @@ public class InboxFragment extends Fragment {
             Topmenus.add(star);
     }
 
-//    private void initMail(User user){
-//        String address = "http://192.168.1.12:8888/MailServlet/ReceiptsMailServlet";
-//        HttpConnection.sendOkHttpRequest(address, user, new okhttp3.Callback(){
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                Toast.makeText(getContext(), "无网络", Toast.LENGTH_SHORT).show();
-//            }
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                String responseData = response.body().string();
-//                System.out.println("响应信息： " + responseData);
-//                Log.d("LoginActivity.this","no + " + responseData);
-//                Looper.prepare();
-//                List<Mail> result = null;
-//                result = parseJSONWithGSON(responseData);
-//                mailList = result;
-//                Looper.loop();
-//
-//            }
-//        });
-//    }
-
-//    private List<Mail> parseJSONWithGSON(String jsonData){
-//        if(jsonData!=null) {
-//            Gson gson = new Gson();
-//            mailList = gson.fromJson(jsonData,new TypeToken<List<Mail>>(){}.getType());
-//
-//            Log.d("LoginActivity.this", "no + ");
-//            return mailList;
-//        }else {
-//            return null;
-//        }
-//    }
 }

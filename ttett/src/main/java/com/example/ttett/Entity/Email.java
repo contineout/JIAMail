@@ -1,12 +1,40 @@
 package com.example.ttett.Entity;
 
-public class Email {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Email implements Parcelable {
     private int email_id;
     private int user_id;
     private String AuthorizationCode;
     private String type;
     private String address;
     private String name;
+
+    public Email(Parcel in) {
+        email_id = in.readInt();
+        user_id = in.readInt();
+        AuthorizationCode = in.readString();
+        type = in.readString();
+        address = in.readString();
+        name = in.readString();
+    }
+
+    public static final Creator<Email> CREATOR = new Creator<Email>() {
+        @Override
+        public Email createFromParcel(Parcel in) {
+            return new Email(in);
+        }
+
+        @Override
+        public Email[] newArray(int size) {
+            return new Email[size];
+        }
+    };
+
+    public Email() {
+
+    }
 
     public String getName() {
         return name;
@@ -54,5 +82,21 @@ public class Email {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(email_id);
+        dest.writeInt(user_id);
+        dest.writeString(AuthorizationCode);
+        dest.writeString(type);
+        dest.writeString(address);
+        dest.writeString(name);
     }
 }

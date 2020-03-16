@@ -6,6 +6,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ttett.Entity.EmailMessage;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class OpenMailActivity extends AppCompatActivity {
@@ -17,7 +19,8 @@ public class OpenMailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_mail);
 
-//        Mail mail = (Mail) getIntent().getSerializableExtra("mail");
+        Bundle bundle = getIntent().getExtras();
+        EmailMessage emailMessage = bundle.getParcelable("emailMessage");
 
         TvSubject = findViewById(R.id.mail_subject);
         TvFromId = findViewById(R.id.from_id);
@@ -28,11 +31,11 @@ public class OpenMailActivity extends AppCompatActivity {
         Iv_mail = findViewById(R.id.mail_button);
         TvContent = findViewById(R.id.mail_context);
 
-//        TvSubject.setText(mail.getSubject());
-//        TvFromId.setText(mail.getFrom());
-//        TvToId.setText(mail.getTo());
-//        TvContent.setText((CharSequence) mail.getContent());
-//        TvDate.setText(mail.inDate(String.valueOf(mail.getSendDate())));
+        TvSubject.setText(emailMessage.getSubject());
+        TvFromId.setText(emailMessage.getFrom());
+        TvToId.setText(emailMessage.getTo());
+        TvContent.setText(emailMessage.getContent());
+        TvDate.setText(emailMessage.getSendDate());
 
         Iv_mail.setOnClickListener(new View.OnClickListener() {
             @Override

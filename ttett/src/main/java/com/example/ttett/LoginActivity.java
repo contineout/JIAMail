@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 private Button BtnlLogin;
 private EditText EtCout,EtPasswd;
 private TextView TvRegister;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +28,8 @@ private TextView TvRegister;
 
         BtnlLogin.setOnClickListener(this);
         TvRegister.setOnClickListener(this);
+
+
     }
     private void updateUIThread(Message msg){
         Bundle bundle = msg.getData();

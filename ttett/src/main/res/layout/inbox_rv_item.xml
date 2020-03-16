@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@+id/mail_subject"
-            android:text="我又改进了一下，在数据库中真正将其删去 xxx.delete(); 毕竟你这个是假的删去毕竟你这个是假的删去"
+            android:text=""
             android:textSize="15sp"
             android:maxLines="2"
             android:maxEms="15"

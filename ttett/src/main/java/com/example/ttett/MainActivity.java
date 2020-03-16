@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.ttett.Dao.MailDao;
+import com.example.ttett.Entity.Email;
+import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.fragment.ArchiveFragment;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.ContactsFragment;
@@ -16,6 +18,9 @@ import com.example.ttett.fragment.SpamFragment;
 import com.example.ttett.fragment.TrashFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -46,34 +51,55 @@ public class MainActivity extends AppCompatActivity {
     private FolderFragment folderFragment;
     private Fragment[] fragments;
     private int lastfragmen = 0;
+    private List<EmailMessage> emailMessages = new ArrayList<>();
+
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-        MailDao mailDao = new MailDao(this);
-        mailDao.CreateMessageTable();
-
         setContentView(R.layout.activity_main);
+        initView();
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
         //Tooldar标题栏
         Toolbar mToolber = findViewById(R.id.inbox_toolbar);
         setSupportActionBar(mToolber);
         //drawerlayout侧工具栏
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.mipmap.menu);
         }
-        initView();
+/**
+ * 若没有MAIL.db则创建
+ */
+        MailDao mailDao = new MailDao(this);
+        mailDao.CreateMessageTable();
+
+        Email email = new Email();
+        email.setAddress("xl335665873@sina.com");
+        email.setAuthorizationCode("d8405717ca1664a2");
+        email.setName("xl335665873");
+
+
+        emailMessages = mailDao.QueryAllMessage(email);
+        ArrayList<EmailMessage> ems = (ArrayList<EmailMessage>) emailMessages;
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("emailMessages",ems);
+        bundle.putParcelable("email",email);
+
+        inboxFragment.setArguments(bundle);
+
+
+
+
     }
 
-//点击Toolbar触发事件
+    /**
+ * 点击Toolbar触发事件
+ */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -118,7 +144,9 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
     }
 
-//NavigationView点击事件
+    /**
+     * NavigationView点击切换frag
+     */
     private NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
             = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -174,7 +202,9 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
-//bottomNavigationViewd点击事件
+    /**
+     * bottomNavigationViewd点击切换frag
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener onBottomNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -214,7 +244,11 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //切换fragment
+    /**
+     * 切换fragment
+     * @param lastfragmen
+     * @param index
+     */
     private void switchFragment(int lastfragmen,int index) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.hide(fragments[lastfragmen]);

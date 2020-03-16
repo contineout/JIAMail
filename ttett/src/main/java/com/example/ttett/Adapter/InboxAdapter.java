@@ -2,6 +2,7 @@ package com.example.ttett.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,15 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.text.TextUtils.TruncateAt.END;
+
 public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHolder> {
-    private List<EmailMessage> mMailList ;
+    private List<EmailMessage> mEmailMessages ;
     private Context mContext;
 
-    public InboxAdapter(Context context,List<EmailMessage> mailList){
+    public InboxAdapter(Context context,List<EmailMessage> emailMessages){
         this.mContext = context;
-        this.mMailList = mailList;
+        this.mEmailMessages = emailMessages;
     }
     @NonNull
     @Override
@@ -38,11 +41,11 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                EmailMessage mail = mMailList.get(position);
+                EmailMessage emailMessage = mEmailMessages.get(position);
                 Intent intent = new Intent(mContext, OpenMailActivity.class);
-//                intent.putExtra("mail",mail);
-//                intent.putExtra(OpenMailActivity.MAIL_NAME,mail.getFrom());
-//                intent.putExtra(OpenMailActivity.MAIL_SUBJECT,fruit.getImageId());
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("emailMessage",emailMessage);
+                intent.putExtras(bundle);
                 mContext.startActivity(intent);
             }
         });
@@ -51,15 +54,20 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
 
     @Override
     public void onBindViewHolder(@NonNull InboxAdapter.InboxViewHolder holder, int position) {
-        EmailMessage mail = mMailList.get(position);
-        holder.mName.setText(mail.getFrom());
-        holder.mSubject.setText(mail.getSubject());
-//        holder.mTime.setText(mail.outDate(String.valueOf(mail.getSendDate())));
+        EmailMessage message = mEmailMessages.get(position);
+        holder.mName.setText(message.getFrom());
+        holder.mSubject.setText(message.getSubject());
+        holder.mTime.setText(message.getSendDate());
+        holder.mContent.setText(message.getContent());
+        holder.mContent.setEllipsize(END);
+        holder.mContent.setMaxLines(2);
+        holder.mContent.setEms(15);
+
     }
 
     @Override
     public int getItemCount() {
-        return mMailList.size();
+        return mEmailMessages.size();
     }
 
     static class InboxViewHolder extends RecyclerView.ViewHolder{

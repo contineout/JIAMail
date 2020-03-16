@@ -1,6 +1,9 @@
 package com.example.ttett.Entity;
 
-public class EmailMessage {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class EmailMessage implements Parcelable {
     private String message_id;
     private int email_id;
     private int user_id;
@@ -9,6 +12,65 @@ public class EmailMessage {
     private String message_text;
     private String SendDate;
     private String subject,from,to,cc,bcc;
+    private String content;
+
+    public EmailMessage(){
+
+    }
+
+    protected EmailMessage(Parcel in) {
+        message_id = in.readString();
+        email_id = in.readInt();
+        user_id = in.readInt();
+        folder_id = in.readInt();
+        isRead = in.readInt();
+        isDelete = in.readInt();
+        isSend = in.readInt();
+        message_text = in.readString();
+        SendDate = in.readString();
+        subject = in.readString();
+        from = in.readString();
+        to = in.readString();
+        cc = in.readString();
+        bcc = in.readString();
+        content = in.readString();
+    }
+
+    public static final Creator<EmailMessage> CREATOR = new Creator<EmailMessage>() {
+        @Override
+        public EmailMessage createFromParcel(Parcel in) {
+            EmailMessage emailMessage = new EmailMessage();
+            emailMessage.message_id = in.readString();
+            emailMessage.email_id = in.readInt();
+            emailMessage.user_id = in.readInt();
+            emailMessage.folder_id = in.readInt();
+            emailMessage.isRead = in.readInt();
+            emailMessage.isDelete = in.readInt();
+            emailMessage.isSend = in.readInt();
+            emailMessage.message_text = in.readString();
+            emailMessage.SendDate = in.readString();
+            emailMessage.subject = in.readString();
+            emailMessage.from = in.readString();
+            emailMessage.to = in.readString();
+            emailMessage.cc = in.readString();
+            emailMessage.bcc = in.readString();
+            emailMessage.content = in.readString();
+            return emailMessage;
+        }
+
+        @Override
+        public EmailMessage[] newArray(int size) {
+            return new EmailMessage[size];
+        }
+    };
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public String getMessage_id() {
         return message_id;
@@ -120,5 +182,47 @@ public class EmailMessage {
 
     public void setBcc(String bcc) {
         this.bcc = bcc;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(message_id);
+        dest.writeInt(email_id);
+        dest.writeInt(user_id);
+        dest.writeInt(folder_id);
+        dest.writeInt(isRead);
+        dest.writeInt(isDelete);
+        dest.writeInt(isSend);
+        dest.writeString(message_text);
+        dest.writeString(SendDate);
+        dest.writeString(subject);
+        dest.writeString(from);
+        dest.writeString(to);
+        dest.writeString(cc);
+        dest.writeString(bcc);
+        dest.writeString(content);
+    }
+
+    public EmailMessage(String message_id, int email_id, int user_id, int folder_id, int isRead, int isDelete, int isSend, String message_text, String sendDate, String subject, String from, String to, String cc, String bcc, String content) {
+        this.message_id = message_id;
+        this.email_id = email_id;
+        this.user_id = user_id;
+        this.folder_id = folder_id;
+        this.isRead = isRead;
+        this.isDelete = isDelete;
+        this.isSend = isSend;
+        this.message_text = message_text;
+        SendDate = sendDate;
+        this.subject = subject;
+        this.from = from;
+        this.to = to;
+        this.cc = cc;
+        this.bcc = bcc;
+        this.content = content;
     }
 }

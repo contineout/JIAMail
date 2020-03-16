@@ -22,7 +22,7 @@ public class ShowMail {
     private MimeMessage mimeMessage = null;
     private String saveAttachPath = ""; // 附件下载后的存放目录
     private StringBuffer bodyText = new StringBuffer(); // 存放邮件内容的StringBuffer对象
-    private String dateFormat = "yy-MM-dd HH:mm:ss"; // 默认的日前显示格式
+    private String dateFormat = "yyyy-MM-dd HH:mm:ss"; // 默认的日前显示格式
 
     /**
      * 构造函数,初始化一个MimeMessage对象
