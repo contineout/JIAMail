@@ -8,11 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ttett.ContactsActivity;
+import com.example.ttett.CustomDialog.ContactsDialogFragment;
 import com.example.ttett.R;
 
 import androidx.annotation.NonNull;
@@ -23,9 +21,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 
-public class ContactsFragment extends Fragment implements View.OnClickListener {
+public class ContactsFragment extends Fragment {
+    private static final String TAG ="ContactsFragment";
     private View view;
     private Toolbar mToolbar;
+    private ContactsDialogFragment contactsDialogFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +54,12 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    public void showDialog(){
+        contactsDialogFragment = new ContactsDialogFragment();
+//        contactsDialogFragment.setTargetFragment(ContactsFragment.this,REQUEST_CODE);
+        contactsDialogFragment.show(getFragmentManager(),"contactsDialogFragment");
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = null;
@@ -62,39 +68,9 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "你点击了联系人搜索", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.contacts_add:
-                showPopupWindow();
+                showDialog();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void showPopupWindow(){
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.contacts_popup,null);
-        PopupWindow mPopup = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        TextView Tv_import = contentView.findViewById(R.id.tv_import);
-        TextView Tv_new = contentView.findViewById(R.id.tv_new);
-        View rootview = LayoutInflater.from(getContext()).inflate(R.layout.frag_contacts,null);
-        mPopup.showAsDropDown(view,0,250);
-
-        Tv_import.setOnClickListener(this);
-        Tv_new.setOnClickListener(this);
-
-
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        Intent intent = null;
-        switch (v.getId()){
-            case R.id.tv_import:
-                Toast.makeText(getContext(), "你点击了联系人搜索", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.tv_new:
-                intent = new Intent(getContext(),ContactsActivity.class);
-                startActivity(intent);
-                break;
-        }
     }
 }

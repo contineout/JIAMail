@@ -1,14 +1,18 @@
 package com.example.ttett.Service;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.util.RecipientMessage;
 
 import java.util.List;
 
 import javax.mail.Message;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class MailService {
 
@@ -42,10 +46,11 @@ public class MailService {
      */
     public Message[] isNewMessage(Email email, Message[] messages) {
         MailDao mailDao = new MailDao(mContext);
-        Message[] temp = new Message[]{};
+        Message[] temp = new Message[6];
         int MessageCount = mailDao.QueryMessageCount(email);
+        Log.d(TAG,"MessageCount"+MessageCount);
         int RecipientMessageCount = messages.length;
-        if(MessageCount == 0 ){
+        if(MessageCount == 0){
             return messages;
         }
         if(MessageCount < RecipientMessageCount){
@@ -56,5 +61,20 @@ public class MailService {
             return temp;
         }
         return null;
+    }
+
+    /**
+     * 同步邮件
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> SynchronizeMessage(Email email){
+        RecipientMessage recipientMessage = new RecipientMessage();
+        List<EmailMessage> emailMessages = recipientMessage.SinaRecipient(email,mContext);
+        if(SaveMessage(emailMessages)){
+            Log.d(TAG,"有新邮件保存成功");
+        }
+        MailDao mailDao = new MailDao(mContext);
+        return mailDao.QueryAllMessage(email);
     }
 }

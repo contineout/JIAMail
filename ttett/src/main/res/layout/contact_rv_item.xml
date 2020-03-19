@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/contact_item"
+    android:layout_height="80dp">
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="10dp"
+
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contacts_Iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/folder_in"
+            android:layout_centerVertical="true"/>
+
+
+        <TextView
+            android:id="@+id/contact_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/contacts_Iv"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="112" />
+        <TextView
+            android:id="@+id/contact_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/contact_name"
+            android:layout_toRightOf="@+id/contacts_Iv"
+            android:textSize="13sp"
+            android:text="1023851233@qq.com" />
+
+
+    </RelativeLayout>
+</LinearLayout>

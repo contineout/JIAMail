@@ -31,6 +31,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "email_id integer," +
             "folder_name text," +
             "message_number integer," +
+            "datetime text," +
             "FOREIGN KEY (email_id) REFERENCES EMAIL (id)" +
             ")";
 
@@ -38,7 +39,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "message_id text PRIMARY KEY," +
             "email_id integer," +
             "folder_id integer," +
-            "user_id," +
+            "user_id,integer," +
             "subject text," +
             "from_mail text," +
             "to_mail text," +

@@ -1,8 +1,11 @@
 package com.example.ttett.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,7 +25,6 @@ import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
 import com.example.ttett.Service.MailService;
 import com.example.ttett.bean.Topmenu;
-import com.example.ttett.util.RecipientMessage;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -38,8 +40,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
 
 public class InboxFragment extends Fragment {
     private View view;
@@ -49,13 +49,25 @@ public class InboxFragment extends Fragment {
     private List<Topmenu> Topmenus = new ArrayList<>();
     private FloatingActionButton fab;
     private RecyclerView InboxRv;
-    private List<EmailMessage> MessageList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter inboxAdapter;
-    private Email email;
     private List<EmailMessage> emailMessages;
+    private Email email;
 
-
+    @SuppressLint("HandlerLeak")
+    private
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            emailMessages = data.getParcelableArrayList("emailMessages");
+            inboxAdapter = new InboxAdapter(getContext(),emailMessages);
+            InboxRv.setAdapter(inboxAdapter);
+            inboxAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+    };
 
 
     @Override
@@ -78,49 +90,30 @@ public class InboxFragment extends Fragment {
         ToolbarTitle = view.findViewById(R.id.inbox_ToolbarTitle);
         swipeRefreshLayout = view.findViewById(R.id.sr_inbox);
 
-        final RecipientMessage receiptMessage = new RecipientMessage();
-        final MailService mailService = new MailService(getContext());
+
 
         assert getArguments() != null;
         email = getArguments().getParcelable("email");
         emailMessages = getArguments().getParcelableArrayList("emailMessages");
-        Log.d(TAG,"email"+email.getAddress() + email.getName()+email.getAuthorizationCode());
-        for (EmailMessage Message: emailMessages){
-            Log.d(TAG,"emailMessages"+Message.getSubject());
-            Log.d(TAG,"emailMessages"+Message.getTo());
+
+        if(emailMessages!=null){
+            InboxRv = view.findViewById(R.id.inbox_rv);
+            InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
+            inboxAdapter = new InboxAdapter(getContext(),emailMessages);
+            InboxRv.setAdapter(inboxAdapter);
         }
-        InboxRv = view.findViewById(R.id.inbox_rv);
-        InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
-        inboxAdapter = new InboxAdapter(getContext(),emailMessages);
-        InboxRv.setAdapter(inboxAdapter);
+
+
 
         //初始化收件frag
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-////                    initMail(user);
-//                    Thread.sleep(2000);
-//
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-
-//                    }
-//                });
-//
-//            }
-//        }).start();
 
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        final Email finalEmail = email;
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                refreshMails(user);
+                refreshMessage(finalEmail);
             }
         });
 
@@ -151,27 +144,24 @@ public class InboxFragment extends Fragment {
         return view;
     }
 
-//    private void refreshMails(final User user){
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-////                        initMail(user);
-//                        inboxAdapter.notifyDataSetChanged();
-//                        swipeRefreshLayout.setRefreshing(false);
-//
-//                    }
-//                });
-//            }
-//        }).start();
-//    }
+    public void refreshMessage(final Email email){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<EmailMessage> emailMessages = (ArrayList<EmailMessage>) initMessage(email);
+                Message msg = new Message();
+                Bundle data = new Bundle();
+                data.putParcelableArrayList("emailMessages",emailMessages);
+                msg.setData(data);
+                handler.sendMessage(msg);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -179,6 +169,7 @@ public class InboxFragment extends Fragment {
 
 
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -188,7 +179,7 @@ public class InboxFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Log.d("INonCe","INonCe");
+
         switch (item.getItemId()){
 
             case  R.id.inbox_find:
@@ -244,6 +235,12 @@ public class InboxFragment extends Fragment {
             Topmenus.add(unread);
             Topmenu star = new Topmenu("星标邮件",R.mipmap.star_mail);
             Topmenus.add(star);
+    }
+
+    private List<EmailMessage> initMessage(Email email){
+        Log.d("INonCe","INonCe"+email.getAuthorizationCode()+email.getAddress());
+        MailService mailService = new MailService(getContext());
+        return mailService.SynchronizeMessage(email);
     }
 
 }

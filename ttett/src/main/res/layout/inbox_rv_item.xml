@@ -26,7 +26,7 @@
             android:layout_height="20dp"
             android:layout_toRightOf="@+id/from_icon"
             android:text="112"
-            android:textSize="12sp"
+            android:textSize="13sp"
             />
         <TextView
             android:id="@+id/from_time"
@@ -36,7 +36,7 @@
             android:layout_below="@+id/from_name"
             android:layout_alignParentRight="true"
             android:text="01-02 17.53"
-            android:textSize="10sp"
+            android:textSize="12sp"
             />
         <TextView
             android:id="@+id/mail_subject"
@@ -47,7 +47,7 @@
             android:layout_toLeftOf="@+id/from_time"
             android:text="[订票助手通知] 18时58分 1023851233"
             android:textColor="@color/black"
-            android:textSize="13sp"
+            android:textSize="15sp"
             android:maxLines="1"
             android:maxEms="15"
             android:ellipsize="end"
@@ -59,7 +59,7 @@
             android:layout_height="48dp"
             android:layout_below="@+id/mail_subject"
             android:text=""
-            android:textSize="15sp"
+            android:textSize="13sp"
             android:maxLines="2"
             android:maxEms="15"
             android:ellipsize="end"

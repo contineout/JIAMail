@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private int lastfragmen = 0;
     private List<EmailMessage> emailMessages = new ArrayList<>();
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,27 +72,29 @@ public class MainActivity extends AppCompatActivity {
 /**
  * 若没有MAIL.db则创建
  */
-        MailDao mailDao = new MailDao(this);
+        final MailDao mailDao = new MailDao(this);
         mailDao.CreateMessageTable();
 
-        Email email = new Email();
+        final Email email = new Email();
         email.setAddress("xl335665873@sina.com");
         email.setAuthorizationCode("d8405717ca1664a2");
         email.setName("xl335665873");
-
-
+        email.setEmail_id(1);
+//
         emailMessages = mailDao.QueryAllMessage(email);
         ArrayList<EmailMessage> ems = (ArrayList<EmailMessage>) emailMessages;
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("emailMessages",ems);
         bundle.putParcelable("email",email);
 
+//        Bundle bundle1 = new Bundle();
+//        bundle1.putParcelable("folder_email",email);
+//
         inboxFragment.setArguments(bundle);
-
-
-
+        folderFragment.setArguments(bundle);
 
     }
+
 
     /**
  * 点击Toolbar触发事件

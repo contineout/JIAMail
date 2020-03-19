@@ -102,7 +102,7 @@ public class RecipientMessage{
         return MessageList;
     }
 
-    public List<EmailMessage> SinaRecipient(Email email,Context context){
+    public List<EmailMessage> SinaRecipient(Email email, Context context){
         //1、连接邮件服务器的参数配置
         Properties props = new Properties();
         //设置传输协议
@@ -122,18 +122,20 @@ public class RecipientMessage{
             //连接收件人POP3服务器
             store = session.getStore("pop3");
             store.connect("pop3.sina.com", email.getAddress(), email.getAuthorizationCode());
+            Log.d(TAG,"Re"+store.isConnected());
             //获得用户的邮件账户，注意通过pop3协议获取某个邮件夹的名称只能为inbox
             folder = store.getFolder("inbox");
             //设置对邮件账户的访问权限
             folder.open(Folder.READ_WRITE);
             //得到邮件账户的所有邮件信息
-            messages = new Message[0];
             messages = folder.getMessages();
+            System.out.println("邮件数量:　" + messages.length);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         MailService mailService = new MailService(context);
+        assert messages != null;
         Message[] temp = mailService.isNewMessage(email,messages);
         List<EmailMessage> MessageList = new ArrayList<EmailMessage>();
         EmailMessage emailMessage = null;

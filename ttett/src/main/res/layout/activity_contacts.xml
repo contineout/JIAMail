@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ContactsActivity">
+    tools:context=".ContactsActivity"
+    android:background="@color/white">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -18,9 +19,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <ImageView
-                    android:id="@+id/cdelete"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/cexit"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@mipmap/xdetele"
                     android:layout_marginLeft="5dp"
                     android:layout_centerVertical="true"
@@ -30,7 +31,7 @@
                     android:id="@+id/tv_send_user"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toRightOf="@+id/cdelete"
+                    android:layout_toRightOf="@+id/cexit"
                     android:layout_toLeftOf="@+id/iv_save"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
@@ -38,8 +39,8 @@
                     />
                 <ImageView
                     android:id="@+id/iv_save"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@mipmap/c_save"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
@@ -74,8 +75,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_name"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -97,8 +98,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_remark"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -120,8 +121,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_birthday"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -143,8 +144,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_company"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -166,8 +167,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_department"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -189,8 +190,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_position"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -212,8 +213,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_address"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -235,8 +236,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_mail"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -258,8 +259,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_phone"
             android:layout_marginLeft="20dp"/>
         <TextView
@@ -281,8 +282,8 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@mipmap/c_note"
             android:layout_marginLeft="20dp"/>
         <TextView
