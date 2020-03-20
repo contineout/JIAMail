@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.Contact;
-import com.example.ttett.OpenMailActivity;
 import com.example.ttett.R;
+import com.example.ttett.SimpleContactActivity;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 Contact contact = mContacts.get(position);
-                Intent intent = new Intent(mContext, OpenMailActivity.class);
+                Intent intent = new Intent(mContext, SimpleContactActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("contact",contact);
                 intent.putExtras(bundle);
@@ -57,12 +57,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         holder.contact_name.setText(contact.getName());
         holder.contact_email.setText(contact.getEmail());
 
-
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mContacts.size();
     }
 
     static class ContactViewHolder extends RecyclerView.ViewHolder{
@@ -78,4 +77,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         }
     }
 
+    public void setContact(List<Contact> contacts) {
+        this.mContacts = contacts;
+        notifyDataSetChanged();
+    }
 }

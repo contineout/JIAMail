@@ -26,6 +26,8 @@ public class FolderService {
         FolderDao folderDao = new FolderDao(mContext);
             if (!folderDao.isExistFolder(folder.getFolder_name())) {
                 folderDao.InsertFolder(folder);
+            }else {
+
             }
         return folderDao.isExistFolder(folder.getFolder_name());
     }

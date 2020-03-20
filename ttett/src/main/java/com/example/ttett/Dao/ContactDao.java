@@ -32,7 +32,7 @@ public class ContactDao {
      */
     public Boolean isExistMail(String email){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cursor = db.query("CONTACT", new String[]{"id"},"email = ?",
+        Cursor cursor = db.query("CONTACT", new String[]{"id"},"contacts_email = ?",
                 new String[]{email},null,null,null,null);
         return cursor.moveToFirst();
     }
@@ -41,7 +41,7 @@ public class ContactDao {
      * 插入联系人信息
      * @param contact
      */
-    public void InsertContact(Contact contact){
+    public boolean InsertContact(Contact contact){
 
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -58,6 +58,7 @@ public class ContactDao {
         db.insert("CONTACT",null,values);
         values.clear();
         db.close();
+        return isExistMail(contact.getEmail());
     }
 
     /**
@@ -68,7 +69,7 @@ public class ContactDao {
     public List<Contact> QueryAllContact(int user_id){
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("CONTACT", null,"user_id = ?",
-                new String[]{String.valueOf(user_id)},null,"id desc",null,null);
+                new String[]{String.valueOf(user_id)},null,null,"id desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
 
         List<Contact> contacts =new ArrayList<>();

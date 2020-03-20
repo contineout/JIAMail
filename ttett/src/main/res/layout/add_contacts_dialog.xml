@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="80.5dp"
     android:background="@drawable/add_folder_dialog"
     >
     <TextView
@@ -14,7 +14,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="0.5dp"
+        android:background="@color/xiahua"/>
 
     <TextView
         android:id="@+id/contacts_new"

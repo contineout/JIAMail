@@ -3,10 +3,10 @@ package com.example.ttett;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.ttett.CustomDialog.ContactsDialogFragment;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
-import com.example.ttett.fragment.ArchiveFragment;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.ContactsFragment;
 import com.example.ttett.fragment.DialogMailFragment;
@@ -31,6 +31,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
 
 
+    private ContactsDialogFragment contactsDialogFragment = new ContactsDialogFragment();
     private InboxFragment inboxFragment;
     private DialogMailFragment dialogMailFragment;
     private ContactsFragment contactsFragment;
@@ -47,11 +49,11 @@ public class MainActivity extends AppCompatActivity {
     private DraftsFragment draftsFragment;
     private TrashFragment trashFragment;
     private SpamFragment spamFragment;
-    private ArchiveFragment archiveFragment;
     private FolderFragment folderFragment;
     private Fragment[] fragments;
     private int lastfragmen = 0;
     private List<EmailMessage> emailMessages = new ArrayList<>();
+    private RecyclerView Email_Rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +82,20 @@ public class MainActivity extends AppCompatActivity {
         email.setAuthorizationCode("d8405717ca1664a2");
         email.setName("xl335665873");
         email.setEmail_id(1);
-//
+        email.setUser_id(1);
+
         emailMessages = mailDao.QueryAllMessage(email);
         ArrayList<EmailMessage> ems = (ArrayList<EmailMessage>) emailMessages;
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("emailMessages",ems);
         bundle.putParcelable("email",email);
 
-//        Bundle bundle1 = new Bundle();
-//        bundle1.putParcelable("folder_email",email);
-//
+
         inboxFragment.setArguments(bundle);
         folderFragment.setArguments(bundle);
+        contactsFragment.setArguments(bundle);
+        contactsDialogFragment.setArguments(bundle);
+
 
     }
 
@@ -126,11 +130,12 @@ public class MainActivity extends AppCompatActivity {
         draftsFragment = new DraftsFragment();
         trashFragment = new TrashFragment();
         spamFragment = new SpamFragment();
-        archiveFragment = new ArchiveFragment();
         folderFragment = new FolderFragment();
 
+
+
         fragments = new Fragment[]{inboxFragment,dialogMailFragment,contactsFragment,attachmentFragment,//bottomNavigationView 0 - 3
-                sendedFragment,draftsFragment,trashFragment,spamFragment,archiveFragment,folderFragment};//NavigationView 4 - 9
+                sendedFragment,draftsFragment,trashFragment,spamFragment,folderFragment};//NavigationView 4 - 8
 
         coordinatorLayout = findViewById(R.id.coordinator);
 
@@ -182,16 +187,11 @@ public class MainActivity extends AppCompatActivity {
                         lastfragmen = 7;
                     }
                     return true;
-//                case R.id.archive:
-//                    if(lastfragmen != 8){
-//                        switchFragment(lastfragmen,8);
-//                        lastfragmen = 8;
-//                    }
-//                    return true;
+
                 case R.id.folder:
-                    if(lastfragmen != 9){
-                        switchFragment(lastfragmen,9);
-                        lastfragmen = 9;
+                    if(lastfragmen != 8){
+                        switchFragment(lastfragmen,8);
+                        lastfragmen = 8;
                     }
                     return true;
                 default:

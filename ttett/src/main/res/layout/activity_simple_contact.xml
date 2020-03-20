@@ -48,7 +48,7 @@
 
 
         <TextView
-            android:id="@+id/contact_name"
+            android:id="@+id/simple_contact_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
@@ -58,11 +58,11 @@
             android:textColor="@color/black"
             android:text="112" />
         <TextView
-            android:id="@+id/contact_email"
+            android:id="@+id/simple_contact_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_below="@+id/contact_name"
+            android:layout_below="@+id/simple_contact_name"
             android:layout_toRightOf="@+id/contacts_Iv"
             android:textSize="18sp"
             android:text="1023851233@qq.com" />
@@ -71,7 +71,7 @@
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_below="@+id/contact_email"
+            android:layout_below="@+id/simple_contact_email"
             android:background="@drawable/contact_shape"
             android:text="发送邮件"
             android:textSize="20sp"

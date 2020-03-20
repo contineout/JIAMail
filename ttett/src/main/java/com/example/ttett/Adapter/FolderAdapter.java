@@ -23,6 +23,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
         this.mContext = context;
         this.mFolders = folders;
     }
+
     @NonNull
     @Override
     public FolderAdapter.FolderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

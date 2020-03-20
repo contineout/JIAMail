@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.EmailMessage;
@@ -15,7 +16,6 @@ import com.example.ttett.R;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -37,7 +37,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.inbox_rv_item,parent,false);
         final InboxViewHolder holder = new InboxViewHolder(view);
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.inbox_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
@@ -73,12 +73,12 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     static class InboxViewHolder extends RecyclerView.ViewHolder{
         CircleImageView Icon;
         TextView mName,mTime,mSubject,mContent;
-        CardView cardView;
+        LinearLayout inbox_item;
 
         public InboxViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            cardView = itemView.findViewById(R.id.mail_cv);
+            inbox_item = itemView.findViewById(R.id.inbox_item);
             Icon = itemView.findViewById(R.id.from_icon);
             mName = itemView.findViewById(R.id.from_name);
             mTime = itemView.findViewById(R.id.from_time);

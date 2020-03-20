@@ -92,7 +92,7 @@ public class MailDao {
     public List<EmailMessage> QueryAllMessage(Email email){
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail = ?",
-                new String[]{email.getName()+"<"+email.getAddress()+">"},null,"to_mail desc",null,null);
+                new String[]{email.getName()+"<"+email.getAddress()+">"},null,null,"to_mail desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
 
         List<EmailMessage> messages =new ArrayList<>();
