@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginEmailActivity"
+    android:background="@color/white">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/register_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            <ImageView
+                android:id="@+id/register_exit"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@mipmap/xdetele"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+        </androidx.appcompat.widget.Toolbar>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/xiahua"
+            android:layout_alignParentTop="true"/>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <ImageView
+        android:id="@+id/login_email_Iv"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="100dp"
+        android:src="@mipmap/registered_email"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/login_email_Iv"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:text="请添加您的邮箱账号"/>
+    <RelativeLayout
+        android:id="@+id/dd"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_marginTop="250dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_height="40dp">
+
+
+        <EditText
+            android:id="@+id/login_email_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="请输入邮箱账号"
+            android:background="@null"
+            android:inputType="textEmailAddress"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:background="@color/colorPrimary"
+        android:id="@+id/cc"
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_below="@+id/dd"
+        android:layout_height="40dp">
+
+
+        <EditText
+            android:id="@+id/login_email_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="请输入邮箱密码"
+            android:background="@null"
+            android:inputType="textEmailAddress"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_login_email"
+        android:layout_below="@+id/cc"
+        android:layout_width="match_parent"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_shape"
+        android:layout_centerHorizontal="true"
+        android:text="添加"
+        android:textSize="14sp"/>
+</RelativeLayout>

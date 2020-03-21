@@ -46,7 +46,6 @@ public class MailService {
      */
     public Message[] isNewMessage(Email email, Message[] messages) {
         MailDao mailDao = new MailDao(mContext);
-        Message[] temp = new Message[6];
         int MessageCount = mailDao.QueryMessageCount(email);
         Log.d(TAG,"MessageCount"+MessageCount);
         int RecipientMessageCount = messages.length;
@@ -55,6 +54,7 @@ public class MailService {
         }
         if(MessageCount < RecipientMessageCount){
             int Count = RecipientMessageCount - MessageCount;
+            Message[] temp = new Message[Count];
             for(int i = 0;i < Count; i++){
                 temp[i] = messages[MessageCount+i];
             }
@@ -68,13 +68,24 @@ public class MailService {
      * @param email
      * @return
      */
-    public List<EmailMessage> SynchronizeMessage(Email email){
+    public void SynchronizeMessage(Email email){
         RecipientMessage recipientMessage = new RecipientMessage();
         List<EmailMessage> emailMessages = recipientMessage.SinaRecipient(email,mContext);
         if(SaveMessage(emailMessages)){
             Log.d(TAG,"有新邮件保存成功");
         }
         MailDao mailDao = new MailDao(mContext);
+    }
+
+    /**
+     * 查询sqlite所有邮件
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> queryAllMessage(Email email){
+        MailDao mailDao = new MailDao(mContext);
         return mailDao.QueryAllMessage(email);
     }
+
+
 }

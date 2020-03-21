@@ -7,5 +7,8 @@
     <color name="xiahua">#BDBDBD</color>
     <color name="register">#2894FF</color>
     <color name="white">#FFFFFF</color>
+    <color name="drawer">#5577AA</color>
     <color name="blue">#0000ff</color>
+    <color name="login_email">#919191</color>
+
 </resources>

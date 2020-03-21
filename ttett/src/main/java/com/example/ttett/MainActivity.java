@@ -1,12 +1,18 @@
 package com.example.ttett;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.ttett.Adapter.EmailAdapter;
 import com.example.ttett.CustomDialog.ContactsDialogFragment;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.Service.EmailService;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.ContactsFragment;
 import com.example.ttett.fragment.DialogMailFragment;
@@ -23,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,6 +38,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     private NavigationView navigationView;
     private BottomNavigationView bottomNavigationView;
+    private ImageView add_email;
+    private TextView nav_email;
 
 
     private ContactsDialogFragment contactsDialogFragment = new ContactsDialogFragment();
@@ -54,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
     private int lastfragmen = 0;
     private List<EmailMessage> emailMessages = new ArrayList<>();
     private RecyclerView Email_Rv;
+    private List<Email> emails;
+    private int user_id = 1;
+    private EmailService emailService = new EmailService(this);
+    private EmailAdapter emailAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +76,17 @@ public class MainActivity extends AppCompatActivity {
         initView();
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+
+
+        add_email = headerView.findViewById(R.id.nav_add_email);
+        nav_email = headerView.findViewById(R.id.nav_view);
+        Email_Rv = headerView.findViewById(R.id.email_rv);
+
         //Tooldar标题栏
         Toolbar mToolber = findViewById(R.id.inbox_toolbar);
         setSupportActionBar(mToolber);
+
         //drawerlayout侧工具栏
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -77,6 +99,15 @@ public class MainActivity extends AppCompatActivity {
         final MailDao mailDao = new MailDao(this);
         mailDao.CreateMessageTable();
 
+        initEmail();
+        add_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,LoginEmailActivity.class);
+                startActivityForResult(intent,1);
+            }
+        });
+
         final Email email = new Email();
         email.setAddress("xl335665873@sina.com");
         email.setAuthorizationCode("d8405717ca1664a2");
@@ -84,21 +115,65 @@ public class MainActivity extends AppCompatActivity {
         email.setEmail_id(1);
         email.setUser_id(1);
 
-        emailMessages = mailDao.QueryAllMessage(email);
-        ArrayList<EmailMessage> ems = (ArrayList<EmailMessage>) emailMessages;
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("emailMessages",ems);
         bundle.putParcelable("email",email);
-
 
         inboxFragment.setArguments(bundle);
         folderFragment.setArguments(bundle);
         contactsFragment.setArguments(bundle);
         contactsDialogFragment.setArguments(bundle);
-
-
     }
 
+
+    public void initEmail(){
+        emails = emailService.queryAllEmail(user_id);
+
+        if(emails!=null){
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            Email_Rv.setLayoutManager(layoutManager);
+            emailAdapter = new EmailAdapter(this,emails);
+            Email_Rv.setAdapter(emailAdapter);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if (requestCode == 1 && resultCode == LoginEmailActivity.RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            boolean strResult = bundle.getBoolean("result");
+            if(strResult){
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(emails!=null){
+                                    emails.clear();
+                                    emails.addAll(emailService.queryAllEmail(user_id));
+                                }else{
+                                    emails = emailService.queryAllEmail(user_id);
+                                    initEmail();
+                                }
+
+                                emailAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }).start();
+
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     /**
  * 点击Toolbar触发事件

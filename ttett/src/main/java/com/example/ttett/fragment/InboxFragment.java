@@ -1,12 +1,10 @@
 package com.example.ttett.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.ttett.Adapter.InboxAdapter;
 import com.example.ttett.Adapter.TopMenuAdapter;
+import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
@@ -53,27 +52,29 @@ public class InboxFragment extends Fragment {
     private InboxAdapter inboxAdapter;
     private List<EmailMessage> emailMessages;
     private Email email;
+    private MailDao mailDao = new MailDao(getContext());
+    private int UPDATE_MESSAGES = 1;
+    private MailService mailService = new MailService(getContext());
 
     @SuppressLint("HandlerLeak")
     private
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle data = msg.getData();
-            emailMessages = data.getParcelableArrayList("emailMessages");
-            inboxAdapter = new InboxAdapter(getContext(),emailMessages);
-            InboxRv.setAdapter(inboxAdapter);
+            if(msg.what == UPDATE_MESSAGES){
+                if(emailMessages!=null){
+                    emailMessages.clear();
+                    emailMessages.addAll(mailDao.QueryAllMessage(email));
+                }else{
+                    emailMessages = mailDao.QueryAllMessage(email);
+                    initEmailMessage();
+                }
+            }
             inboxAdapter.notifyDataSetChanged();
             swipeRefreshLayout.setRefreshing(false);
         }
     };
 
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,23 +92,13 @@ public class InboxFragment extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.sr_inbox);
 
 
-
         assert getArguments() != null;
         email = getArguments().getParcelable("email");
-        emailMessages = getArguments().getParcelableArrayList("emailMessages");
+        initEmailMessage();
 
-        if(emailMessages!=null){
-            InboxRv = view.findViewById(R.id.inbox_rv);
-            InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
-            inboxAdapter = new InboxAdapter(getContext(),emailMessages);
-            InboxRv.setAdapter(inboxAdapter);
-        }
-
-
-
-        //初始化收件frag
-
-
+        /**
+         * swipe刷新inbox
+         */
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         final Email finalEmail = email;
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -123,8 +114,9 @@ public class InboxFragment extends Fragment {
         actionBar.setHomeAsUpIndicator(R.mipmap.menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        initMenu();
+
         //topmenu点击事件
+        initMenu();
         IvInbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,15 +136,30 @@ public class InboxFragment extends Fragment {
         return view;
     }
 
+    /**
+     * 初始化EmailMessag
+     */
+    private void initEmailMessage(){
+        emailMessages = mailDao.QueryAllMessage(email);
+        if(emailMessages!=null){
+            InboxRv = view.findViewById(R.id.inbox_rv);
+            InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
+            inboxAdapter = new InboxAdapter(getContext(),emailMessages);
+            InboxRv.setAdapter(inboxAdapter);
+        }
+    }
+
+    /**
+     * 同步刷新email
+     * @param email
+     */
     public void refreshMessage(final Email email){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<EmailMessage> emailMessages = (ArrayList<EmailMessage>) initMessage(email);
+                mailService.SynchronizeMessage(email);
                 Message msg = new Message();
-                Bundle data = new Bundle();
-                data.putParcelableArrayList("emailMessages",emailMessages);
-                msg.setData(data);
+                msg.what = UPDATE_MESSAGES;
                 handler.sendMessage(msg);
                 try {
                     Thread.sleep(5000);
@@ -161,13 +168,6 @@ public class InboxFragment extends Fragment {
                 }
             }
         }).start();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
     }
 
 
@@ -190,7 +190,10 @@ public class InboxFragment extends Fragment {
         return true;
     }
 
-    //topmenu_item点击事件
+    /**
+     * topmenu_item点击事件
+     */
+
     private void showPopuopwindow() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.inbox_top_menu_rv,null,false);
         RecyclerView recyclerView = view.findViewById(R.id.inbox_top_rv);
@@ -227,7 +230,10 @@ public class InboxFragment extends Fragment {
         popupWindow.setFocusable(true);
         popupWindow.showAsDropDown(view,500,-100);
     }
-    //topmenu——item
+    /**
+     * topmenu——item
+     */
+
     private void initMenu() {
             Topmenu inbox = new Topmenu("收件箱",R.mipmap.nav_inbox);
             Topmenus.add(inbox);
@@ -235,12 +241,6 @@ public class InboxFragment extends Fragment {
             Topmenus.add(unread);
             Topmenu star = new Topmenu("星标邮件",R.mipmap.star_mail);
             Topmenus.add(star);
-    }
-
-    private List<EmailMessage> initMessage(Email email){
-        Log.d("INonCe","INonCe"+email.getAuthorizationCode()+email.getAddress());
-        MailService mailService = new MailService(getContext());
-        return mailService.SynchronizeMessage(email);
     }
 
 }

@@ -8,8 +8,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 
 public class EmailLogin {
-//"d8405717ca1664a2"
-//    ykqxthnonvynbbeh
+
     public boolean SinaLogin(Email email){
         Properties props = new Properties();
         props.setProperty("mail.smtp.auth", "true");
@@ -36,7 +35,7 @@ public class EmailLogin {
         props.setProperty("mail.smtp.port", smtpPort);
         props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.setProperty("mail.smtp.socketFactory.fallback", "false");
-        props.setProperty("mail.smtp.socketFactory.port", "25");
+        props.setProperty("mail.smtp.socketFactory.port", "smtpPort");
         Session session = Session.getInstance(props);
         Transport transport = null;
         try {
