@@ -85,6 +85,7 @@ public class EmailDao {
         if(cursor.moveToFirst()){
             do {
                 email = new Email();
+                email.setEmail_id(cursor.getInt(cursor.getColumnIndex("id")));
                 email.setUser_id(cursor.getInt(cursor.getColumnIndex("user_id")));
                 email.setType(cursor.getString(cursor.getColumnIndex("email_type")));
                 email.setAddress(cursor.getString(cursor.getColumnIndex("email_address")));

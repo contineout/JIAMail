@@ -2,6 +2,7 @@ package com.example.ttett;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,6 +25,8 @@ import com.example.ttett.fragment.SpamFragment;
 import com.example.ttett.fragment.TrashFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private ImageView add_email;
     private TextView nav_email;
-
+    private String TAG = "MainActivity.this";
 
     private ContactsDialogFragment contactsDialogFragment = new ContactsDialogFragment();
     private InboxFragment inboxFragment;
@@ -65,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
     private List<EmailMessage> emailMessages = new ArrayList<>();
     private RecyclerView Email_Rv;
     private List<Email> emails;
-    private int user_id = 1;
     private EmailService emailService = new EmailService(this);
     private EmailAdapter emailAdapter;
 
@@ -77,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-
 
         add_email = headerView.findViewById(R.id.nav_add_email);
         nav_email = headerView.findViewById(R.id.nav_view);
@@ -98,48 +99,55 @@ public class MainActivity extends AppCompatActivity {
  */
         final MailDao mailDao = new MailDao(this);
         mailDao.CreateMessageTable();
+        final int user_id = getIntent().getIntExtra("user_id",0);
+        Bundle bundle = new Bundle();
+        bundle.putInt("user_id",user_id);
+        contactsFragment.setArguments(bundle);
 
+        emails = emailService.queryAllEmail(user_id);
+        Log.d(TAG,"user_id = "+user_id);
         initEmail();
         add_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,LoginEmailActivity.class);
+                intent.putExtra("user_id",user_id);
                 startActivityForResult(intent,1);
             }
         });
 
-        final Email email = new Email();
-        email.setAddress("xl335665873@sina.com");
-        email.setAuthorizationCode("d8405717ca1664a2");
-        email.setName("xl335665873");
-        email.setEmail_id(1);
-        email.setUser_id(1);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("email",email);
-
-        inboxFragment.setArguments(bundle);
-        folderFragment.setArguments(bundle);
-        contactsFragment.setArguments(bundle);
-        contactsDialogFragment.setArguments(bundle);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     public void initEmail(){
-        emails = emailService.queryAllEmail(user_id);
-
         if(emails!=null){
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
             Email_Rv.setLayoutManager(layoutManager);
             emailAdapter = new EmailAdapter(this,emails);
             Email_Rv.setAdapter(emailAdapter);
+
+            Email email = emails.get(0);
+            if(email!=null){
+                Log.d(TAG,"email=" + email.getEmail_id()+email.getType()+email.getAddress());
+            }
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("email",email);
+            inboxFragment.setArguments(bundle);
+            folderFragment.setArguments(bundle);
+
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
+        final int user_id = getIntent().getIntExtra("user_id",0);
+        Log.d(TAG,"user_id = "+user_id);
         if (requestCode == 1 && resultCode == LoginEmailActivity.RESULT_CODE) {
             Bundle bundle = data.getExtras();
             boolean strResult = bundle.getBoolean("result");
@@ -331,5 +339,11 @@ public class MainActivity extends AppCompatActivity {
         }
         transaction.show(fragments[index]).commitAllowingStateLoss();
         drawerLayout.closeDrawers();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

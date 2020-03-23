@@ -70,11 +70,21 @@ public class MailService {
      */
     public void SynchronizeMessage(Email email){
         RecipientMessage recipientMessage = new RecipientMessage();
-        List<EmailMessage> emailMessages = recipientMessage.SinaRecipient(email,mContext);
-        if(SaveMessage(emailMessages)){
-            Log.d(TAG,"有新邮件保存成功");
+        List<EmailMessage> emailMessages;
+        switch (email.getType()){
+            case "sina.com":
+                emailMessages = recipientMessage.SinaRecipient(email,mContext);
+                if(SaveMessage(emailMessages)){
+                    Log.d(TAG,"sina有新邮件保存成功");
+                }
+                break;
+            case "qq.com":
+                emailMessages = recipientMessage.QQRecipient(email,mContext);
+                if(SaveMessage(emailMessages)){
+                    Log.d(TAG,"sina有新邮件保存成功");
+                }
+                break;
         }
-        MailDao mailDao = new MailDao(mContext);
     }
 
     /**

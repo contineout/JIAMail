@@ -1,7 +1,6 @@
 package com.example.ttett;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -9,6 +8,9 @@ import android.widget.Toast;
 
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.Service.ContactService;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.regex.Pattern;
 
@@ -133,11 +135,10 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     contact.setAddress(isEmptyS(address));
                     int user_id = getIntent().getIntExtra("user_id",0);
                     contact.setUser_id(user_id);
-                    Log.d(TAG,"dd"+user_id);
-                    Log.d(TAG,"dd"+contact.getIphone()+contact.getEmail()+contact.getName()+contact.getBirthday()+contact.getUser_id());
 
                     boolean SaveResult = contactService.SaveContact(contact);
                     if(SaveResult){
+                        EventBus.getDefault().post(new MessageEvent("add_contact",user_id));
                         finish();
                     }else {
                         Toast.makeText(ContactsActivity.this,"该email已经存在联系人",Toast.LENGTH_SHORT).show();

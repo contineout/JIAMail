@@ -18,6 +18,8 @@ public class LoginEmailActivity extends AppCompatActivity {
     private EditText et_address,et_password;
     private Button bt_login_email;
     public static int RESULT_CODE = 2;
+    private Email email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,26 +37,19 @@ public class LoginEmailActivity extends AppCompatActivity {
         });
     }
 
-    private void EmailConnection(String address,String password){
+    private void EmailConnection(final String address, final String password){
         if(password.isEmpty()){
             Toast.makeText(LoginEmailActivity.this,"请输入邮箱密码",Toast.LENGTH_SHORT).show();
         }else{
             if(address.isEmpty()){
                 Toast.makeText(LoginEmailActivity.this,"请输入邮箱地址",Toast.LENGTH_SHORT).show();
             }else{
-                final EmailLogin emailLogin = new EmailLogin();
                 final EmailService emailService = new EmailService(this);
-                String[] email_type = address.split("[@]");
-                final Email email = new Email();
-                email.setAddress(address);
-                email.setType(email_type[1]);
-                email.setAuthorizationCode(password);
-                email.setUser_id(1);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        final boolean isConnection = emailLogin.QQLogin(email);
 
+                        final boolean isConnection = selectLogin(address,password);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -76,4 +71,23 @@ public class LoginEmailActivity extends AppCompatActivity {
         }
     }
 
+    private boolean selectLogin(String address,String password){
+        EmailLogin emailLogin = new EmailLogin();
+
+        String[] email_type = address.split("[@]");
+        email = new Email();
+        email.setAddress(address);
+        email.setName(email_type[0]);
+        email.setType(email_type[1]);
+        email.setAuthorizationCode(password);
+        email.setUser_id(getIntent().getIntExtra("user_id",0));
+        switch (email_type[1]){
+            case "qq.com":
+                return emailLogin.QQLogin(email);
+            case "sina.com":
+                return emailLogin.SinaLogin(email);
+                default:
+        }
+        return false;
+    }
 }

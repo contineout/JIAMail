@@ -31,7 +31,7 @@ public class EmailService {
     }
 
     /**
-     * 查询所有文件夹
+     * 查询所有邮箱
      * @param user_id
      * @return
      */

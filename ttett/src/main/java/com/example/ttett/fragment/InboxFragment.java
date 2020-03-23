@@ -18,13 +18,17 @@ import android.widget.Toast;
 
 import com.example.ttett.Adapter.InboxAdapter;
 import com.example.ttett.Adapter.TopMenuAdapter;
-import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
 import com.example.ttett.Service.MailService;
+import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.bean.Topmenu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +56,8 @@ public class InboxFragment extends Fragment {
     private InboxAdapter inboxAdapter;
     private List<EmailMessage> emailMessages;
     private Email email;
-    private MailDao mailDao = new MailDao(getContext());
     private int UPDATE_MESSAGES = 1;
-    private MailService mailService = new MailService(getContext());
+    private MailService mailService;
 
     @SuppressLint("HandlerLeak")
     private
@@ -64,13 +67,13 @@ public class InboxFragment extends Fragment {
             if(msg.what == UPDATE_MESSAGES){
                 if(emailMessages!=null){
                     emailMessages.clear();
-                    emailMessages.addAll(mailDao.QueryAllMessage(email));
+                    emailMessages.addAll(mailService.queryAllMessage(email));
+                    inboxAdapter.notifyDataSetChanged();
                 }else{
-                    emailMessages = mailDao.QueryAllMessage(email);
+                    emailMessages = mailService.queryAllMessage(email);
                     initEmailMessage();
                 }
             }
-            inboxAdapter.notifyDataSetChanged();
             swipeRefreshLayout.setRefreshing(false);
         }
     };
@@ -80,6 +83,7 @@ public class InboxFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
@@ -91,20 +95,24 @@ public class InboxFragment extends Fragment {
         ToolbarTitle = view.findViewById(R.id.inbox_ToolbarTitle);
         swipeRefreshLayout = view.findViewById(R.id.sr_inbox);
 
-
         assert getArguments() != null;
-        email = getArguments().getParcelable("email");
-        initEmailMessage();
+        try{
+            email = getArguments().getParcelable("email");
+        }catch (NullPointerException ignored){
+        }
+             if(email!=null){
+                 initEmailMessage();
+             }
+
 
         /**
          * swipe刷新inbox
          */
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
-        final Email finalEmail = email;
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshMessage(finalEmail);
+                refreshMessage(email);
             }
         });
 
@@ -113,7 +121,6 @@ public class InboxFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.mipmap.menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
 
         //topmenu点击事件
         initMenu();
@@ -137,10 +144,32 @@ public class InboxFragment extends Fragment {
     }
 
     /**
+     * 接送更改inbox
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void inboxMessage(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("Switch_Email")){
+            email = messageEvent.getEmail();
+            mailService = new MailService(getContext());
+
+            if(emailMessages!=null){
+                emailMessages.clear();
+                emailMessages.addAll(mailService.queryAllMessage(email));
+            }else{
+                emailMessages = mailService.queryAllMessage(email);
+                initEmailMessage();
+            }
+            inboxAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
      * 初始化EmailMessag
      */
-    private void initEmailMessage(){
-        emailMessages = mailDao.QueryAllMessage(email);
+    public void initEmailMessage(){
+        mailService = new MailService(getContext());
+        emailMessages = mailService.queryAllMessage(email);
         if(emailMessages!=null){
             InboxRv = view.findViewById(R.id.inbox_rv);
             InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -161,11 +190,7 @@ public class InboxFragment extends Fragment {
                 Message msg = new Message();
                 msg.what = UPDATE_MESSAGES;
                 handler.sendMessage(msg);
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
             }
         }).start();
     }
@@ -243,4 +268,9 @@ public class InboxFragment extends Fragment {
             Topmenus.add(star);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

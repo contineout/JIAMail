@@ -19,9 +19,8 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeMessage;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
 public class RecipientMessage{
+    private String TAG = "RecipientMessage";
 
     public List<EmailMessage> QQRecipient(Email email, Context context){
         //1、连接邮件服务器的参数配置
@@ -62,35 +61,42 @@ public class RecipientMessage{
         System.out.println("邮件数量:　" + messages.length);
         ShowMail re = null;
 
+
+        MailService mailService = new MailService(context);
+        assert messages != null;
+        Message[] temp = mailService.isNewMessage(email,messages);
         List<EmailMessage> MessageList = new ArrayList<EmailMessage>();
         EmailMessage emailMessage = null;
+        if(temp != null) {
+            System.out.println("邮件数量:　" + temp.length);
 
-        for (int i = 0; i < messages.length; i++) {
-            re = new ShowMail((MimeMessage) messages[i]);
-            emailMessage = new EmailMessage();
-            try {
-                emailMessage.setMessage_id(re.getMessageId());
-                emailMessage.setEmail_id(email.getEmail_id());
-                emailMessage.setUser_id(email.getUser_id());
-                emailMessage.setSubject(re.getSubject());
-                emailMessage.setSendDate(re.getSentDate());
-                emailMessage.setFrom(re.getFrom());
-                emailMessage.setTo(re.getMailAddress("to"));
-                emailMessage.setCc(re.getMailAddress("cc"));
-                emailMessage.setBcc(re.getMailAddress("bcc"));
-                emailMessage.setIsRead(0);
-                emailMessage.setIsDelete(0);
-                emailMessage.setIsSend(1);
-                re.getMailContent((Part) messages[i]);
-                String BodyText = "\r\n" + re.getBodyText();
-                emailMessage.setMessage_text(BodyText);
-                MessageList.add(emailMessage);
-            } catch (Exception e) {
-                e.printStackTrace();
+            Log.d(TAG, "QQRecipient: " + "邮件数量:　" + temp.length);
+            for (int i = 0; i < temp.length; i++) {
+                re = new ShowMail((MimeMessage) temp[i]);
+                emailMessage = new EmailMessage();
+                try {
+                    emailMessage.setMessage_id(re.getMessageId());
+                    emailMessage.setEmail_id(email.getEmail_id());
+                    emailMessage.setUser_id(email.getUser_id());
+                    emailMessage.setSubject(re.getSubject());
+                    emailMessage.setSendDate(re.getSentDate());
+                    emailMessage.setFrom(re.getFrom());
+                    emailMessage.setTo(re.getMailAddress("to"));
+                    emailMessage.setCc(re.getMailAddress("cc"));
+                    emailMessage.setBcc(re.getMailAddress("bcc"));
+                    emailMessage.setIsRead(0);
+                    emailMessage.setIsDelete(0);
+                    emailMessage.setIsSend(1);
+                    re.getMailContent((Part) temp[i]);
+                    String BodyText = "\r\n" + re.getBodyText();
+                    emailMessage.setMessage_text(BodyText);
+                    MessageList.add(emailMessage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-//            Boolean isRead = re.isContainAttach((Part) message);
-//                re.setDateFormat("yy年MM月dd日　HH:mm");
-//                String mailSendDate = re.getSentDate();
+        }else{
+            Log.d(TAG, "QQ  --- 没有新邮件");
         }
         //关闭邮件夹对象
         try {
@@ -144,8 +150,8 @@ public class RecipientMessage{
 
             Log.d(TAG, "SinaRecipient: "+"邮件数量:　" + temp.length);
             ShowMail re = null;
-            for (int i = 0; i < messages.length; i++) {
-                re = new ShowMail((MimeMessage) messages[i]);
+            for (int i = 0; i < temp.length; i++) {
+                re = new ShowMail((MimeMessage) temp[i]);
                 emailMessage = new EmailMessage();
                 try {
                     emailMessage.setMessage_id(re.getMessageId());
@@ -160,7 +166,7 @@ public class RecipientMessage{
                     emailMessage.setIsRead(0);
                     emailMessage.setIsDelete(0);
                     emailMessage.setIsSend(1);
-                    re.getMailContent((Part) messages[i]);
+                    re.getMailContent((Part) temp[i]);
                     String BodyText = "\r\n" + re.getBodyText();
                     emailMessage.setMessage_text(BodyText);
                     MessageList.add(emailMessage);
@@ -172,7 +178,7 @@ public class RecipientMessage{
 //                re.setDateFormat("yy年MM月dd日　HH:mm");
 //                String mailSendDate = re.getSentDate();
         }else {
-            Log.d(TAG, "没有新邮件");
+            Log.d(TAG, "sina  --  没有新邮件");
         }
         //关闭邮件夹对象
         try {
@@ -183,4 +189,5 @@ public class RecipientMessage{
         }
         return MessageList;
     }
+
 }

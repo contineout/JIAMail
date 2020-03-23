@@ -2,6 +2,7 @@ package com.example.ttett.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,11 @@ import com.example.ttett.Entity.Contact;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
 import com.example.ttett.Service.ContactService;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -40,11 +46,13 @@ public class ContactsFragment extends Fragment {
     private ContactsAdapter contactsAdapter;
     private Email email;
     private ContactService contactService;
+    int user_id;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
@@ -53,7 +61,7 @@ public class ContactsFragment extends Fragment {
         view = inflater.inflate(R.layout.frag_contacts,container,false);
 
         mToolbar = view.findViewById(R.id.contacts_toolbar);
-        ContactRv = view.findViewById(R.id.contact_rv);
+
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -61,19 +69,42 @@ public class ContactsFragment extends Fragment {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         assert getArguments() != null;
-        email = getArguments().getParcelable("email");
+        user_id = getArguments().getInt("user_id");
+        Log.d(TAG,"user_id = " + user_id);
 
-        contactService = new ContactService(getContext());
-        contacts = contactService.queryAllContact(email.getUser_id());
-
-        ContactRv.setLayoutManager(new LinearLayoutManager(getContext()));
-        if(contacts !=null){
-            contactsAdapter = new ContactsAdapter(getContext(),contacts);
-            ContactRv.setAdapter(contactsAdapter);
-            contactsAdapter.setContact(contacts);
-        }
+        initContacts();
 
         return view;
+    }
+
+    /**
+     * 添加联系人更新UI
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void addContactRefresh(MessageEvent event){
+        Log.d(TAG,event.getMessage());
+        if(event.getMessage().equals("add_contact")){
+            if (contacts != null){
+                contacts.clear();
+                contacts.addAll(contactService.queryAllContact(event.getUser_id()));
+                contactsAdapter.notifyDataSetChanged();
+            }else {
+                initContacts();
+            }
+        }
+    }
+
+
+    public void initContacts(){
+        contactService = new ContactService(getContext());
+        contacts = contactService.queryAllContact(user_id);
+        if(contacts!=null){
+            ContactRv = view.findViewById(R.id.contact_rv);
+            ContactRv.setLayoutManager(new LinearLayoutManager(getContext()));
+            contactsAdapter = new ContactsAdapter(getContext(),contacts);
+            ContactRv.setAdapter(contactsAdapter);
+        }
     }
 
     @Override
@@ -88,7 +119,7 @@ public class ContactsFragment extends Fragment {
     public void showDialog(){
         contactsDialogFragment = new ContactsDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("user_id",email.getUser_id());
+        bundle.putInt("user_id",user_id);
         contactsDialogFragment.setArguments(bundle);
 //        contactsDialogFragment.setTargetFragment(ContactsFragment.this,REQUEST_CODE);
         contactsDialogFragment.show(getFragmentManager(),"contactsDialogFragment");
@@ -108,5 +139,9 @@ public class ContactsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

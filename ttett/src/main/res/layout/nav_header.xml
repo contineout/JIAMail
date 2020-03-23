@@ -2,12 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="200dp"
     android:background="#E6E6E6">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/drawer">
+        android:layout_height="120dp"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/nav_user"
+            android:layout_marginLeft="10dp"
+            android:text="幻影沙漏"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:textSize="20sp"
+            />
 
         <TextView
             android:id="@+id/nav_email"
@@ -15,19 +25,19 @@
             android:text="1023851233@qq.com"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textSize="20sp"
-            android:textColor="@color/white"
+            android:layout_marginBottom="30dp"
+            android:layout_alignParentBottom="true"
             />
         <ImageView
             android:id="@+id/nav_add_email"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src = "@mipmap/add_email"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center"/>
+            android:layout_marginRight="30dp"
+            android:src="@mipmap/addmail"
+            />
+
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

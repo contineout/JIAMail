@@ -60,10 +60,6 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
         builder.setView(view);
         return builder.create();
     }
-    public void tiao(){
-
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -101,11 +97,4 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
         win.setAttributes(params);
     }
 
-//    public static ContactsDialogFragment newInstance(int user_id){
-//        ContactsDialogFragment contactsDialogFragment = new ContactsDialogFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("user_id",user_id);
-//        contactsDialogFragment.setArguments(bundle);
-//        return  contactsDialogFragment;
-//    }
 }
