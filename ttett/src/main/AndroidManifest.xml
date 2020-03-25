@@ -16,7 +16,7 @@
         <activity android:name=".addEmailActivity" />
         <activity android:name=".RegisteredActivity" />
         <activity android:name=".OpenMailActivity" />
-        <activity android:name=".fragment.WriteLetterActivity" />
+        <activity android:name=".WriteLetterActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ContactsActivity" />
         <activity android:name=".LoginActivity">

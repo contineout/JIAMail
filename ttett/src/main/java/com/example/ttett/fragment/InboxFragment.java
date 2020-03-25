@@ -22,6 +22,7 @@ import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
 import com.example.ttett.Service.MailService;
+import com.example.ttett.WriteLetterActivity;
 import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.bean.Topmenu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -100,9 +101,9 @@ public class InboxFragment extends Fragment {
             email = getArguments().getParcelable("email");
         }catch (NullPointerException ignored){
         }
-             if(email!=null){
+         if(email!=null){
                  initEmailMessage();
-             }
+         }
 
 
         /**
@@ -136,7 +137,8 @@ public class InboxFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(),WriteLetterActivity.class);
+                Intent intent = new Intent(getContext(), WriteLetterActivity.class);
+                intent.putExtra("email",email);
                 startActivity(intent);
             }
         });
@@ -152,17 +154,21 @@ public class InboxFragment extends Fragment {
         if (messageEvent.getMessage().equals("Switch_Email")){
             email = messageEvent.getEmail();
             mailService = new MailService(getContext());
-
-            if(emailMessages!=null){
-                emailMessages.clear();
-                emailMessages.addAll(mailService.queryAllMessage(email));
-            }else{
-                emailMessages = mailService.queryAllMessage(email);
-                initEmailMessage();
+            emailMessages = mailService.queryAllMessage(email);
+            if(email!=null){
+                if(emailMessages!=null){
+                    emailMessages.clear();
+                    emailMessages.addAll(mailService.queryAllMessage(email));
+                }else{
+                    emailMessages = mailService.queryAllMessage(email);
+                    initEmailMessage();
+                }
+                inboxAdapter.notifyDataSetChanged();
             }
-            inboxAdapter.notifyDataSetChanged();
         }
     }
+
+
 
     /**
      * 初始化EmailMessag
@@ -272,5 +278,10 @@ public class InboxFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

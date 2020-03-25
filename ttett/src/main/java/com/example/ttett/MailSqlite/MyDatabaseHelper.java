@@ -36,10 +36,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             ")";
 
     public static final String EMAILMESSAGE="CREATE TABLE EMAILMESSAGE (" +
-            "message_id text PRIMARY KEY," +
+            "id integer PRIMARY KEY AUTOINCREMENT," +
+            "message_id text," +
             "email_id integer," +
             "folder_id integer," +
-            "user_id,integer," +
+            "user_id integer," +
             "subject text," +
             "from_mail text," +
             "to_mail text," +

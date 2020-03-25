@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.Contact;
-import com.example.ttett.fragment.WriteLetterActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 

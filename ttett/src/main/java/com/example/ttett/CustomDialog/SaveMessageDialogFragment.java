@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,16 +15,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.example.ttett.ContactsActivity;
+import com.example.ttett.Dao.MailDao;
+import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class ContactsDialogFragment extends DialogFragment implements View.OnClickListener{
-    private TextView TvImport,TvNew;
-    private String TAG = "ContactsDialogFragment";
+public class SaveMessageDialogFragment extends DialogFragment implements View.OnClickListener {
+    private TextView TvSave,TvDelete;
+    private String TAG = "SaveMessageDialogFragment";
+    private MailDao mailDao;
 
 
     @Nullable
@@ -36,23 +37,16 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
         return super.onCreateView(inflater,container,savedInstanceState);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.add_contacts_dialog,null);
-        TvImport = view.findViewById(R.id.contacts_import);
-        TvNew = view.findViewById(R.id.contacts_new);
-        assert getArguments() != null;
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.save_message_dialog,null);
+        TvSave = view.findViewById(R.id.message_save);
+        TvDelete = view.findViewById(R.id.message_delete);
 
-        TvImport.setOnClickListener(this);
-        TvNew.setOnClickListener(this);
+        TvSave.setOnClickListener(this);
+        TvDelete.setOnClickListener(this);
         builder.setView(view);
         return builder.create();
     }
@@ -62,18 +56,16 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
         Intent intent = null;
 
         switch (v.getId()){
-            case R.id.contacts_import:
+            case R.id.message_delete:
                 dismiss();
                 break;
-            case R.id.contacts_new:
-                int user_id = getArguments().getInt("user_id");
-                Log.d(TAG,"dddd"+user_id);
-                intent = new Intent(getContext(),ContactsActivity.class);
-                intent.putExtra("user_id",user_id);
-                startActivity(intent);
+            case R.id.message_save:
+                EmailMessage emailMessage = getArguments().getParcelable("message");
+                mailDao = new MailDao(getContext());
+                mailDao.InsertMessages(emailMessage);
                 dismiss();
                 break;
-                default:
+            default:
         }
     }
 
@@ -92,5 +84,4 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         win.setAttributes(params);
     }
-
 }

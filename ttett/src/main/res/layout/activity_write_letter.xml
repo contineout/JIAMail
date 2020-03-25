@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragment.WriteLetterActivity">
+    tools:context=".WriteLetterActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/archive_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="35dp"
             android:background="?attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
             <RelativeLayout
@@ -33,16 +33,12 @@
                     android:layout_toRightOf="@+id/xdelete"
                     android:layout_toLeftOf="@+id/iv_send1">
                 <TextView
-                    android:id="@+id/tv_send_user"
+                    android:id="@+id/tv_send_email"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
                     android:layout_centerHorizontal="true"
                     android:text="xl335665873@sina.com"
-                    android:textSize="20sp"
-                    android:drawableRight="@mipmap/traingle_down"
                     />
                 </RelativeLayout>
                 <ImageView
@@ -220,6 +216,7 @@
         android:layout_height="match_parent"
         android:background="@color/colorPrimary">
         <EditText
+            android:id="@+id/et_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textLongMessage|textMultiLine"

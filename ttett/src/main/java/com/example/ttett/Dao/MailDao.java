@@ -69,6 +69,8 @@ public class MailDao {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
             values.put("message_id",emailMessage.getMessage_id());
+            values.put("email_id",emailMessage.getEmail_id());
+            values.put("user_id",emailMessage.getUser_id());
             values.put("subject",emailMessage.getSubject());
             values.put("from_mail",emailMessage.getFrom());
             values.put("to_mail",emailMessage.getTo());
