@@ -97,5 +97,45 @@ public class MailService {
         return mailDao.QueryAllMessage(email);
     }
 
+    /**
+     * 查询sqlite所有已发送邮件
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> querySendedMessage(Email email){
+        MailDao mailDao = new MailDao(mContext);
+        return mailDao.QuerySendedMessage(email);
+    }
+
+    /**
+     * 查询sqlite所有未发送邮件
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> queryDraftsMessage(Email email){
+        MailDao mailDao = new MailDao(mContext);
+        return mailDao.QueryDraftMessage(email);
+    }
+
+    /**
+     * 修改已读标志位
+     * @param id
+     */
+    public  void updateReadMessage(int id) {
+        MailDao mailDao = new MailDao(mContext);
+        if(mailDao.isExistMessage(id)){
+            mailDao.updateisRead(id);
+        }
+    }
+
+    /**
+     * 查询未读邮件
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> queryUnReadMessage(Email email){
+        MailDao mailDao = new MailDao(mContext);
+        return mailDao.QueryUnReadMessage(email);
+    }
 
 }

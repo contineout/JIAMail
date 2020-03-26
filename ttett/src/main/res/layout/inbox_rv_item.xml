@@ -6,9 +6,15 @@
     android:background="@drawable/item_selector"
     android:id="@+id/inbox_item">
 <RelativeLayout
-    android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="85dp">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="15dp"
+        android:id="@+id/isReadflag"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:src="@mipmap/isreadflag" />
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
@@ -18,7 +24,7 @@
             android:src="@mipmap/toux"/>
         <TextView
             android:id="@+id/from_name"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="10dp"
             android:layout_width="300dp"
             android:layout_height="20dp"

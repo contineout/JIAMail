@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class EmailMessage implements Parcelable {
+    private int id;
     private String message_id;
     private int email_id;
     private int user_id;
@@ -18,7 +19,16 @@ public class EmailMessage implements Parcelable {
 
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     protected EmailMessage(Parcel in) {
+        id = in.readInt();
         message_id = in.readString();
         email_id = in.readInt();
         user_id = in.readInt();
@@ -40,6 +50,7 @@ public class EmailMessage implements Parcelable {
         @Override
         public EmailMessage createFromParcel(Parcel in) {
             EmailMessage emailMessage = new EmailMessage();
+            emailMessage.id = in.readInt();
             emailMessage.message_id = in.readString();
             emailMessage.email_id = in.readInt();
             emailMessage.user_id = in.readInt();
@@ -191,6 +202,7 @@ public class EmailMessage implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(message_id);
         dest.writeInt(email_id);
         dest.writeInt(user_id);
@@ -208,7 +220,8 @@ public class EmailMessage implements Parcelable {
         dest.writeString(content);
     }
 
-    public EmailMessage(String message_id, int email_id, int user_id, int folder_id, int isRead, int isDelete, int isSend, String message_text, String sendDate, String subject, String from, String to, String cc, String bcc, String content) {
+    public EmailMessage(int id,String message_id, int email_id, int user_id, int folder_id, int isRead, int isDelete, int isSend, String message_text, String sendDate, String subject, String from, String to, String cc, String bcc, String content) {
+        this.id = id;
         this.message_id = message_id;
         this.email_id = email_id;
         this.user_id = user_id;

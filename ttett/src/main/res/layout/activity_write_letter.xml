@@ -38,7 +38,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="xl335665873@sina.com"
+                    android:text=""
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
                     />
                 </RelativeLayout>
                 <ImageView
@@ -80,6 +82,8 @@
             android:layout_marginLeft="15dp"/>
         <EditText
             android:id="@+id/et_to"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tv_to"
@@ -112,12 +116,14 @@
             android:id="@+id/tv_cc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="71dp"
+            android:layout_marginLeft="65dp"
             android:layout_centerVertical="true"
             android:text="抄送"
             android:textSize="15sp" />
         <EditText
             android:id="@+id/et_cc"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tv_cc"
@@ -153,12 +159,14 @@
             android:id="@+id/tv_bcc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="71dp"
+            android:layout_marginLeft="65dp"
             android:layout_centerVertical="true"
             android:text="密送"
             android:textSize="15sp" />
         <EditText
             android:id="@+id/et_bcc"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tv_bcc"
@@ -192,12 +200,14 @@
             android:id="@+id/tv_subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="71dp"
+            android:layout_marginLeft="65dp"
             android:layout_centerVertical="true"
             android:text="主题"
             android:textSize="15sp" />
         <EditText
             android:id="@+id/et_subject"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tv_subject"

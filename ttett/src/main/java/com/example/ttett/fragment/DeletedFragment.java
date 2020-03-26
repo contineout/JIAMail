@@ -19,7 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 
-public class TrashFragment extends Fragment {
+public class DeletedFragment extends Fragment {
     private View view;
     private Toolbar mToolbar;
 
@@ -39,6 +39,7 @@ public class TrashFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.mipmap.menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         return view;
     }

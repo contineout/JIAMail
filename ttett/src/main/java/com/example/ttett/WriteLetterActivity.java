@@ -1,6 +1,7 @@
 package com.example.ttett;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class WriteLetterActivity extends AppCompatActivity implements View.OnClickListener{
@@ -36,6 +38,7 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
     private SaveMessageDialogFragment saveMessageDialogFragment;
     private String initContent = "Sent from JiaMail";
     private String TAG = "WriteLetterActivity";
+    private String Recipient_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +49,18 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
         try{
             email = getIntent().getParcelableExtra("email");
             Log.d(TAG,"email.address = "+ email.getAddress());
+            TvSendEmail.setText(email.getAddress());
+            TvSendEmail.setVisibility(View.VISIBLE);
         }catch (Exception e){
         }
-        TvSendEmail.setText(email.getAddress());
-        TvSendEmail.setVisibility(View.VISIBLE);
+
+        try{
+            Recipient_email = getIntent().getStringExtra("Recipient_email");
+            EtTO.setText(Recipient_email);
+        }catch (Exception e){
+
+        }
+
 
         IvTrainglemore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +121,8 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
             case R.id.xdelete:
                 if(!isEmptyS(EtContent).equals(initContent)){
                     showDialog();
+                }else {
+                    finish();
                 }
                 break;
             case R.id.iv_send1:
@@ -184,6 +197,7 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
         str = format.format(date);
         emailMessage.setSendDate(str);
         mailDao.InsertMessages(emailMessage);
+
     }
 
     /**
@@ -208,7 +222,8 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
     private void setEmailMessage(){
         emailMessage = new EmailMessage();
         if(email!=null){
-            emailMessage.setFrom(email.getAddress());
+            String from_mail = "wu"+"<"+ email.getAddress() + ">";
+            emailMessage.setFrom(from_mail);
             emailMessage.setUser_id(email.getUser_id());
             emailMessage.setEmail_id(email.getEmail_id());
         }
@@ -225,5 +240,11 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
             return editText.getText().toString();
         }
         return "";
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        finish();
     }
 }

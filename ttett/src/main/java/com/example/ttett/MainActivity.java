@@ -16,13 +16,13 @@ import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Service.EmailService;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.ContactsFragment;
+import com.example.ttett.fragment.DeletedFragment;
 import com.example.ttett.fragment.DialogMailFragment;
 import com.example.ttett.fragment.DraftsFragment;
 import com.example.ttett.fragment.FolderFragment;
 import com.example.ttett.fragment.InboxFragment;
 import com.example.ttett.fragment.SendedFragment;
 import com.example.ttett.fragment.SpamFragment;
-import com.example.ttett.fragment.TrashFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private AttachmentFragment attachmentFragment;
     private SendedFragment sendedFragment;
     private DraftsFragment draftsFragment;
-    private TrashFragment trashFragment;
+    private DeletedFragment trashFragment;
     private SpamFragment spamFragment;
     private FolderFragment folderFragment;
     private Fragment[] fragments;
@@ -133,14 +133,12 @@ public class MainActivity extends AppCompatActivity {
             Email_Rv.setAdapter(emailAdapter);
 
             Email email = emails.get(0);
-            if(email!=null){
-                Log.d(TAG,"email=" + email.getEmail_id()+email.getType()+email.getAddress());
-            }
             Bundle bundle = new Bundle();
             bundle.putParcelable("email",email);
             inboxFragment.setArguments(bundle);
             folderFragment.setArguments(bundle);
-
+            sendedFragment.setArguments(bundle);
+            draftsFragment.setArguments(bundle);
         }
     }
 
@@ -211,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         //bottomNavigationView
         sendedFragment = new SendedFragment();
         draftsFragment = new DraftsFragment();
-        trashFragment = new TrashFragment();
+        trashFragment = new DeletedFragment();
         spamFragment = new SpamFragment();
         folderFragment = new FolderFragment();
 

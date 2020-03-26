@@ -9,7 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.ttett.Adapter.InboxAdapter;
+import com.example.ttett.Entity.Email;
+import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
+import com.example.ttett.Service.MailService;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,16 +28,25 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class DraftsFragment extends Fragment {
     private View view;
     private Toolbar mToolbar;
+    private Email email;
+    private MailService mailService;
+    private List<EmailMessage> emailMessages;
+    private RecyclerView DraftsRv;
+    private InboxAdapter inboxAdapter;
+    private String TAG = "DraftsFragment";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
@@ -34,14 +54,60 @@ public class DraftsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_drafts,container,false);
         mToolbar = view.findViewById(R.id.draft_toolbar);
+        DraftsRv = view.findViewById(R.id.draft_rv);
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.mipmap.menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        assert getArguments() != null;
+        try{
+            email = getArguments().getParcelable("email");
+        }catch (NullPointerException ignored){
+        }
+        if(email!=null){
+            initEmailMessage();
+        }
+
         return view;
     }
+
+    /**
+     * 初始化EmailMessag
+     */
+    public void initEmailMessage(){
+        mailService = new MailService(getContext());
+        emailMessages = mailService.queryDraftsMessage(email);
+        if(emailMessages!=null){
+            DraftsRv.setLayoutManager(new LinearLayoutManager(getContext()));
+            inboxAdapter = new InboxAdapter(getContext(),emailMessages);
+            DraftsRv.setAdapter(inboxAdapter);
+        }
+    }
+
+    /**
+     * 接送更改inbox
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void SwitchMessage(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("Switch_Email")){
+            email = messageEvent.getEmail();
+            mailService = new MailService(getContext());
+            if(email!=null){
+                if(emailMessages!=null){
+                    emailMessages.clear();
+                    emailMessages.addAll(mailService.queryDraftsMessage(email));
+                    inboxAdapter.notifyDataSetChanged();
+                }else{
+                    emailMessages = mailService.queryDraftsMessage(email);
+                    initEmailMessage();
+                }
+            }
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toobar_drafts_item,menu);
@@ -55,5 +121,11 @@ public class DraftsFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

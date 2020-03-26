@@ -81,6 +81,19 @@ public class InboxFragment extends Fragment {
 
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if(emailMessages!=null){
+            emailMessages.clear();
+            emailMessages.addAll(mailService.queryAllMessage(email));
+            inboxAdapter.notifyDataSetChanged();
+        }else{
+            emailMessages = mailService.queryAllMessage(email);
+            initEmailMessage();
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -150,20 +163,19 @@ public class InboxFragment extends Fragment {
      * @param messageEvent
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public void inboxMessage(MessageEvent messageEvent){
+    public void SwitchMessage(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
             email = messageEvent.getEmail();
             mailService = new MailService(getContext());
-            emailMessages = mailService.queryAllMessage(email);
             if(email!=null){
                 if(emailMessages!=null){
                     emailMessages.clear();
                     emailMessages.addAll(mailService.queryAllMessage(email));
+                    inboxAdapter.notifyDataSetChanged();
                 }else{
                     emailMessages = mailService.queryAllMessage(email);
                     initEmailMessage();
                 }
-                inboxAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -236,11 +248,19 @@ public class InboxFragment extends Fragment {
             public void onClick(int position) {
                 switch (position){
                     case 0:
-                        Toast.makeText(getContext(),"0",Toast.LENGTH_SHORT).show();
+                        if(emailMessages!=null){
+                            emailMessages.clear();
+                            emailMessages.addAll(mailService.queryAllMessage(email));
+                            inboxAdapter.notifyDataSetChanged();
+                        }
                         ToolbarTitle.setText("收件箱");
                         break;
                     case 1:
-                        Toast.makeText(getContext(),"1",Toast.LENGTH_SHORT).show();
+                        if(emailMessages!=null){
+                            emailMessages.clear();
+                            emailMessages.addAll(mailService.queryUnReadMessage(email));
+                            inboxAdapter.notifyDataSetChanged();
+                        }
                         ToolbarTitle.setText("未读邮件");
                         break;
                     case 2:
@@ -274,14 +294,12 @@ public class InboxFragment extends Fragment {
             Topmenus.add(star);
     }
 
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 }

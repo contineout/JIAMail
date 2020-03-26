@@ -58,6 +58,7 @@ public class SaveMessageDialogFragment extends DialogFragment implements View.On
         switch (v.getId()){
             case R.id.message_delete:
                 dismiss();
+                getActivity().finish();
                 break;
             case R.id.message_save:
                 EmailMessage emailMessage = getArguments().getParcelable("message");

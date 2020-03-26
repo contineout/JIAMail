@@ -73,7 +73,7 @@ public class SendMessage {
         msg.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(emailMessage.getTo(), "LL", "UTF-8"));
 
         if(!emailMessage.getBcc().isEmpty()){
-            msg.setRecipient(MimeMessage.RecipientType.CC,new InternetAddress(emailMessage.getBcc()));
+            msg.setRecipient(MimeMessage.RecipientType.CC,new InternetAddress(emailMessage.getCc()));
         }
         if(!emailMessage.getCc().isEmpty()){
             msg.setRecipient(MimeMessage.RecipientType.BCC,new InternetAddress(emailMessage.getBcc()));

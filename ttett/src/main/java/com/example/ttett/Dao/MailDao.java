@@ -34,10 +34,46 @@ public class MailDao {
      */
     public int QueryMessageCount(Email email){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"isSend"},"to_mail = ?",
-                new String[]{email.getName()+"<"+email.getAddress()+">"},null,null,null,null);
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"isSend"},"to_mail LIKE ?",
+                new String[]{"%"+ email.getAddress() + "%"},null,null,null,null);
         Log.d(TAG,"存放了+"+cursor.getCount());
         return cursor.getCount();
+    }
+
+    /**
+     * 查询SQLite已发送邮件数量
+     * @param email isSend = 1;
+     * @return
+     */
+    public List<EmailMessage> QuerySendedMessage(Email email){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail LIKE ? and isSend = ?",
+                new String[]{("%"+ email.getAddress() + "%"),("1")},null,null,null,null);
+
+        return setMessages(cursor);
+    }
+
+
+    /**
+     * 查询SQLite未发送邮件数量
+     * @param email isSend = 0;
+     * @return
+     */
+    public List<EmailMessage> QueryDraftMessage(Email email){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail = ? and isSend = ?",
+                new String[]{("%"+ email.getAddress() + "%"),("0")},null,null,null,null);
+
+        return setMessages(cursor);
+    }
+
+
+    public List<EmailMessage> QueryUnReadMessage(Email email){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isRead = ?",
+                new String[]{("%"+ email.getAddress() + "%"),("0")},null,null,null,null);
+        Log.d(TAG,"unReadMessage = " +cursor.getCount());
+        return setMessages(cursor);
     }
 
     /**
@@ -49,7 +85,7 @@ public class MailDao {
     };
 
     /**
-     * 判断邮件是否存在
+     * 判断邮件是否存在，同步邮件时
      * @param message_id
      * @return
      */
@@ -59,6 +95,19 @@ public class MailDao {
                 new String[]{message_id},null,null,null,null);
         return cursor.moveToFirst();
     }
+
+    /**
+     * 判断邮件是否存在，增删改时
+     * @param id
+     * @return
+     */
+    public Boolean isExistMessage(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"id = ?",
+                new String[]{String.valueOf(id)},null,null,null,null);
+        return cursor.moveToFirst();
+    }
+
 
     /**
      * 插入邮件信息
@@ -87,6 +136,51 @@ public class MailDao {
     }
 
     /**
+     * 修改为已读
+     * @param id
+     */
+    public void updateisRead(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("isRead",1);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
+    }
+
+    /**
+     * 修改isDelete为1,存入已删除
+     * @param id
+     */
+    public void updateisDelete(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("isDelete",1);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
+    }
+
+    /**
+     * 删除邮件信息
+     * @param id
+     */
+    public void DeleteMessage(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.delete("EMAILMESSAGE","id = ?",new String[]{String.valueOf(id)});
+    }
+
+
+
+    /**
+     * 修改邮件信息文件存放id
+     * @param id
+     */
+    public void updatefolder(int id,int folder_id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("folder_id",folder_id);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
+    }
+
+
+    /**
      * 读取SQLite存放的邮件
      * @param email 每个邮件账号
      * @return
@@ -97,11 +191,21 @@ public class MailDao {
                 new String[]{"%"+ email.getAddress() + "%"},null,null,"to_mail desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
 
+        return setMessages(cursor);
+    }
+
+    /**
+     * 设置属性返回messages
+     * @param cursor
+     * @return
+     */
+    private List<EmailMessage> setMessages(Cursor cursor){
         List<EmailMessage> messages =new ArrayList<>();
         EmailMessage message;
         if(cursor.moveToFirst()){
             do {
                 message = new EmailMessage();
+                message.setId(cursor.getInt((cursor.getColumnIndex("id"))));
                 message.setSubject(cursor.getString(cursor.getColumnIndex("subject")));
                 message.setFrom(cursor.getString(cursor.getColumnIndex("from_mail")));
                 message.setTo(cursor.getString(cursor.getColumnIndex("to_mail")));

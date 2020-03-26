@@ -7,12 +7,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.Service.MailService;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class OpenMailActivity extends AppCompatActivity {
     private TextView TvSubject,TvFromId,TvFromMail,TvToId,TvToMail,TvDate,TvContent;
     private ImageView Iv_mail;
+    private MailService mailService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,10 @@ public class OpenMailActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         EmailMessage emailMessage = bundle.getParcelable("emailMessage");
+
+        mailService = new MailService(this);
+        mailService.updateReadMessage(emailMessage.getId());
+
 
         TvSubject = findViewById(R.id.mail_subject);
         TvFromId = findViewById(R.id.from_id);
@@ -31,9 +37,16 @@ public class OpenMailActivity extends AppCompatActivity {
         Iv_mail = findViewById(R.id.mail_button);
         TvContent = findViewById(R.id.mail_context);
 
+        if(!emailMessage.getFrom().isEmpty() && !emailMessage.getTo().isEmpty()){
+            String[] from = emailMessage.getFrom().split("[<>]");
+            String[] to = emailMessage.getTo().split("[<>]");
+            TvFromId.setText(from[0]);
+            TvFromMail.setText(from[1]);
+            TvToId.setText(to[0]);
+            TvToMail.setText(to[1]);
+        }
+
         TvSubject.setText(emailMessage.getSubject());
-        TvFromId.setText(emailMessage.getFrom());
-        TvToId.setText(emailMessage.getTo());
         TvContent.setText(emailMessage.getContent());
         TvDate.setText(emailMessage.getSendDate());
 
