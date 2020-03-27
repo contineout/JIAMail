@@ -7,36 +7,19 @@
     tools:context=".MainActivity"
     android:id="@+id/drawer_layout">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/coordinator">
-<!--        工具栏-->
+        android:orientation="vertical"
+        >
+        <FrameLayout
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/coordinator">
 
-
-<!--        悬浮按钮-->
-<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:id="@+id/fab"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="bottom|right"-->
-<!--            android:layout_marginBottom="80dp"-->
-<!--            android:layout_marginRight="20dp"-->
-<!--            android:src="@mipmap/compose"-->
-<!--            app:backgroundTint="#ffffff"/>-->
-<!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-<!--            android:id="@+id/swipe_refresh"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/recycler_view"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"/>-->
-
-<!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
-
+        </FrameLayout>
 
 <!--        底部菜单-->
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -44,13 +27,15 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_gravity="bottom"
-            app:itemIconTint="@color/black"
-            app:itemTextColor="@color/black"
-            app:menu="@menu/bottomnav_item"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:background="@color/colorPrimary"
+            app:itemIconTint="@drawable/main_bnv_select"
+            app:itemTextColor="@drawable/main_bnv_select"
+            app:labelVisibilityMode="labeled"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:menu="@menu/bottomnav_item" />
 
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
 
 <!--侧栏菜单-->
     <com.google.android.material.navigation.NavigationView

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/b_inbox"
+        android:title="星标"
+        android:icon="@mipmap/set_star_check"/>
+    <item
+        android:id="@+id/dialogmail"
+        android:title="设置未读"
+        android:icon="@mipmap/set_unread_check"/>
+    <item
+        android:id="@+id/contacts"
+        android:title="删除"
+        android:icon="@mipmap/trash"/>
+    <item
+        android:id="@+id/attachment"
+        android:title="转移到"
+        android:icon="@mipmap/set_tran_check"/>
+</menu>

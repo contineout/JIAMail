@@ -1,24 +1,22 @@
 package com.example.ttett.Adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.EmailMessage;
-import com.example.ttett.OpenMailActivity;
 import com.example.ttett.R;
-import com.example.ttett.SelectMailActivity;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,45 +26,31 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.text.TextUtils.TruncateAt.END;
 
-public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHolder> {
+public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewHolder> {
     private List<EmailMessage> mEmailMessages ;
     private Context mContext;
 
-    public InboxAdapter(Context context,List<EmailMessage> emailMessages){
+    public SelectAdapter(Context context, List<EmailMessage> emailMessages){
         this.mContext = context;
         this.mEmailMessages = emailMessages;
     }
+
+
     @NonNull
     @Override
-    public InboxAdapter.InboxViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SelectAdapter.InboxViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(mContext == null){
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.inbox_rv_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.select_mail_item,parent,false);
         final InboxViewHolder holder = new InboxViewHolder(view);
         holder.inbox_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.checkBox.setChecked(true);
+                EventBus.getDefault().post(new MessageEvent("check"));
                 int position = holder.getAdapterPosition();
-                EmailMessage emailMessage = mEmailMessages.get(position);
-                Intent intent = new Intent(mContext, OpenMailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("emailMessage",emailMessage);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-            }
-        });
 
-        holder.inbox_item.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Intent intent = new Intent(mContext, SelectMailActivity.class);
-                Bundle bundle = new Bundle();
-                ArrayList<EmailMessage> Messages = (ArrayList<EmailMessage>) mEmailMessages;
-                bundle.putParcelableArrayList("emailMessages",Messages);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-                return true;
             }
         });
 
@@ -74,20 +58,15 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InboxAdapter.InboxViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SelectAdapter.InboxViewHolder holder, int position) {
         EmailMessage message = mEmailMessages.get(position);
-        if(message.getIsRead() == 0){
-            holder.isReadflag.setVisibility(View.VISIBLE);
-        }else {
-            holder.isReadflag.setVisibility(View.GONE);
-        }
-        @SuppressLint("SimpleDateFormat") DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
+
+        DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
         Date date;
         String simpleDate;
         try {
             if(message.getSendDate()!=null){
                 date = format.parse(message.getSendDate());
-                assert date != null;
                 simpleDate = date.toString();
                 holder.mTime.setText(simpleDate);
             }
@@ -112,13 +91,14 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     }
 
     static class InboxViewHolder extends RecyclerView.ViewHolder{
-        CircleImageView Icon,isReadflag;
+        CircleImageView Icon;
         TextView mName,mTime,mSubject,mContent;
+        CheckBox checkBox;
         LinearLayout inbox_item;
 
         public InboxViewHolder(@NonNull View itemView) {
             super(itemView);
-            isReadflag = itemView.findViewById(R.id.isReadflag);
+            checkBox = itemView.findViewById(R.id.message_cb);
             inbox_item = itemView.findViewById(R.id.inbox_item);
             Icon = itemView.findViewById(R.id.from_icon);
             mName = itemView.findViewById(R.id.from_name);

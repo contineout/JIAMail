@@ -17,8 +17,13 @@ public class MessageEvent {
         this.user_id = user_id;
     }
 
+    public MessageEvent(String message) {
+        this.message = message;
+    }
+
     public MessageEvent() {
     }
+
 
     public Email getEmail() {
         return email;
