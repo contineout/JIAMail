@@ -49,6 +49,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "content text," +
             "sendDate text," +
             "from_image image," +
+            "isStar bit," +
             "isRead bit," +
             "isSend bit," +
             "isDelete bit," +

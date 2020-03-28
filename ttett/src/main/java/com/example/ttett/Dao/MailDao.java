@@ -36,9 +36,23 @@ public class MailDao {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", new String[]{"isSend"},"to_mail LIKE ?",
                 new String[]{"%"+ email.getAddress() + "%"},null,null,null,null);
-        Log.d(TAG,"存放了+"+cursor.getCount());
         return cursor.getCount();
     }
+
+    /**
+     * 读取SQLite存放的邮件
+     * @param email 每个邮件账号
+     * @return
+     */
+    public List<EmailMessage> QueryAllMessage(Email email){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isDelete = ?",
+                new String[]{("%"+ email.getAddress() + "%"),("0")},null,null,"to_mail desc",null);
+        Log.d(TAG,"查询了+"+cursor.getCount());
+
+        return setMessages(cursor);
+    }
+
 
     /**
      * 查询SQLite已发送邮件数量
@@ -49,7 +63,6 @@ public class MailDao {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail LIKE ? and isSend = ?",
                 new String[]{("%"+ email.getAddress() + "%"),("1")},null,null,null,null);
-
         return setMessages(cursor);
     }
 
@@ -63,18 +76,33 @@ public class MailDao {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail = ? and isSend = ?",
                 new String[]{("%"+ email.getAddress() + "%"),("0")},null,null,null,null);
-
         return setMessages(cursor);
     }
 
-
+    /**
+     * 查询SQLite未读取邮件数量
+     * @param email
+     * @return
+     */
     public List<EmailMessage> QueryUnReadMessage(Email email){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isRead = ?",
-                new String[]{("%"+ email.getAddress() + "%"),("0")},null,null,null,null);
-        Log.d(TAG,"unReadMessage = " +cursor.getCount());
+        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isRead = ? and isDelete = ?",
+                new String[]{("%"+ email.getAddress() + "%"),("0"),("0")},null,null,null,null);
         return setMessages(cursor);
     }
+
+    /**
+     * 查询SQLite星标邮件数量
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> QueryStarMessage(Email email){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isStar = ? and isDelete = ?",
+                new String[]{("%"+ email.getAddress() + "%"),("1"),("0")},null,null,null,null);
+        return setMessages(cursor);
+    }
+
 
     /**
      * 创建MAIL.db
@@ -127,6 +155,7 @@ public class MailDao {
             values.put("bcc",emailMessage.getBcc());
             values.put("content",emailMessage.getMessage_text());
             values.put("sendDate",emailMessage.getSendDate());
+            values.put("isStar",emailMessage.getIsStar());
             values.put("isRead",emailMessage.getIsRead());
             values.put("isSend",emailMessage.getIsSend());
             values.put("isDelete",emailMessage.getIsDelete());
@@ -167,7 +196,6 @@ public class MailDao {
     }
 
 
-
     /**
      * 修改邮件信息文件存放id
      * @param id
@@ -179,20 +207,17 @@ public class MailDao {
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
 
-
     /**
-     * 读取SQLite存放的邮件
-     * @param email 每个邮件账号
-     * @return
+     * 修改邮件为星标
+     * @param id
      */
-    public List<EmailMessage> QueryAllMessage(Email email){
+    public void updateisStar(int id){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ?",
-                new String[]{"%"+ email.getAddress() + "%"},null,null,"to_mail desc",null);
-        Log.d(TAG,"查询了+"+cursor.getCount());
-
-        return setMessages(cursor);
+        ContentValues values = new ContentValues();
+        values.put("isStar",1);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
+
 
     /**
      * 设置属性返回messages
@@ -216,6 +241,7 @@ public class MailDao {
                 message.setIsRead(cursor.getInt(cursor.getColumnIndex("isRead")));
                 message.setIsSend(cursor.getInt(cursor.getColumnIndex("isSend")));
                 message.setIsDelete(cursor.getInt(cursor.getColumnIndex("isDelete")));
+                message.setIsStar(cursor.getInt(cursor.getColumnIndex("isStar")));
                 messages.add(message);
             }while (cursor.moveToNext());
             cursor.close();

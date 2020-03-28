@@ -2,12 +2,32 @@ package com.example.ttett.bean;
 
 import com.example.ttett.Entity.Email;
 
+import java.util.Map;
+
 public class MessageEvent {
     private String message;
     private int user_id;
     private Email email;
+    private Map<Integer,Boolean> checkStatus;
+//    private List<Integer> message_ids;
+//
+//    public List<Integer> getMessage_ids() {
+//        return message_ids;
+//    }
+//
+//    public void setMessage_ids(List<Integer> message_ids) {
+//        this.message_ids = message_ids;
+//    }
 
-    public MessageEvent(String message,Email email) {
+    public Map<Integer, Boolean> getCheckStatus() {
+        return checkStatus;
+    }
+
+    public void setCheckStatus(Map<Integer, Boolean> checkStatus) {
+        this.checkStatus = checkStatus;
+    }
+
+    public MessageEvent(String message, Email email) {
         this.message = message;
         this.email = email;
     }
@@ -15,6 +35,16 @@ public class MessageEvent {
     public MessageEvent(String message,int user_id) {
         this.message = message;
         this.user_id = user_id;
+    }
+
+    /**
+     * 收件箱选择信息
+     * @param message
+     * @param checkStatus
+     */
+    public MessageEvent(String message,Map<Integer,Boolean> checkStatus) {
+        this.message = message;
+        this.checkStatus = checkStatus;
     }
 
     public MessageEvent(String message) {

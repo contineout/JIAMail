@@ -129,6 +129,28 @@ public class MailService {
     }
 
     /**
+     * 修改星标
+     * @param id
+     */
+    public  void updateisStar(int id) {
+        MailDao mailDao = new MailDao(mContext);
+        if(mailDao.isExistMessage(id)){
+            mailDao.updateisStar(id);
+        }
+    }
+
+    /**
+     * 修改删除
+     * @param id
+     */
+    public void updateisDelete(int id) {
+        MailDao mailDao = new MailDao(mContext);
+        if(mailDao.isExistMessage(id)){
+            mailDao.updateisDelete(id);
+        }
+    }
+
+    /**
      * 查询未读邮件
      * @param email
      * @return
@@ -136,6 +158,16 @@ public class MailService {
     public List<EmailMessage> queryUnReadMessage(Email email){
         MailDao mailDao = new MailDao(mContext);
         return mailDao.QueryUnReadMessage(email);
+    }
+
+    /**
+     * 查询星标邮件
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> queryStarMessage(Email email){
+        MailDao mailDao = new MailDao(mContext);
+        return mailDao.QueryStarMessage(email);
     }
 
 }

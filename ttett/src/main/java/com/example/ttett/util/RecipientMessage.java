@@ -84,6 +84,7 @@ public class RecipientMessage{
                     emailMessage.setTo(re.getMailAddress("to"));
                     emailMessage.setCc(re.getMailAddress("cc"));
                     emailMessage.setBcc(re.getMailAddress("bcc"));
+                    emailMessage.setIsStar(0);
                     emailMessage.setIsRead(0);
                     emailMessage.setIsDelete(0);
                     emailMessage.setIsSend(1);
@@ -164,6 +165,7 @@ public class RecipientMessage{
                     emailMessage.setCc(re.getMailAddress("cc"));
                     emailMessage.setBcc(re.getMailAddress("bcc"));
                     emailMessage.setIsRead(0);
+                    emailMessage.setIsStar(0);
                     emailMessage.setIsDelete(0);
                     emailMessage.setIsSend(1);
                     re.getMailContent((Part) temp[i]);

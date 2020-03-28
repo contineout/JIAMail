@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,11 +15,8 @@ import com.example.ttett.bean.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,12 +27,19 @@ import static android.text.TextUtils.TruncateAt.END;
 public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewHolder> {
     private List<EmailMessage> mEmailMessages ;
     private Context mContext;
+    private Map<Integer, Boolean> checkStatus;
 
-    public SelectAdapter(Context context, List<EmailMessage> emailMessages){
+
+    public SelectAdapter(Context context, List<EmailMessage> emailMessages,Map<Integer, Boolean> checkStatus){
         this.mContext = context;
         this.mEmailMessages = emailMessages;
+        this.checkStatus = checkStatus;
     }
 
+
+    public interface AllSelect{
+        public void checkbox(Map<Integer, Boolean> checkStatus);
+    }
 
     @NonNull
     @Override
@@ -43,38 +48,16 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.select_mail_item,parent,false);
-        final InboxViewHolder holder = new InboxViewHolder(view);
-        holder.inbox_item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.checkBox.setChecked(true);
-                EventBus.getDefault().post(new MessageEvent("check"));
-                int position = holder.getAdapterPosition();
-
-            }
-        });
-
+        InboxViewHolder holder = new InboxViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SelectAdapter.InboxViewHolder holder, int position) {
-        EmailMessage message = mEmailMessages.get(position);
+    public void onBindViewHolder(@NonNull final SelectAdapter.InboxViewHolder holder, final int position) {
+        final EmailMessage message = mEmailMessages.get(position);
 
-        DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
-        Date date;
-        String simpleDate;
-        try {
-            if(message.getSendDate()!=null){
-                date = format.parse(message.getSendDate());
-                simpleDate = date.toString();
-                holder.mTime.setText(simpleDate);
-            }
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        holder.mTime.setText(message.getSendDate().substring(5,16));
         String[] from = message.getFrom().split("[<>]");
         holder.mName.setText(from[0]);
         holder.mSubject.setText(message.getSubject());
@@ -83,6 +66,30 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
         holder.mContent.setMaxLines(2);
         holder.mContent.setEms(15);
 
+        holder.checkBox.setChecked(checkStatus.get(position));
+        holder.checkBox.setOnCheckedChangeListener(null);
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkStatus.put(position,isChecked);
+                EventBus.getDefault().post(new MessageEvent("check_status",checkStatus));
+            }
+        });
+        holder.inbox_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkStatus.get(position)){
+                    checkStatus.put(position,false);
+                    holder.checkBox.setChecked(checkStatus.get(position));
+
+                }else {
+                    checkStatus.put(position,true);
+                    holder.checkBox.setChecked(checkStatus.get(position));
+                }
+                EventBus.getDefault().post(new MessageEvent("check_status",checkStatus));
+            }
+        });
     }
 
     @Override
@@ -107,4 +114,5 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
             mContent = itemView.findViewById(R.id.mail_content);
         }
     }
+
 }

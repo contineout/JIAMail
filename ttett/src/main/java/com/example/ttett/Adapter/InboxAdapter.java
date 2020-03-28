@@ -1,12 +1,12 @@
 package com.example.ttett.Adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,11 +15,7 @@ import com.example.ttett.OpenMailActivity;
 import com.example.ttett.R;
 import com.example.ttett.SelectMailActivity;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -81,21 +77,13 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         }else {
             holder.isReadflag.setVisibility(View.GONE);
         }
-        @SuppressLint("SimpleDateFormat") DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
-        Date date;
-        String simpleDate;
-        try {
-            if(message.getSendDate()!=null){
-                date = format.parse(message.getSendDate());
-                assert date != null;
-                simpleDate = date.toString();
-                holder.mTime.setText(simpleDate);
-            }
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(message.getIsStar() == 0){
+            holder.isStarflag.setVisibility(View.GONE);
+        }else {
+            holder.isStarflag.setVisibility(View.VISIBLE);
         }
-
+        holder.mTime.setText(message.getSendDate().substring(5,16));
         String[] from = message.getFrom().split("[<>]");
         holder.mName.setText(from[0]);
         holder.mSubject.setText(message.getSubject());
@@ -115,9 +103,11 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         CircleImageView Icon,isReadflag;
         TextView mName,mTime,mSubject,mContent;
         LinearLayout inbox_item;
+        ImageView isStarflag;
 
         public InboxViewHolder(@NonNull View itemView) {
             super(itemView);
+            isStarflag = itemView.findViewById(R.id.isStarflag);
             isReadflag = itemView.findViewById(R.id.isReadflag);
             inbox_item = itemView.findViewById(R.id.inbox_item);
             Icon = itemView.findViewById(R.id.from_icon);

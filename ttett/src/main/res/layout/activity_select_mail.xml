@@ -17,25 +17,40 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:layout_scrollFlags="scroll|enterAlways|snap">
             <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp">
+                <TextView
+                    android:id="@+id/select_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="取消"
+                    android:layout_centerVertical="true"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"/>
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center">
                 <TextView
-                    android:id="@+id/inbox_ToolbarTitle"
+                    android:id="@+id/select_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="收件箱"
+                    android:layout_centerVertical="true"
+                    android:text="多选"
                     android:textSize="18sp"
                     android:textColor="@color/black"
                     />
-                <ImageView
-                    android:id="@+id/Iv_inbox"
-                    android:src="@mipmap/xia"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_toRightOf="@+id/inbox_ToolbarTitle"
-                    />
+            </RelativeLayout>
+                <TextView
+                    android:id="@+id/All_select"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="全选"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"/>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

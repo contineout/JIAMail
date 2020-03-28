@@ -40,6 +40,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -83,13 +85,15 @@ public class InboxFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(emailMessages!=null){
-            emailMessages.clear();
-            emailMessages.addAll(mailService.queryAllMessage(email));
-            inboxAdapter.notifyDataSetChanged();
-        }else{
-            emailMessages = mailService.queryAllMessage(email);
-            initEmailMessage();
+        if(email != null){
+            if(emailMessages!=null){
+                emailMessages.clear();
+                emailMessages.addAll(mailService.queryAllMessage(email));
+                inboxAdapter.notifyDataSetChanged();
+            }else{
+                emailMessages = mailService.queryAllMessage(email);
+                initEmailMessage();
+            }
         }
     }
 
@@ -191,8 +195,15 @@ public class InboxFragment extends Fragment {
         if(emailMessages!=null){
             InboxRv = view.findViewById(R.id.inbox_rv);
             InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
+            InboxRv.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+
             inboxAdapter = new InboxAdapter(getContext(),emailMessages);
             InboxRv.setAdapter(inboxAdapter);
+
+            DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
+            defaultItemAnimator.setAddDuration(500);
+            defaultItemAnimator.setRemoveDuration(500);
+            InboxRv.setItemAnimator(defaultItemAnimator);
         }
     }
 
@@ -264,7 +275,11 @@ public class InboxFragment extends Fragment {
                         ToolbarTitle.setText("未读邮件");
                         break;
                     case 2:
-                        Toast.makeText(getContext(),"2",Toast.LENGTH_SHORT).show();
+                        if(emailMessages!=null){
+                            emailMessages.clear();
+                            emailMessages.addAll(mailService.queryStarMessage(email));
+                            inboxAdapter.notifyDataSetChanged();
+                        }
                         ToolbarTitle.setText("星标邮件");
                         break;
                         default:

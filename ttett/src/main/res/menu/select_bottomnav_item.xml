@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/b_inbox"
+        android:id="@+id/set_star"
         android:title="星标"
         android:icon="@mipmap/set_star_uncheck"/>
     <item
-        android:id="@+id/dialogmail"
+        android:id="@+id/set_unread"
         android:title="设置未读"
         android:icon="@mipmap/set_unread_uncheck"/>
     <item
-        android:id="@+id/contacts"
+        android:id="@+id/set_delete"
         android:title="删除"
         android:icon="@mipmap/set_delete_uncheck"/>
     <item
-        android:id="@+id/attachment"
+        android:id="@+id/set_tran"
         android:title="转移到"
         android:icon="@mipmap/set_tran_uncheck"/>
 </menu>
