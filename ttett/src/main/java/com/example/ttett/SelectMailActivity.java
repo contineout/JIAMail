@@ -37,6 +37,8 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
     private TextView tvCancel,tvSelectCount,tvAllSelect;
     private Map<Integer, Boolean> checkStatus;
     private int trueCount;
+    private boolean setUnRead = true;
+    private boolean setStar = true;
     MailService mailService = new MailService(this);
     private List<Integer> id_item;
 
@@ -106,6 +108,7 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
             }
         }
 
+
         if(trueCount!=0){
             tvSelectCount.setText("已选择"+trueCount+"封");
             item1.setIcon(R.mipmap.set_star_check);
@@ -116,6 +119,24 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
             item2.setEnabled(true);
             item3.setEnabled(true);
             item4.setEnabled(true);
+            if((mailService.queryReadCount(id_item)) == id_item.size()){
+                item2.setIcon(R.mipmap.set_unread);
+                item2.setTitle("标记为未读");
+            }else{
+                item2.setIcon(R.mipmap.cancel_read);
+                item2.setTitle("标记为已读");
+                setUnRead = false;
+            }
+
+            if(mailService.queryStarCount(id_item) == id_item.size()){
+                item1.setIcon(R.mipmap.cancel_star);
+                item1.setTitle("取消星标");
+                setStar= false;
+            }else{
+                item1.setIcon(R.mipmap.set_star);
+                item1.setTitle("星标");
+            }
+
         }else {
             tvSelectCount.setText("多选");
             item1.setIcon(R.mipmap.set_star_uncheck);
@@ -133,7 +154,6 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
         }else{
             tvAllSelect.setText("全选");
         }
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener onBottomNavigationItemSelectedListener
@@ -143,17 +163,13 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
             switch (menuItem.getItemId()){
                 case R.id.set_star:
                     if(id_item != null){
-                        for(int id:id_item){
-                            mailService.updateisStar(id);
-                        }
+                        mailService.updateStarMessage(id_item,setStar);
                     }
                     finish();
                     break;
                 case R.id.set_unread:
                     if(id_item != null){
-                        for(int id:id_item){
-                            mailService.updateReadMessage(id);
-                        }
+                        mailService.updateReadMessage(id_item,setUnRead);
                     }
                     finish();
                     break;

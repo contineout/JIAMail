@@ -40,4 +40,24 @@ public class ContactService {
         Log.d(TAG,"f"+user_id);
         return contactDao.QueryAllContact(user_id);
     }
+
+    /**
+     * 导入邮件联系人
+     * @param user_id
+     * @return
+     */
+    public void insertAllMailContact(int user_id){
+        ContactDao contactDao = new ContactDao(mContext);
+        Contact contact;
+        List<String> from_mails = contactDao.queryRecipientMailContact(user_id);
+        for(String from_mail:from_mails){
+            String[] str = from_mail.split("[<>]");
+            contact = new Contact();
+            contact.setUser_id(user_id);
+            contact.setName(str[0]);
+            contact.setEmail(str[1]);
+            SaveContact(contact);
+        }
+    }
+
 }

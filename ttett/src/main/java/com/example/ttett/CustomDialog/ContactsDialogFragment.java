@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.ttett.ContactsActivity;
 import com.example.ttett.R;
+import com.example.ttett.Service.ContactService;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@ import androidx.fragment.app.DialogFragment;
 public class ContactsDialogFragment extends DialogFragment implements View.OnClickListener{
     private TextView TvImport,TvNew;
     private String TAG = "ContactsDialogFragment";
+    private ContactService contactService ;
 
 
     @Nullable
@@ -60,14 +62,15 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
     @Override
     public void onClick(View v) {
         Intent intent = null;
-
+        int user_id = getArguments().getInt("user_id");
+        Log.d(TAG,"user_id" + user_id);
         switch (v.getId()){
             case R.id.contacts_import:
+                contactService = new ContactService(getContext());
+                contactService.insertAllMailContact(user_id);
                 dismiss();
                 break;
             case R.id.contacts_new:
-                int user_id = getArguments().getInt("user_id");
-                Log.d(TAG,"dddd"+user_id);
                 intent = new Intent(getContext(),ContactsActivity.class);
                 intent.putExtra("user_id",user_id);
                 startActivity(intent);

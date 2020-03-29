@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -55,8 +56,17 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
     @Override
     public void onBindViewHolder(@NonNull final SelectAdapter.InboxViewHolder holder, final int position) {
         final EmailMessage message = mEmailMessages.get(position);
+        if(message.getIsRead() == 0){
+            holder.isReadflag.setVisibility(View.VISIBLE);
+        }else {
+            holder.isReadflag.setVisibility(View.GONE);
+        }
 
-
+        if(message.getIsStar() == 0){
+            holder.isStarflag.setVisibility(View.GONE);
+        }else {
+            holder.isStarflag.setVisibility(View.VISIBLE);
+        }
         holder.mTime.setText(message.getSendDate().substring(5,16));
         String[] from = message.getFrom().split("[<>]");
         holder.mName.setText(from[0]);
@@ -98,13 +108,16 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
     }
 
     static class InboxViewHolder extends RecyclerView.ViewHolder{
-        CircleImageView Icon;
+        CircleImageView Icon,isReadflag;
         TextView mName,mTime,mSubject,mContent;
         CheckBox checkBox;
         LinearLayout inbox_item;
+        ImageView isStarflag;
 
         public InboxViewHolder(@NonNull View itemView) {
             super(itemView);
+            isStarflag = itemView.findViewById(R.id.isStarflag);
+            isReadflag = itemView.findViewById(R.id.isReadflag);
             checkBox = itemView.findViewById(R.id.message_cb);
             inbox_item = itemView.findViewById(R.id.inbox_item);
             Icon = itemView.findViewById(R.id.from_icon);

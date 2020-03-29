@@ -13,7 +13,6 @@ import com.example.ttett.MailSqlite.MyDatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MailDao {
 
     private static final String TAG = "MailDao.this" ;
@@ -24,7 +23,6 @@ public class MailDao {
     public MailDao(Context context) {
         mHelper = new MyDatabaseHelper(context);
         this.mContext = context;
-
     }
 
     /**
@@ -166,14 +164,59 @@ public class MailDao {
 
     /**
      * 修改为已读
-     * @param id
+     * @param id isRead = 1
      */
-    public void updateisRead(int id){
+    public void updateRead(int id){
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("isRead",1);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
+
+    /**
+     * 修改为未读
+     * @param id isRead = 0
+     */
+    public void updateunRead(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("isRead",0);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
+    }
+
+    /**
+     * 查詢isRead值
+     * @param id isRead
+     */
+    public int queryisRead(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        int isRead = 0;
+        Cursor cursor = db.query("EMAILMESSAGE", null,"id = ?",
+                new String[]{(String.valueOf(id))},null,null,null,null);
+        if(cursor.moveToFirst()){
+             isRead = cursor.getInt(cursor.getColumnIndex("isRead"));
+        }
+        cursor.close();
+        return isRead;
+    }
+
+    /**
+     * 查詢isStar值
+     * @param id isStar
+     */
+    public int queryisStar(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        int isStar = 0;
+        Cursor cursor = db.query("EMAILMESSAGE", null,"id = ?",
+                new String[]{(String.valueOf(id))},null,null,null,null);
+        if(cursor.moveToFirst()){
+            isStar = cursor.getInt(cursor.getColumnIndex("isStar"));
+        }
+        cursor.close();
+        return isStar;
+    }
+
+
 
     /**
      * 修改isDelete为1,存入已删除
@@ -211,12 +254,24 @@ public class MailDao {
      * 修改邮件为星标
      * @param id
      */
-    public void updateisStar(int id){
+    public void updateStar(int id){
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("isStar",1);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
+
+    /**
+     * 取消邮件星标
+     * @param id
+     */
+    public void updateUnStar(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("isStar",0);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
+    }
+
 
 
     /**

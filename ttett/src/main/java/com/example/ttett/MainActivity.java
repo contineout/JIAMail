@@ -13,7 +13,6 @@ import com.example.ttett.Adapter.EmailAdapter;
 import com.example.ttett.CustomDialog.ContactsDialogFragment;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
-import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Service.EmailService;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.ContactsFragment;
@@ -27,9 +26,6 @@ import com.example.ttett.fragment.SpamFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -65,16 +61,17 @@ public class MainActivity extends AppCompatActivity {
     private FolderFragment folderFragment;
     private Fragment[] fragments;
     private int lastfragmen = 0;
-    private List<EmailMessage> emailMessages = new ArrayList<>();
     private RecyclerView Email_Rv;
     private List<Email> emails;
     private EmailService emailService = new EmailService(this);
     private EmailAdapter emailAdapter;
+    private int user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initView();
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -99,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
  */
         final MailDao mailDao = new MailDao(this);
         mailDao.CreateMessageTable();
-        final int user_id = getIntent().getIntExtra("user_id",0);
+        user_id = getIntent().getIntExtra("user_id",0);
         Bundle bundle = new Bundle();
         bundle.putInt("user_id",user_id);
         contactsFragment.setArguments(bundle);
@@ -123,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
     }
+
+
 
     public void initEmail(){
         if(emails!=null){
@@ -150,32 +149,24 @@ public class MainActivity extends AppCompatActivity {
             Bundle bundle = data.getExtras();
             boolean strResult = bundle.getBoolean("result");
             if(strResult){
-
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 if(emails!=null){
                                     emails.clear();
                                     emails.addAll(emailService.queryAllEmail(user_id));
+                                    emailAdapter.notifyDataSetChanged();
                                 }else{
                                     emails = emailService.queryAllEmail(user_id);
                                     initEmail();
                                 }
-
-                                emailAdapter.notifyDataSetChanged();
                             }
                         });
                     }
                 }).start();
-
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -194,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
     /**
@@ -339,9 +331,4 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.closeDrawers();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
 }

@@ -5,71 +5,88 @@
     android:orientation="horizontal"
     android:background="@drawable/item_selector"
     android:id="@+id/inbox_item">
-    <LinearLayout
-        android:layout_width="15dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="2dp"
-            android:id="@+id/isReadflag"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:src="@mipmap/isreadflag" />
-        <ImageView
-            android:id="@+id/isStarflag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/set_star" />
-    </LinearLayout>
-<RelativeLayout
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="85dp">
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/RL1">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_marginTop="15dp"
+        android:id="@+id/isReadflag"
+        android:layout_marginLeft="6dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/isreadflag" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
             android:id="@+id/from_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
+            android:layout_toLeftOf="@+id/from_name"
+            android:layout_centerVertical="true"
             android:src="@mipmap/toux"/>
         <TextView
             android:id="@+id/from_name"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_width="300dp"
             android:layout_height="20dp"
-            android:layout_toRightOf="@+id/from_icon"
             android:text="112"
             android:textSize="13sp"
             />
-        <TextView
-            android:id="@+id/from_time"
-            android:layout_marginLeft="10dp"
-            android:layout_width="100dp"
-            android:layout_height="20dp"
-            android:layout_below="@+id/from_name"
-            android:layout_alignParentRight="true"
-            android:text="01-02 17.53"
-            android:textSize="12sp"
-            />
-        <TextView
-            android:id="@+id/mail_subject"
+</RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/RL2"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:layout_below="@+id/from_icon"
+            android:layout_below="@+id/RL1">
+
+            <ImageView
+                android:layout_marginStart="3dp"
+                android:id="@+id/isStarflag"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@mipmap/set_star" />
+
+        <TextView
+            android:id="@+id/mail_subject"
+            android:layout_width="278dp"
+            android:layout_height="20dp"
             android:layout_toLeftOf="@+id/from_time"
-            android:text="[订票助手通知] 18时58分 1023851233"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="15sp"
             android:maxLines="1"
             android:maxEms="15"
             android:ellipsize="end"
             />
+
+            <TextView
+                android:id="@+id/from_time"
+                android:layout_marginLeft="10dp"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:text="01-02 17.53"
+                android:textSize="12sp"
+                />
+        </RelativeLayout>
         <TextView
+            android:layout_marginLeft="23dp"
             android:id="@+id/mail_content"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_below="@+id/mail_subject"
+            android:layout_below="@+id/RL2"
             android:text=""
             android:textSize="13sp"
             android:maxLines="2"

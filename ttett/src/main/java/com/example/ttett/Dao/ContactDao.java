@@ -37,6 +37,23 @@ public class ContactDao {
         return cursor.moveToFirst();
     }
 
+//select distinct from_mail from EMAILMESSAGE where user_id = 1;
+    public List<String> queryRecipientMailContact(int user_id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"DISTINCT from_mail"},"user_id = ?",
+                new String[]{String.valueOf(user_id)},null,null,null,null);
+        List<String> form_mail = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            do {
+                form_mail.add(cursor.getString(cursor.getColumnIndex("from_mail")));
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        return form_mail;
+    }
+
+
+
     /**
      * 插入联系人信息
      * @param contact

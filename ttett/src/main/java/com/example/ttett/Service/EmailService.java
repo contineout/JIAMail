@@ -31,6 +31,20 @@ public class EmailService {
     }
 
     /**
+     * 判断又没有相同的邮箱，若无则保存
+     * @param email
+     * @return
+     */
+    public Boolean queryEmail(Email email) {
+        EmailDao emailDao = new EmailDao(mContext);
+        if (!emailDao.isExistEmail(email.getAddress())){
+            return emailDao.InsertEmail(email);
+        }else{
+            return false;
+        }
+    }
+
+    /**
      * 查询所有邮箱
      * @param user_id
      * @return

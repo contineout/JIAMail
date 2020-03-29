@@ -118,26 +118,78 @@ public class MailService {
     }
 
     /**
-     * 修改已读标志位
-     * @param id
+     * 批量修改isRead标志位
+     * @param id_item
      */
-    public  void updateReadMessage(int id) {
+    public void updateReadMessage(List<Integer> id_item,boolean setUnread) {
         MailDao mailDao = new MailDao(mContext);
-        if(mailDao.isExistMessage(id)){
-            mailDao.updateisRead(id);
+        for(int id:id_item){
+            if(mailDao.isExistMessage(id)){
+               if(setUnread){
+                   mailDao.updateunRead(id);
+               }else{
+                   mailDao.updateRead(id);
+               }
+            }
         }
     }
 
     /**
-     * 修改星标
-     * @param id
+     * 批量修改isStar标志位
+     * @param id_item
      */
-    public  void updateisStar(int id) {
+    public void updateStarMessage(List<Integer> id_item,boolean setStar) {
         MailDao mailDao = new MailDao(mContext);
-        if(mailDao.isExistMessage(id)){
-            mailDao.updateisStar(id);
+        for(int id:id_item){
+            if(mailDao.isExistMessage(id)){
+                if(setStar){
+                    mailDao.updateStar(id);
+                }else{
+                    mailDao.updateUnStar(id);
+                }
+            }
         }
     }
+
+    /**
+     * 点击取消设置isRead = 1
+     * @param id
+     */
+    public void updateReadMessage(int id) {
+        MailDao mailDao = new MailDao(mContext);
+        if(mailDao.isExistMessage(id)){
+            mailDao.updateRead(id);
+        }
+    }
+
+    /**
+     * 查询选中已读邮件数量 isRead = 1
+     * @param id_item
+     * @return
+     */
+
+    public int queryReadCount(List<Integer> id_item){
+        MailDao mailDao = new MailDao(mContext);
+        int ReadCount = 0;
+        for(int id:id_item){
+            if(mailDao.isExistMessage(id)){
+                ReadCount+=mailDao.queryisRead(id);
+            }
+        }
+        return ReadCount;
+    }
+
+    public int queryStarCount(List<Integer> id_item){
+        MailDao mailDao = new MailDao(mContext);
+        int StarCount = 0;
+        for(int id:id_item){
+            if(mailDao.isExistMessage(id)){
+                StarCount+=mailDao.queryisStar(id);
+            }
+        }
+        return StarCount;
+    }
+
 
     /**
      * 修改删除
