@@ -46,7 +46,7 @@ public class ContactsFragment extends Fragment {
     private ContactsAdapter contactsAdapter;
     private Email email;
     private ContactService contactService;
-    int user_id;
+    int email_id;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class ContactsFragment extends Fragment {
         view = inflater.inflate(R.layout.frag_contacts,container,false);
 
         mToolbar = view.findViewById(R.id.contacts_toolbar);
-
+        ContactRv = view.findViewById(R.id.contact_rv);
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -69,9 +69,11 @@ public class ContactsFragment extends Fragment {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         assert getArguments() != null;
-        user_id = getArguments().getInt("user_id");
-        Log.d(TAG,"user_id = " + user_id);
-
+        try{
+            email = getArguments().getParcelable("email");
+            Log.d(TAG,email.getAddress());
+        }catch (NullPointerException e){
+        }
         initContacts();
 
         return view;
@@ -84,26 +86,34 @@ public class ContactsFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void addContactRefresh(MessageEvent event){
         Log.d(TAG,event.getMessage());
+       email_id = event.getEmail_id();
         if(event.getMessage().equals("add_contact")){
-            if (contacts != null){
-                contacts.clear();
-                contacts.addAll(contactService.queryAllContact(event.getUser_id()));
-                contactsAdapter.notifyDataSetChanged();
-            }else {
-                initContacts();
-            }
+            initContacts();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void SwitchContact(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("Switch_Email")){
+            email = messageEvent.getEmail();
+            initContacts();
         }
     }
 
 
     public void initContacts(){
         contactService = new ContactService(getContext());
-        contacts = contactService.queryAllContact(user_id);
-        if(contacts!=null){
-            ContactRv = view.findViewById(R.id.contact_rv);
-            ContactRv.setLayoutManager(new LinearLayoutManager(getContext()));
-            contactsAdapter = new ContactsAdapter(getContext(),contacts);
-            ContactRv.setAdapter(contactsAdapter);
+        if(email!=null){
+            if(contacts!=null){
+                contacts.clear();
+                contacts.addAll(contactService.queryAllContact(email.getEmail_id()));
+                contactsAdapter.notifyDataSetChanged();
+            }else{
+                ContactRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                contacts = contactService.queryAllContact(email.getEmail_id());
+                contactsAdapter = new ContactsAdapter(getContext(),contacts);
+                ContactRv.setAdapter(contactsAdapter);
+            }
         }
     }
 
@@ -119,7 +129,7 @@ public class ContactsFragment extends Fragment {
     public void showDialog(){
         contactsDialogFragment = new ContactsDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("user_id",user_id);
+        bundle.putParcelable("email",email);
         contactsDialogFragment.setArguments(bundle);
 //        contactsDialogFragment.setTargetFragment(ContactsFragment.this,REQUEST_CODE);
         contactsDialogFragment.show(getFragmentManager(),"contactsDialogFragment");

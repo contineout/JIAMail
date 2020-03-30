@@ -31,17 +31,28 @@ public class EmailService {
     }
 
     /**
-     * 判断又没有相同的邮箱，若无则保存
-     * @param email
+     * 根据邮箱地址查询邮箱
+     * @param address
      * @return
      */
-    public Boolean queryEmail(Email email) {
+    public Email queryEmail(String address) {
         EmailDao emailDao = new EmailDao(mContext);
-        if (!emailDao.isExistEmail(email.getAddress())){
-            return emailDao.InsertEmail(email);
+        if (emailDao.isExistEmail(address)){
+            Log.d(TAG,"存在");
+            return emailDao.QueryNewEmail(address);
         }else{
-            return false;
+            return null;
         }
+    }
+
+    /**
+     * 根据Email_d查询邮箱
+     * @param email_id
+     * @return
+     */
+    public Email queryEmail(int email_id) {
+        EmailDao emailDao = new EmailDao(mContext);
+        return emailDao.QueryNewEmail(email_id);
     }
 
     /**

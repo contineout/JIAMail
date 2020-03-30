@@ -14,6 +14,7 @@ import com.example.ttett.CustomDialog.ContactsDialogFragment;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Service.EmailService;
+import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.ContactsFragment;
 import com.example.ttett.fragment.DeletedFragment;
@@ -25,6 +26,8 @@ import com.example.ttett.fragment.SendedFragment;
 import com.example.ttett.fragment.SpamFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -97,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
         final MailDao mailDao = new MailDao(this);
         mailDao.CreateMessageTable();
         user_id = getIntent().getIntExtra("user_id",0);
-        Bundle bundle = new Bundle();
-        bundle.putInt("user_id",user_id);
-        contactsFragment.setArguments(bundle);
 
         emails = emailService.queryAllEmail(user_id);
         Log.d(TAG,"user_id = "+user_id);
@@ -121,7 +121,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        drawerLayout.closeDrawers();
+    }
 
     public void initEmail(){
         if(emails!=null){
@@ -130,24 +134,28 @@ public class MainActivity extends AppCompatActivity {
             Email_Rv.setLayoutManager(layoutManager);
             emailAdapter = new EmailAdapter(this,emails);
             Email_Rv.setAdapter(emailAdapter);
-
-            Email email = emails.get(0);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("email",email);
-            inboxFragment.setArguments(bundle);
-            folderFragment.setArguments(bundle);
-            sendedFragment.setArguments(bundle);
-            draftsFragment.setArguments(bundle);
+            if(emails!=null){
+                Email email = emails.get(0);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("email",email);
+                inboxFragment.setArguments(bundle);
+                folderFragment.setArguments(bundle);
+                sendedFragment.setArguments(bundle);
+                draftsFragment.setArguments(bundle);
+                contactsFragment.setArguments(bundle);
+            }
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         final int user_id = getIntent().getIntExtra("user_id",0);
-        Log.d(TAG,"user_id = "+user_id);
         if (requestCode == 1 && resultCode == LoginEmailActivity.RESULT_CODE) {
             Bundle bundle = data.getExtras();
             boolean strResult = bundle.getBoolean("result");
+            final String address = bundle.getString("address");
+            Log.d(TAG,"address=" + address );
+
             if(strResult){
                 new Thread(new Runnable() {
                     @Override
@@ -162,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
                                 }else{
                                     emails = emailService.queryAllEmail(user_id);
                                     initEmail();
+                                }
+                                if(!address.isEmpty()){
+                                    final Email email = emailService.queryEmail(address);
+                                    Log.d(TAG,"address=" + email.getAddress() );
+                                    EventBus.getDefault().post(new MessageEvent("New_Email",address));
                                 }
                             }
                         });

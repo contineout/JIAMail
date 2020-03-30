@@ -17,8 +17,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.ttett.ContactsActivity;
+import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
 import com.example.ttett.Service.ContactService;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +32,7 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
     private TextView TvImport,TvNew;
     private String TAG = "ContactsDialogFragment";
     private ContactService contactService ;
+    private Email email;
 
 
     @Nullable
@@ -52,6 +57,12 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
         TvImport = view.findViewById(R.id.contacts_import);
         TvNew = view.findViewById(R.id.contacts_new);
         assert getArguments() != null;
+        try{
+            email = getArguments().getParcelable("email");
+            Log.d(TAG,"email_id" + email.getAddress());
+        }catch (NullPointerException e){
+
+        }
 
         TvImport.setOnClickListener(this);
         TvNew.setOnClickListener(this);
@@ -62,17 +73,19 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
     @Override
     public void onClick(View v) {
         Intent intent = null;
-        int user_id = getArguments().getInt("user_id");
-        Log.d(TAG,"user_id" + user_id);
+
+        int email_id = email.getEmail_id();
+        Log.d(TAG,"email_id" + email_id);
         switch (v.getId()){
             case R.id.contacts_import:
                 contactService = new ContactService(getContext());
-                contactService.insertAllMailContact(user_id);
+                contactService.insertAllMailContact(email_id);
+                EventBus.getDefault().post(new MessageEvent("add_contact",email_id));
                 dismiss();
                 break;
             case R.id.contacts_new:
                 intent = new Intent(getContext(),ContactsActivity.class);
-                intent.putExtra("user_id",user_id);
+                intent.putExtra("email_id",email_id);
                 startActivity(intent);
                 dismiss();
                 break;

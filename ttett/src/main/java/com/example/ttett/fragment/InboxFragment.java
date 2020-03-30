@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -171,11 +170,15 @@ public class InboxFragment extends Fragment {
         }
     }
 
+    /**
+     * 新加入的邮箱进行刷新
+     * @param messageEvent
+     */
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void NewEmail(MessageEvent messageEvent) {
         if (messageEvent.getMessage().equals("New_Email")) {
-            email = messageEvent.getEmail();
-            Log.d(TAG,"dds"+ email.getAddress());
+            emailService = new EmailService(getContext());
+            email = emailService.queryEmail(messageEvent.getAddress());
             refreshMessage(email);
         }
     }

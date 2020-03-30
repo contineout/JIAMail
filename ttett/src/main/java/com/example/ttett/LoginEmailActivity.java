@@ -9,10 +9,7 @@ import android.widget.Toast;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Service.EmailService;
-import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.util.EmailLogin;
-
-import org.greenrobot.eventbus.EventBus;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -61,8 +58,8 @@ public class LoginEmailActivity extends AppCompatActivity {
                                     emailService.SaveEmail(email);
                                     Intent intent = new Intent();
                                     intent.putExtra("result",isConnection);
+                                    intent.putExtra("address",address);
                                     setResult(RESULT_CODE,intent);
-                                    EventBus.getDefault().post(new MessageEvent("New_Email"));
                                     finish();
                                 }else {
                                     Toast.makeText(LoginEmailActivity.this,"连接失败",Toast.LENGTH_SHORT).show();

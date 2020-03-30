@@ -63,7 +63,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CONTACT="CREATE TABLE CONTACT (" +
             "id integer PRIMARY KEY AUTOINCREMENT," +
-            "user_id integer," +
+            "email_id integer," +
             "contacts_name text," +
             "contacts_remark text," +
             "contacts_birthday text," +
@@ -73,7 +73,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "contacts_email text," +
             "contacts_iphone text," +
             "contact_address text," +
-            "FOREIGN KEY (user_id) REFERENCES User (id)" +
+            "FOREIGN KEY (email_id) REFERENCES EMAIL(email_id)" +
             ")";
 
 

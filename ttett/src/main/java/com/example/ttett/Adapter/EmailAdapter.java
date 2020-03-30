@@ -18,8 +18,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 //xkdmegyobzcdhggd
 //1272179741@qq.com
-//"d8405717ca1664a2"
-//    ykqxthnonvynbbeh
+//"d8405717ca1664a2" xl335665873@sina.com
+//    ykqxthnonvynbbeh 1023851233@qq.com
 public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> {
     private List<Email> mEmails;
     private Context mContext;

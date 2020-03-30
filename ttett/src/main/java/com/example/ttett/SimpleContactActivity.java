@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.Contact;
+import com.example.ttett.Service.EmailService;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +15,7 @@ public class SimpleContactActivity extends AppCompatActivity implements View.OnC
     private TextView name,email;
     private Button send_message,edit_contact,delete_contact;
     private Contact contact;
+    private EmailService emailService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +41,13 @@ public class SimpleContactActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
         Intent intent = null;
+        emailService = new EmailService(this);
         switch (v.getId()){
             case R.id.send_mail:
                 intent = new Intent(SimpleContactActivity.this, WriteLetterActivity.class);
                 intent.putExtra("Recipient_person",contact.getName());
                 intent.putExtra("Recipient_email",contact.getEmail());
+                intent.putExtra("email",emailService.queryEmail(contact.getEmail_id()));
                 startActivity(intent);
                 break;
             case R.id.edit_contact:
@@ -52,6 +56,7 @@ public class SimpleContactActivity extends AppCompatActivity implements View.OnC
                 startActivity(intent);
                 break;
             case R.id.delete_contact:
+
                 break;
                 default:
         }

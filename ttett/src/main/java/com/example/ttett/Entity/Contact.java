@@ -4,12 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Contact implements Parcelable {
-    private int user_id;
+    private int email_id;
     private int contact_id;
     private String name,remark,birthday,company,department,position,email,iphone,address;
 
     public Contact(Parcel in) {
-        user_id = in.readInt();
+        email_id = in.readInt();
         contact_id = in.readInt();
         name = in.readString();
         remark = in.readString();
@@ -38,12 +38,12 @@ public class Contact implements Parcelable {
 
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getEmail_id() {
+        return email_id;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setEmail_id(int email_id) {
+        this.email_id = email_id;
     }
 
     public int getContact_id() {
@@ -133,7 +133,7 @@ public class Contact implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(user_id);
+        dest.writeInt(email_id);
         dest.writeInt(contact_id);
         dest.writeString(name);
         dest.writeString(remark);

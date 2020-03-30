@@ -56,11 +56,11 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
 
         try{
             Recipient_email = getIntent().getStringExtra("Recipient_email");
+            email = getIntent().getParcelableExtra("email");
             EtTO.setText(Recipient_email);
+            TvSendEmail.setText(email.getAddress());
         }catch (Exception e){
-
         }
-
 
         IvTrainglemore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +114,8 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
         IvCC.setOnClickListener(this);
         IvBCC.setOnClickListener(this);
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -192,6 +194,8 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
         @SuppressLint("SimpleDateFormat") DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String str;
         mailDao = new MailDao(this);
+        String from_mail = "wu"+"<"+ email.getAddress() + ">";
+        emailMessage.setFrom(from_mail);
         emailMessage.setIsSend(1);
         date = new Date();
         str = format.format(date);
@@ -222,8 +226,7 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
     private void setEmailMessage(){
         emailMessage = new EmailMessage();
         if(email!=null){
-            String from_mail = "wu"+"<"+ email.getAddress() + ">";
-            emailMessage.setFrom(from_mail);
+            emailMessage.setFrom(email.getAddress());
             emailMessage.setUser_id(email.getUser_id());
             emailMessage.setEmail_id(email.getEmail_id());
         }
@@ -247,4 +250,5 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
         finish();
     }
+
 }

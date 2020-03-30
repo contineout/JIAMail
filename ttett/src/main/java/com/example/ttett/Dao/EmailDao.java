@@ -99,4 +99,59 @@ public class EmailDao {
         cursor.close();
         return null;
     }
+
+    /**
+     * 读取SQLite存放的邮箱
+     * @param address
+     * @return
+     */
+    public Email QueryNewEmail(String address){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAIL", null,"email_address= ?",
+                new String[]{address},null,null,null,null);
+        Email email = null;
+        if(cursor.moveToFirst()){
+            do {
+                email = new Email();
+                email.setEmail_id(cursor.getInt(cursor.getColumnIndex("id")));
+                email.setUser_id(cursor.getInt(cursor.getColumnIndex("user_id")));
+                email.setType(cursor.getString(cursor.getColumnIndex("email_type")));
+                email.setAddress(cursor.getString(cursor.getColumnIndex("email_address")));
+                email.setAuthorizationCode(cursor.getString(cursor.getColumnIndex("AuthorizationCode")));
+                email.setName(cursor.getString(cursor.getColumnIndex("email_name")));
+            }while (cursor.moveToNext());
+            cursor.close();
+            Log.d(TAG,"查询了+"+cursor.getCount() + email.getAddress());
+            return email;
+        }
+        cursor.close();
+        return null;
+    }
+
+    /**
+     * 读取SQLite存放的邮箱
+     * @param email_id
+     * @return
+     */
+    public Email QueryNewEmail(int email_id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAIL", null,"id = ?",
+                new String[]{String.valueOf(email_id)},null,null,null,null);
+        Email email = null;
+        if(cursor.moveToFirst()){
+            do {
+                email = new Email();
+                email.setEmail_id(cursor.getInt(cursor.getColumnIndex("id")));
+                email.setUser_id(cursor.getInt(cursor.getColumnIndex("user_id")));
+                email.setType(cursor.getString(cursor.getColumnIndex("email_type")));
+                email.setAddress(cursor.getString(cursor.getColumnIndex("email_address")));
+                email.setAuthorizationCode(cursor.getString(cursor.getColumnIndex("AuthorizationCode")));
+                email.setName(cursor.getString(cursor.getColumnIndex("email_name")));
+            }while (cursor.moveToNext());
+            cursor.close();
+            return email;
+        }
+        cursor.close();
+        return null;
+    }
 }

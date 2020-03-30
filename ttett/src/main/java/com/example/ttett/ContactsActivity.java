@@ -133,12 +133,12 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     contact.setDepartment(isEmptyS(department));
                     contact.setPosition(isEmptyS(position));
                     contact.setAddress(isEmptyS(address));
-                    int user_id = getIntent().getIntExtra("user_id",0);
-                    contact.setUser_id(user_id);
+                    int email_id = getIntent().getIntExtra("email_id",0);
+                    contact.setEmail_id(email_id);
 
                     boolean SaveResult = contactService.SaveContact(contact);
                     if(SaveResult){
-                        EventBus.getDefault().post(new MessageEvent("add_contact",user_id));
+                        EventBus.getDefault().post(new MessageEvent("add_contact",email_id));
                         finish();
                     }else {
                         Toast.makeText(ContactsActivity.this,"该email已经存在联系人",Toast.LENGTH_SHORT).show();

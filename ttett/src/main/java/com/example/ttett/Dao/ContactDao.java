@@ -38,10 +38,10 @@ public class ContactDao {
     }
 
 //select distinct from_mail from EMAILMESSAGE where user_id = 1;
-    public List<String> queryRecipientMailContact(int user_id){
+    public List<String> queryRecipientMailContact(int email_id){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"DISTINCT from_mail"},"user_id = ?",
-                new String[]{String.valueOf(user_id)},null,null,null,null);
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"DISTINCT from_mail"},"email_id = ?",
+                new String[]{String.valueOf(email_id)},null,null,null,null);
         List<String> form_mail = new ArrayList<>();
         if(cursor.moveToFirst()){
             do {
@@ -62,7 +62,7 @@ public class ContactDao {
 
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("user_id",contact.getUser_id());
+        values.put("email_id",contact.getEmail_id());
         values.put("contacts_name",contact.getName());
         values.put("contacts_remark",contact.getRemark());
         values.put("contacts_birthday",contact.getBirthday());
@@ -80,13 +80,13 @@ public class ContactDao {
 
     /**
      * 读取User联系人信息
-     * @param user_id
+     * @param email_id
      * @return
      */
-    public List<Contact> QueryAllContact(int user_id){
+    public List<Contact> QueryAllContact(int email_id){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cursor = db.query("CONTACT", null,"user_id = ?",
-                new String[]{String.valueOf(user_id)},null,null,"id desc",null);
+        Cursor cursor = db.query("CONTACT", null,"email_id = ?",
+                new String[]{String.valueOf(email_id)},null,null,"id desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
 
         List<Contact> contacts =new ArrayList<>();
@@ -94,7 +94,7 @@ public class ContactDao {
         if(cursor.moveToFirst()){
             do {
                 contact = new Contact();
-                contact.setUser_id(cursor.getInt(cursor.getColumnIndex("user_id")));
+                contact.setEmail_id(cursor.getInt(cursor.getColumnIndex("email_id")));
                 contact.setName(cursor.getString(cursor.getColumnIndex("contacts_name")));
                 contact.setRemark(cursor.getString(cursor.getColumnIndex("contacts_remark")));
                 contact.setBirthday(cursor.getString(cursor.getColumnIndex("contacts_birthday")));
