@@ -179,6 +179,11 @@ public class MailService {
         return ReadCount;
     }
 
+    /**
+     * 查询星标邮件数
+     * @param id_item
+     * @return
+     */
     public int queryStarCount(List<Integer> id_item){
         MailDao mailDao = new MailDao(mContext);
         int StarCount = 0;
@@ -210,6 +215,16 @@ public class MailService {
     public List<EmailMessage> queryUnReadMessage(Email email){
         MailDao mailDao = new MailDao(mContext);
         return mailDao.QueryUnReadMessage(email);
+    }
+
+    /**
+     * 查询已删除邮件
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> queryDeleteMessage(Email email){
+        MailDao mailDao = new MailDao(mContext);
+        return mailDao.QueryDelteMessage(email);
     }
 
     /**

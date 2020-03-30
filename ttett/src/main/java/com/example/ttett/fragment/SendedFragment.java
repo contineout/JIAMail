@@ -73,40 +73,45 @@ public class SendedFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        initEmailMessage();
+    }
+
     /**
      * 初始化EmailMessag
      */
     public void initEmailMessage(){
         mailService = new MailService(getContext());
-        emailMessages = mailService.querySendedMessage(email);
-        if(emailMessages!=null){
-            SendedRv.setLayoutManager(new LinearLayoutManager(getContext()));
-            inboxAdapter = new InboxAdapter(getContext(),emailMessages);
-            SendedRv.setAdapter(inboxAdapter);
+        if(email!=null){
+            if(emailMessages!=null){
+                emailMessages.clear();
+                emailMessages.addAll(mailService.querySendedMessage(email));
+                inboxAdapter.notifyDataSetChanged();
+            }else{
+                emailMessages = mailService.querySendedMessage(email);
+                if(emailMessages!=null){
+                    SendedRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                    inboxAdapter = new InboxAdapter(getContext(),emailMessages);
+                    SendedRv.setAdapter(inboxAdapter);
+                }
+            }
         }
     }
 
     /**
-     * 接送更改Sended
+     * 接送更改Sended"NewSendedMessage"
      * @param messageEvent
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void SwitchMessage(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
             email = messageEvent.getEmail();
-            mailService = new MailService(getContext());
-            if(email!=null){
-                if(emailMessages!=null){
-                    emailMessages.clear();
-                    emailMessages.addAll(mailService.querySendedMessage(email));
-                    inboxAdapter.notifyDataSetChanged();
-                }else{
-                    emailMessages = mailService.querySendedMessage(email);
-                    initEmailMessage();
-                }
-            }
+            initEmailMessage();
         }
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

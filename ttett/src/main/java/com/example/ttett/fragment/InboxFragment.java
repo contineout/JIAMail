@@ -268,7 +268,7 @@ public class InboxFragment extends Fragment {
                         topMenuSwitch(mailService.queryAllMessage(email));
                         break;
                     case 1:
-                        topMenuSwitch(mailService.queryStarMessage(email));
+                        topMenuSwitch(mailService.queryUnReadMessage(email));
                         ToolbarTitle.setText("未读邮件");
                         break;
                     case 2:

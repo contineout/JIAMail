@@ -69,43 +69,45 @@ public class DraftsFragment extends Fragment {
         if(email!=null){
             initEmailMessage();
         }
-
         return view;
     }
 
     /**
-     * 初始化EmailMessag
+     * 初始化DraftsEmailMessag
      */
     public void initEmailMessage(){
         mailService = new MailService(getContext());
-        emailMessages = mailService.queryDraftsMessage(email);
-        if(emailMessages!=null){
-            DraftsRv.setLayoutManager(new LinearLayoutManager(getContext()));
-            inboxAdapter = new InboxAdapter(getContext(),emailMessages);
-            DraftsRv.setAdapter(inboxAdapter);
+        if(email!=null){
+            if(emailMessages!=null){
+                emailMessages.clear();
+                emailMessages.addAll(mailService.queryDraftsMessage(email));
+                inboxAdapter.notifyDataSetChanged();
+            }else{
+                emailMessages = mailService.queryDraftsMessage(email);
+                if(emailMessages!=null){
+                    DraftsRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                    inboxAdapter = new InboxAdapter(getContext(),emailMessages);
+                    DraftsRv.setAdapter(inboxAdapter);
+                }
+            }
         }
     }
 
     /**
-     * 接送更改inbox
+     * 接送更改DraftsMessage
      * @param messageEvent
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void SwitchMessage(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
-            email = messageEvent.getEmail();
-            mailService = new MailService(getContext());
-            if(email!=null){
-                if(emailMessages!=null){
-                    emailMessages.clear();
-                    emailMessages.addAll(mailService.queryDraftsMessage(email));
-                    inboxAdapter.notifyDataSetChanged();
-                }else{
-                    emailMessages = mailService.queryDraftsMessage(email);
-                    initEmailMessage();
-                }
-            }
+            initEmailMessage();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initEmailMessage();
     }
 
     @Override

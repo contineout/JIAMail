@@ -56,6 +56,7 @@ public class FolderFragment extends Fragment{
 
         mToolbar = view.findViewById(R.id.folder_toolbar);
         FolderRv = view.findViewById(R.id.folder_rv);
+        FolderRv = view.findViewById(R.id.folder_rv);
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -79,25 +80,34 @@ public class FolderFragment extends Fragment{
 
     public void initFolder(){
         folderService = new FolderService(getContext());
-        folders = folderService.queryAllFolder(email);
-        if(folders!=null){
-            FolderRv = view.findViewById(R.id.folder_rv);
-            FolderRv.setLayoutManager(new LinearLayoutManager(getContext()));
-            folderAdapter = new FolderAdapter(getContext(),folders);
-            FolderRv.setAdapter(folderAdapter);
+        if(email!=null){
+            if (folders!= null){
+                folders.clear();
+                folders.addAll(folderService.queryAllFolder(email));
+                folderAdapter.notifyDataSetChanged();
+            }else {
+                folders = folderService.queryAllFolder(email);
+                if(folders!=null){
+                    FolderRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                    folderAdapter = new FolderAdapter(getContext(),folders);
+                    FolderRv.setAdapter(folderAdapter);
+                }
+            }
         }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void addFolder(MessageEvent event){
         if (event.getMessage().equals("add_folder")){
-            if (folders!= null){
-                folders.clear();
-                folders.addAll(folderService.queryAllFolder(email));
-                folderAdapter.notifyDataSetChanged();
-            }else {
-                initFolder();
-            }
+            initFolder();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void SwitchFolder(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("Switch_Email")){
+            email = messageEvent.getEmail();
+            initFolder();
         }
     }
 

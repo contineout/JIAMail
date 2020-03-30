@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 sendedFragment.setArguments(bundle);
                 draftsFragment.setArguments(bundle);
                 contactsFragment.setArguments(bundle);
+                trashFragment.setArguments(bundle);
             }
         }
     }

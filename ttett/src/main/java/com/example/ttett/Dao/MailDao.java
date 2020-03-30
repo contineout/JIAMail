@@ -59,8 +59,8 @@ public class MailDao {
      */
     public List<EmailMessage> QuerySendedMessage(Email email){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail LIKE ? and isSend = ?",
-                new String[]{("%"+ email.getAddress() + "%"),("1")},null,null,null,null);
+        Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail LIKE ? and isSend = ? and isDelete = ?",
+                new String[]{("%"+ email.getAddress() + "%"),("1"),("0")},null,null,null,null);
         return setMessages(cursor);
     }
 
@@ -98,6 +98,18 @@ public class MailDao {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isStar = ? and isDelete = ?",
                 new String[]{("%"+ email.getAddress() + "%"),("1"),("0")},null,null,null,null);
+        return setMessages(cursor);
+    }
+
+    /**
+     * 查询SQLite已删除邮件数量
+     * @param email
+     * @return
+     */
+    public List<EmailMessage> QueryDelteMessage(Email email){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isDelete = ?",
+                new String[]{("%"+ email.getAddress() + "%"),("1")},null,null,null,null);
         return setMessages(cursor);
     }
 
@@ -226,11 +238,12 @@ public class MailDao {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("isDelete",1);
+        values.put("isStar",0);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
 
     /**
-     * 删除邮件信息
+     * 彻底删除邮件信息
      * @param id
      */
     public void DeleteMessage(int id){

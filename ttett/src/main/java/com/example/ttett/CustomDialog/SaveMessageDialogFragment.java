@@ -18,6 +18,9 @@ import android.widget.TextView;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,6 +67,7 @@ public class SaveMessageDialogFragment extends DialogFragment implements View.On
                 EmailMessage emailMessage = getArguments().getParcelable("message");
                 mailDao = new MailDao(getContext());
                 mailDao.InsertMessages(emailMessage);
+                EventBus.getDefault().post(new MessageEvent("NewSendedMessage"));
                 dismiss();
                 break;
             default:

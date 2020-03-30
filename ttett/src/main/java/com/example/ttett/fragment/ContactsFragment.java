@@ -109,10 +109,12 @@ public class ContactsFragment extends Fragment {
                 contacts.addAll(contactService.queryAllContact(email.getEmail_id()));
                 contactsAdapter.notifyDataSetChanged();
             }else{
-                ContactRv.setLayoutManager(new LinearLayoutManager(getContext()));
                 contacts = contactService.queryAllContact(email.getEmail_id());
-                contactsAdapter = new ContactsAdapter(getContext(),contacts);
-                ContactRv.setAdapter(contactsAdapter);
+                if(contacts!=null){
+                    ContactRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                    contactsAdapter = new ContactsAdapter(getContext(),contacts);
+                    ContactRv.setAdapter(contactsAdapter);
+                }
             }
         }
     }

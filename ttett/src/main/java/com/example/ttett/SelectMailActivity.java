@@ -178,6 +178,7 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
                         for(int id:id_item){
                             mailService.updateisDelete(id);
                         }
+                        EventBus.getDefault().post("addDeleteMessage");
                     }
                     finish();
                     break;

@@ -201,7 +201,6 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
         str = format.format(date);
         emailMessage.setSendDate(str);
         mailDao.InsertMessages(emailMessage);
-
     }
 
     /**

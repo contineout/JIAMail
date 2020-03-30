@@ -20,9 +20,6 @@ import com.example.ttett.ContactsActivity;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
 import com.example.ttett.Service.ContactService;
-import com.example.ttett.bean.MessageEvent;
-
-import org.greenrobot.eventbus.EventBus;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -73,14 +70,12 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
     @Override
     public void onClick(View v) {
         Intent intent = null;
-
         int email_id = email.getEmail_id();
         Log.d(TAG,"email_id" + email_id);
         switch (v.getId()){
             case R.id.contacts_import:
                 contactService = new ContactService(getContext());
                 contactService.insertAllMailContact(email_id);
-                EventBus.getDefault().post(new MessageEvent("add_contact",email_id));
                 dismiss();
                 break;
             case R.id.contacts_new:

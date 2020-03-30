@@ -37,13 +37,17 @@ public class OpenMailActivity extends AppCompatActivity {
         Iv_mail = findViewById(R.id.mail_button);
         TvContent = findViewById(R.id.mail_context);
 
-        if(!emailMessage.getFrom().isEmpty() && !emailMessage.getTo().isEmpty()){
-            String[] from = emailMessage.getFrom().split("[<>]");
-            String[] to = emailMessage.getTo().split("[<>]");
-            TvFromId.setText(from[0]);
-            TvFromMail.setText(from[1]);
-            TvToId.setText(to[0]);
-            TvToMail.setText(to[1]);
+        try {
+            if (!emailMessage.getFrom().isEmpty() && !emailMessage.getTo().isEmpty()) {
+                String[] from = emailMessage.getFrom().split("[<>]");
+                String[] to = emailMessage.getTo().split("[<>]");
+                TvFromId.setText(from[0]);
+                TvFromMail.setText(from[1]);
+                TvToId.setText(to[0]);
+                TvToMail.setText(to[1]);
+            }
+        }catch (Exception e){
+
         }
 
         TvSubject.setText(emailMessage.getSubject());
