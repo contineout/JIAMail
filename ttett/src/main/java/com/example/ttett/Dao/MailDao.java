@@ -169,6 +169,8 @@ public class MailDao {
             values.put("isRead",emailMessage.getIsRead());
             values.put("isSend",emailMessage.getIsSend());
             values.put("isDelete",emailMessage.getIsDelete());
+            values.put("isAttachment",emailMessage.getIsAttachment());
+            values.put("attachment",emailMessage.getAttachment());
             db.insert("EMAILMESSAGE",null,values);
             values.clear();
             db.close();
@@ -299,6 +301,7 @@ public class MailDao {
             do {
                 message = new EmailMessage();
                 message.setId(cursor.getInt((cursor.getColumnIndex("id"))));
+                message.setMessage_id(cursor.getString(cursor.getColumnIndex("message_id")));
                 message.setSubject(cursor.getString(cursor.getColumnIndex("subject")));
                 message.setFrom(cursor.getString(cursor.getColumnIndex("from_mail")));
                 message.setTo(cursor.getString(cursor.getColumnIndex("to_mail")));
@@ -310,6 +313,8 @@ public class MailDao {
                 message.setIsSend(cursor.getInt(cursor.getColumnIndex("isSend")));
                 message.setIsDelete(cursor.getInt(cursor.getColumnIndex("isDelete")));
                 message.setIsStar(cursor.getInt(cursor.getColumnIndex("isStar")));
+                message.setIsAttachment(cursor.getInt(cursor.getColumnIndex("isAttachment")));
+                message.setAttachment(cursor.getString(cursor.getColumnIndex("attachment")));
                 messages.add(message);
             }while (cursor.moveToNext());
             cursor.close();

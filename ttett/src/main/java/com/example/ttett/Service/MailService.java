@@ -69,17 +69,17 @@ public class MailService {
      * @return
      */
     public void SynchronizeMessage(Email email){
-        RecipientMessage recipientMessage = new RecipientMessage();
+        RecipientMessage recipientMessage = new RecipientMessage(email,mContext);
         List<EmailMessage> emailMessages;
         switch (email.getType()){
             case "sina.com":
-                emailMessages = recipientMessage.SinaRecipient(email,mContext);
+                emailMessages = recipientMessage.SinaRecipient();
                 if(SaveMessage(emailMessages)){
                     Log.d(TAG,"sina有新邮件保存成功");
                 }
                 break;
             case "qq.com":
-                emailMessages = recipientMessage.QQRecipient(email,mContext);
+                emailMessages = recipientMessage.QQRecipient();
                 if(SaveMessage(emailMessages)){
                     Log.d(TAG,"sina有新邮件保存成功");
                 }

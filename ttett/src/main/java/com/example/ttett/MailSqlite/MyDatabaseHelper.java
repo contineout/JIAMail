@@ -53,7 +53,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "isRead bit," +
             "isSend bit," +
             "isDelete bit," +
-            "attachment varbinary," +
+            "attachment text," +
+            "isAttachment bit," +
             "FOREIGN KEY (email_id) REFERENCES EMAIL (id)," +
             "FOREIGN KEY (folder_id) REFERENCES FOLDER (id)," +
             "FOREIGN KEY (user_id) REFERENCES USER (id)"+
@@ -75,6 +76,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "contact_address text," +
             "FOREIGN KEY (email_id) REFERENCES EMAIL(email_id)" +
             ")";
+    public static final String ATTACHMENT="CREATE TABLE ATTACHMENT (" +
+            "id integer PRIMARY KEY AUTOINCREMENT," +
+            "email_id integer," +
+            "message_id text," +
+            "name text," +
+            "type text," +
+            "size text," +
+            "saveDate text," +
+            "FOREIGN KEY (email_id) REFERENCES EMAIL(email_id)" +
+            ")";
 
 
     private Context mContext;
@@ -91,6 +102,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(FOLDER);
         db.execSQL(EMAILMESSAGE);
         db.execSQL(CONTACT);
+        db.execSQL(ATTACHMENT);
     }
 
     @Override

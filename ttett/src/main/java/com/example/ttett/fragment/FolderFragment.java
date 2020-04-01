@@ -56,7 +56,6 @@ public class FolderFragment extends Fragment{
 
         mToolbar = view.findViewById(R.id.folder_toolbar);
         FolderRv = view.findViewById(R.id.folder_rv);
-        FolderRv = view.findViewById(R.id.folder_rv);
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();

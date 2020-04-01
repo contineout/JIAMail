@@ -1,9 +1,15 @@
 package com.example.ttett.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+
+import com.example.ttett.Dao.AttachmentDao;
+import com.example.ttett.Entity.Attachment;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,11 +24,17 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 
+import static android.content.ContentValues.TAG;
+
 public class ShowMail {
     private MimeMessage mimeMessage = null;
     private String saveAttachPath = ""; // 附件下载后的存放目录
     private StringBuffer bodyText = new StringBuffer(); // 存放邮件内容的StringBuffer对象
     private String dateFormat = "yyyy-MM-dd HH:mm:ss"; // 默认的日前显示格式
+    private Context mContext;
+    private Attachment attachment;
+    private int email_id;
+    private int count = 0;
 
     /**
      * 构造函数,初始化一个MimeMessage对象
@@ -30,8 +42,10 @@ public class ShowMail {
     public ShowMail() {
     }
 
-    public ShowMail(MimeMessage mimeMessage) {
+    public ShowMail(MimeMessage mimeMessage, Context context,int email_id) {
         this.mimeMessage = mimeMessage;
+        this.mContext = context;
+        this.email_id = email_id;
     }
 
     public void setMimeMessage(MimeMessage mimeMessage) {
@@ -133,6 +147,12 @@ public class ShowMail {
         SimpleDateFormat format = new SimpleDateFormat(dateFormat);
         String strSentDate = format.format(sentDate);
         return strSentDate;
+    }
+    public String getSaveDate() throws Exception {
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+        String strSaveDate = format.format(date);
+        return strSaveDate;
     }
 
     /**
@@ -258,7 +278,7 @@ public class ShowMail {
      * 　*　保存附件 　
      */
 
-    public void saveAttachMent(Part part) throws Exception {
+    public void saveAttachMent(Part part,String id) throws Exception {
         String fileName = "";
         if (part.isMimeType("multipart/*")) {
             Multipart mp = (Multipart) part.getContent();
@@ -269,23 +289,23 @@ public class ShowMail {
                         && ((disposition.equals(Part.ATTACHMENT)) || (disposition
                         .equals(Part.INLINE)))) {
                     fileName = mPart.getFileName();
-                    if (fileName.toLowerCase().contains("gb2312")) {
+                    if (fileName.toLowerCase().contains("gb2312")||fileName.toLowerCase().contains("gb18030")) {
                         fileName = MimeUtility.decodeText(fileName);
                     }
-                    saveFile(fileName, mPart.getInputStream());
+                    saveFile(fileName, mPart.getInputStream(),id);
                 } else if (mPart.isMimeType("multipart/*")) {
-                    saveAttachMent(mPart);
+                    saveAttachMent(mPart,id);
                 } else {
                     fileName = mPart.getFileName();
                     if ((fileName != null)
-                            && (fileName.toLowerCase().contains("GB2312"))) {
+                            && (fileName.toLowerCase().contains("GB2312")||fileName.toLowerCase().contains("gb18030"))) {
                         fileName = MimeUtility.decodeText(fileName);
-                        saveFile(fileName, mPart.getInputStream());
+                        saveFile(fileName, mPart.getInputStream(),id);
                     }
                 }
             }
         } else if (part.isMimeType("message/rfc822")) {
-            saveAttachMent((Part) part.getContent());
+            saveAttachMent((Part) part.getContent(),id);
         }
     }
 
@@ -313,44 +333,35 @@ public class ShowMail {
     /**
      * 　*　真正的保存附件到指定目录里 　
      */
-    private void saveFile(String fileName, InputStream in) throws Exception {
-        String osName = System.getProperty("os.name");
-        String storeDir = getAttachPath();
-        String separator = "";
-        if (osName == null) {
-            osName = "";
-        }
-        if (osName.toLowerCase().contains("win")) {
-            separator = "\\";
-            if (storeDir == null || storeDir.equals(""))
-                storeDir = "c:\\tmp";
-        } else {
-            separator = "/";
-            storeDir = "/tmp";
-        }
-        File storeFile = new File(storeDir + separator + fileName);
-        // for(int　i=0;storefile.exists();i++){
-        // storefile　=　new　File(storedir+separator+fileName+i);
-        // }
-        BufferedOutputStream bos = null;
-        BufferedInputStream bis = null;
+    private void saveFile(String fileName, InputStream in,String id) throws Exception {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+            return ;
+        File path = mContext.getExternalFilesDir("Email");
+        File file = new File(path, fileName);
 
         try {
-            bos = new BufferedOutputStream(new FileOutputStream(storeFile));
-            bis = new BufferedInputStream(in);
-            int c;
-            while ((c = bis.read()) != -1) {
-                bos.write(c);
-                bos.flush();
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            throw new Exception("文件保存失败!");
-        } finally {
-            assert bos != null;
-            bos.close();
-            assert bis != null;
-            bis.close();
+            attachment = new Attachment();
+            // 确认Music目录存在
+            path.mkdirs();
+            String[] str = fileName.split("[.]");
+            FileOutputStream out = new FileOutputStream(file);
+            byte[] bytes = new byte[in.available()];
+            attachment.setSize(String.valueOf(in.available()));
+            attachment.setName(fileName);
+            attachment.setSaveDate(getSaveDate());
+            attachment.setType(str[1]);
+            attachment.setMessage_id(id);
+            attachment.setEmail_id(email_id);
+            in.read(bytes);
+            out.write(bytes);
+            in.close();
+            out.close();
+            count+=1;
+            AttachmentDao attachmentDao = new AttachmentDao(mContext);
+            attachmentDao.InsertAttachment(attachment);
+            Log.d(TAG,"第"+id+"封"+"第"+count+"附件"+"path = " + path.toString() + "/" + fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

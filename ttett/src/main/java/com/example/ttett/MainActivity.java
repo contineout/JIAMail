@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 draftsFragment.setArguments(bundle);
                 contactsFragment.setArguments(bundle);
                 trashFragment.setArguments(bundle);
+                attachmentFragment.setArguments(bundle);
             }
         }
     }

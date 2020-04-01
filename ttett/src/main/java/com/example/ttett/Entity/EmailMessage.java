@@ -9,11 +9,28 @@ public class EmailMessage implements Parcelable {
     private int email_id;
     private int user_id;
     private int folder_id;
-    private int isRead,isDelete,isSend,isStar;
+    private int isRead,isDelete,isSend,isStar,isAttachment;
     private String message_text;
     private String SendDate;
     private String subject,from,to,cc,bcc;
     private String content;
+    private String attachment;
+
+    public int getIsAttachment() {
+        return isAttachment;
+    }
+
+    public void setIsAttachment(int isAttachment) {
+        this.isAttachment = isAttachment;
+    }
+
+    public String getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(String attachment) {
+        this.attachment = attachment;
+    }
 
     public int getIsStar() {
         return isStar;
@@ -53,6 +70,8 @@ public class EmailMessage implements Parcelable {
         cc = in.readString();
         bcc = in.readString();
         content = in.readString();
+        isAttachment = in.readInt();
+        attachment = in.readString();
     }
 
     public static final Creator<EmailMessage> CREATOR = new Creator<EmailMessage>() {
@@ -76,6 +95,8 @@ public class EmailMessage implements Parcelable {
             emailMessage.cc = in.readString();
             emailMessage.bcc = in.readString();
             emailMessage.content = in.readString();
+            emailMessage.attachment = in.readString();
+            emailMessage.isAttachment = in.readInt();
             return emailMessage;
         }
 
@@ -229,9 +250,11 @@ public class EmailMessage implements Parcelable {
         dest.writeString(cc);
         dest.writeString(bcc);
         dest.writeString(content);
+        dest.writeInt(isAttachment);
+        dest.writeString(attachment);
     }
 
-    public EmailMessage(int id,String message_id, int email_id, int user_id, int folder_id,int isStar,int isRead, int isDelete, int isSend, String message_text, String sendDate, String subject, String from, String to, String cc, String bcc, String content) {
+    public EmailMessage(int id,String message_id, int email_id, int user_id, int folder_id,int isStar,int isRead, int isDelete, int isSend,int isAttachment, String message_text, String sendDate, String subject, String from, String to, String cc, String bcc, String content,String attachment) {
         this.id = id;
         this.message_id = message_id;
         this.email_id = email_id;
@@ -249,5 +272,7 @@ public class EmailMessage implements Parcelable {
         this.cc = cc;
         this.bcc = bcc;
         this.content = content;
+        this.isAttachment = isAttachment;
+        this.attachment = attachment;
     }
 }

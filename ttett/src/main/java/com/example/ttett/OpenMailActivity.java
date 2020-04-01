@@ -1,20 +1,34 @@
 package com.example.ttett;
 
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ttett.Adapter.AttachmentAdapter;
+import com.example.ttett.Entity.Attachment;
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.Service.AttachmentService;
 import com.example.ttett.Service.MailService;
+import com.example.ttett.util.ImageGetterUtils;
+
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class OpenMailActivity extends AppCompatActivity {
     private TextView TvSubject,TvFromId,TvFromMail,TvToId,TvToMail,TvDate,TvContent;
     private ImageView Iv_mail;
     private MailService mailService;
+    private AttachmentService attachmentService;
+    private AttachmentAdapter attachmentAdapter;
+    private RecyclerView AttachmentRv;
+    private String TAG = "OpenMailActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +50,7 @@ public class OpenMailActivity extends AppCompatActivity {
         TvDate = findViewById(R.id.mail_date);
         Iv_mail = findViewById(R.id.mail_button);
         TvContent = findViewById(R.id.mail_context);
+        AttachmentRv = findViewById(R.id.mail_attachment_rv);
 
         try {
             if (!emailMessage.getFrom().isEmpty() && !emailMessage.getTo().isEmpty()) {
@@ -51,8 +66,18 @@ public class OpenMailActivity extends AppCompatActivity {
         }
 
         TvSubject.setText(emailMessage.getSubject());
-        TvContent.setText(emailMessage.getContent());
+        TvContent.setText(Html.fromHtml(emailMessage.getContent(),new ImageGetterUtils.MyImageGetter(this,TvContent),null));
         TvDate.setText(emailMessage.getSendDate());
+        attachmentService = new AttachmentService(this);
+        Log.d(TAG,emailMessage.getMessage_id());
+        if(emailMessage.getIsAttachment() == 0){
+            List<Attachment> attachments = attachmentService.queryMessageAllAttachment(emailMessage.getMessage_id());
+            if(attachments!=null){
+                AttachmentRv.setLayoutManager(new LinearLayoutManager(this));
+                attachmentAdapter = new AttachmentAdapter(this,attachments);
+                AttachmentRv.setAdapter(attachmentAdapter);
+            }
+        }
 
         Iv_mail.setOnClickListener(new View.OnClickListener() {
             @Override
