@@ -225,13 +225,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
         <EditText
             android:id="@+id/et_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:inputType="textLongMessage|textMultiLine"
             android:background="@null"
             android:gravity="top" />
+            <TextView
+                android:id="@+id/attachment"
+                android:text="附件"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/et_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_margin="10dp"
+            android:id="@+id/write_rv"
+            android:layout_below="@+id/attachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        </RelativeLayout>
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/fab_menu"
             android:layout_width="wrap_content"

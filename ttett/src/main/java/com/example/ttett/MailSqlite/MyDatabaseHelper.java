@@ -84,6 +84,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "type text," +
             "size text," +
             "saveDate text," +
+            "path text," +
             "FOREIGN KEY (email_id) REFERENCES EMAIL(email_id)" +
             ")";
 

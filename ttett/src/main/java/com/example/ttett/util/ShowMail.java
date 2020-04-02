@@ -352,6 +352,7 @@ public class ShowMail {
             attachment.setType(str[1]);
             attachment.setMessage_id(id);
             attachment.setEmail_id(email_id);
+            attachment.setPath(path.getPath()+"/"+fileName);
             in.read(bytes);
             out.write(bytes);
             in.close();

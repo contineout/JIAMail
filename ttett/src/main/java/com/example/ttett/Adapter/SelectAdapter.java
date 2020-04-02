@@ -37,11 +37,6 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
         this.checkStatus = checkStatus;
     }
 
-
-    public interface AllSelect{
-        public void checkbox(Map<Integer, Boolean> checkStatus);
-    }
-
     @NonNull
     @Override
     public SelectAdapter.InboxViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

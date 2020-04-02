@@ -109,6 +109,7 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
         }
 
 
+
         if(trueCount!=0){
             tvSelectCount.setText("已选择"+trueCount+"封");
             item1.setIcon(R.mipmap.set_star_check);

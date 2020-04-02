@@ -85,6 +85,7 @@ public class AttachmentFragment extends Fragment {
                 if(attachments!=null){
                     AttachmentRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     attachmentAdapter = new AttachmentAdapter(getContext(),attachments);
+                    attachmentAdapter.setATTACHMENT_FRAG();
                     AttachmentRv.setAdapter(attachmentAdapter);
                 }
             }

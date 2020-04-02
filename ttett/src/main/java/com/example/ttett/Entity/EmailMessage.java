@@ -95,8 +95,8 @@ public class EmailMessage implements Parcelable {
             emailMessage.cc = in.readString();
             emailMessage.bcc = in.readString();
             emailMessage.content = in.readString();
-            emailMessage.attachment = in.readString();
             emailMessage.isAttachment = in.readInt();
+            emailMessage.attachment = in.readString();
             return emailMessage;
         }
 

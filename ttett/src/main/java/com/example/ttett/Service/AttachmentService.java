@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.ttett.Dao.AttachmentDao;
 import com.example.ttett.Entity.Attachment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AttachmentService {
@@ -48,6 +49,20 @@ public class AttachmentService {
     public List<Attachment> queryMessageAllAttachment(String message_id){
         AttachmentDao attachmentDao = new AttachmentDao(mContext);
         return attachmentDao.QueryMessageAttachment(message_id);
+    }
+
+    /**
+     * 选择查询里的附件
+     * @param id_item
+     * @return
+     */
+    public List<Attachment> querySelectAttachment(List<Integer> id_item){
+        AttachmentDao attachmentDao = new AttachmentDao(mContext);
+        List<Attachment> attachments = new ArrayList<>();
+        for(int id:id_item){
+            attachments.add(attachmentDao.QuerySelectAttachment(id));
+        }
+        return attachments;
     }
 
 }

@@ -69,12 +69,15 @@ public class OpenMailActivity extends AppCompatActivity {
         TvContent.setText(Html.fromHtml(emailMessage.getContent(),new ImageGetterUtils.MyImageGetter(this,TvContent),null));
         TvDate.setText(emailMessage.getSendDate());
         attachmentService = new AttachmentService(this);
+        AttachmentRv.setVisibility(View.GONE);
         Log.d(TAG,emailMessage.getMessage_id());
-        if(emailMessage.getIsAttachment() == 0){
+        if(emailMessage.getIsAttachment() != 0){
             List<Attachment> attachments = attachmentService.queryMessageAllAttachment(emailMessage.getMessage_id());
             if(attachments!=null){
+                AttachmentRv.setVisibility(View.VISIBLE);
                 AttachmentRv.setLayoutManager(new LinearLayoutManager(this));
                 attachmentAdapter = new AttachmentAdapter(this,attachments);
+                attachmentAdapter.setOPEN_MESSAGE();
                 AttachmentRv.setAdapter(attachmentAdapter);
             }
         }
