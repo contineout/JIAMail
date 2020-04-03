@@ -15,12 +15,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
-import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.SaveMessage;
 
-import org.greenrobot.eventbus.EventBus;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +28,6 @@ import androidx.fragment.app.DialogFragment;
 public class SaveMessageDialogFragment extends DialogFragment implements View.OnClickListener {
     private TextView TvSave,TvDelete;
     private String TAG = "SaveMessageDialogFragment";
-    private MailDao mailDao;
 
 
     @Nullable
@@ -57,18 +55,18 @@ public class SaveMessageDialogFragment extends DialogFragment implements View.On
     @Override
     public void onClick(View v) {
         Intent intent = null;
-
         switch (v.getId()){
             case R.id.message_delete:
                 dismiss();
-                getActivity().finish();
+                Objects.requireNonNull(getActivity()).finish();
                 break;
             case R.id.message_save:
+                assert getArguments() != null;
                 EmailMessage emailMessage = getArguments().getParcelable("message");
-                mailDao = new MailDao(getContext());
-                mailDao.InsertMessages(emailMessage);
-                EventBus.getDefault().post(new MessageEvent("NewSendedMessage"));
+                SaveMessage saveMessage = new SaveMessage(emailMessage,getContext());
+                saveMessage.saveDraftsMessage();
                 dismiss();
+                Objects.requireNonNull(getActivity()).finish();
                 break;
             default:
         }

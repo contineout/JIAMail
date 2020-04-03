@@ -99,8 +99,9 @@ public class MainActivity extends AppCompatActivity {
  */
         final MailDao mailDao = new MailDao(this);
         mailDao.CreateMessageTable();
-        user_id = getIntent().getIntExtra("user_id",0);
+//        user_id = getIntent().getIntExtra("user_id",0);
 
+        user_id = 1;
         emails = emailService.queryAllEmail(user_id);
         Log.d(TAG,"user_id = "+user_id);
         initEmail();

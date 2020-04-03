@@ -25,6 +25,7 @@ public class SendMessage {
     private Email email;
     private List<Attachment> attachments;
     private List<MimeBodyPart> mimeBodyParts;
+    private boolean isSuccess;
 
     public SendMessage(EmailMessage emailMessage, Email email, List<Attachment> attachments) {
         this.emailMessage = emailMessage;
@@ -32,7 +33,21 @@ public class SendMessage {
         this.attachments = attachments;
     }
 
-    public boolean QQSend() {
+    public Boolean SendMessage(){
+        switch (email.getType()){
+            case "qq.com":
+                QQSend();
+                break;
+            case  "sina.com":
+                SinaSend();
+                break;
+            default:
+        }
+        return isSuccess;
+    }
+
+
+    private boolean QQSend() {
         Properties props = new Properties();
         props.setProperty("mail.smtp.auth", "true");
         props.setProperty("mail.transport.protocol", "smtp");
@@ -51,15 +66,16 @@ public class SendMessage {
             Transport transport = session.getTransport();
             transport.connect(email.getAddress(), email.getAuthorizationCode());
             transport.sendMessage(msg, msg.getAllRecipients());
+            isSuccess =transport.isConnected();
             transport.close();
-            return transport.isConnected();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return isSuccess;
     }
 
-    public boolean SinaSend() {
+    private boolean SinaSend() {
         Properties props = new Properties();
         props.setProperty("mail.smtp.auth","true");
         props.setProperty("mail.transport.protocol","smtp");
@@ -71,46 +87,50 @@ public class SendMessage {
             Transport transport = session.getTransport();
             transport.connect(email.getAddress(), email.getAuthorizationCode());
             transport.sendMessage(msg, msg.getAllRecipients());
+            isSuccess =transport.isConnected();
             transport.close();
-            return transport.isConnected();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return isSuccess;
     }
 
 
     private MimeMessage createMimeMessage(Session session) throws Exception {
 
         MimeMessage msg = new MimeMessage(session);
-
+        //发件人
         msg.setFrom(new InternetAddress(emailMessage.getFrom(), "WUJIA", "UTF-8"));
-
+        //接收人
         msg.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(emailMessage.getTo(), "LL", "UTF-8"));
-
+        //密送
         if(!emailMessage.getBcc().isEmpty()){
             msg.setRecipient(MimeMessage.RecipientType.CC,new InternetAddress(emailMessage.getCc()));
         }
+        //抄送
         if(!emailMessage.getCc().isEmpty()){
             msg.setRecipient(MimeMessage.RecipientType.BCC,new InternetAddress(emailMessage.getBcc()));
         }
-
+        //主题
         msg.setSubject(emailMessage.getSubject(), "UTF-8");
 
         msg.setContent(emailMessage.getContent(), "text/html;charset=UTF-8");
+
+        //附件根节点
         mimeBodyParts = new ArrayList<>();
         int i = 0;
         for(Attachment attachment:attachments){
             mimeBodyParts.add(i,createAttachment(attachment.getPath()));
             i+=1;
         }
-
+        //合成大节点
         MimeMultipart mimeMultipart = new MimeMultipart("mixed");
         for(MimeBodyPart bodyPart:mimeBodyParts){
             mimeMultipart.addBodyPart(bodyPart);
         }
-
+        //内容
         msg.setContent(mimeMultipart);
+        //日期
         msg.setSentDate(new Date());
 
         return msg;

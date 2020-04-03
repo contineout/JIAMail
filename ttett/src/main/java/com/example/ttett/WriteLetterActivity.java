@@ -1,6 +1,5 @@
 package com.example.ttett;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,19 +13,17 @@ import android.widget.Toast;
 
 import com.example.ttett.Adapter.WriteAttachmentAdapter;
 import com.example.ttett.CustomDialog.SaveMessageDialogFragment;
-import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Attachment;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Service.AttachmentService;
+import com.example.ttett.util.SaveMessage;
 import com.example.ttett.util.SendMessage;
+import com.example.ttett.util.ToastUtil;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -40,21 +37,15 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
     private RelativeLayout RLCC,RLBCC;
     private View VCC,VBCC;
     private boolean show = true;
-    private TextView TvSendEmail;
     private Email email;
     private EmailMessage emailMessage;
-    private SendMessage sendMessage;
-    private MailDao mailDao;
-    private SaveMessageDialogFragment saveMessageDialogFragment;
     private String initContent = "Sent from JiaMail";
     private String TAG = "WriteLetterActivity";
-    private String Recipient_email;
     private RecyclerView writeLtter_Rv;
     private FloatingActionsMenu fab;
     private FloatingActionButton fab_attachment,fab_pic,fab_timer;
-    private List<Integer> id_item = new ArrayList<>();;
-    private List<Attachment> attachments;
-    private WriteAttachmentAdapter adapter;
+    private List<Integer> id_item = new ArrayList<>();
+    private List<Attachment> attachments = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +96,7 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
 
         VCC = findViewById(R.id.Vcc);
         VBCC = findViewById(R.id.Vbcc);
-        TvSendEmail = findViewById(R.id.tv_send_email);
+        TextView tvSendEmail = findViewById(R.id.tv_send_email);
         fab = findViewById(R.id.fab_menu);
         fab_attachment = findViewById(R.id.fab_attachment);
         fab_pic = findViewById(R.id.fab_pic);
@@ -114,18 +105,51 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
         try{
             email = getIntent().getParcelableExtra("email");
             Log.d(TAG,"email.address = "+ email.getAddress());
-            TvSendEmail.setText(email.getAddress());
-            TvSendEmail.setVisibility(View.VISIBLE);
+            tvSendEmail.setText(email.getAddress());
+            tvSendEmail.setVisibility(View.VISIBLE);
         }catch (Exception e){
         }
 
         try{
-            Recipient_email = getIntent().getStringExtra("Recipient_email");
+            String recipient_email = getIntent().getStringExtra("Recipient_email");
             email = getIntent().getParcelableExtra("email");
-            EtTO.setText(Recipient_email);
-            TvSendEmail.setText(email.getAddress());
+            EtTO.setText(recipient_email);
+            tvSendEmail.setText(email.getAddress());
         }catch (Exception e){
         }
+
+        try {
+            EmailMessage emailMessage = getIntent().getParcelableExtra("emailMessage");
+            tvSendEmail.setText(emailMessage.getFrom());
+            EtTO.setText(emailMessage.getTo());
+            EtBCC.setText(emailMessage.getBcc());
+            EtCC.setText(emailMessage.getCc());
+            EtSubject.setText(emailMessage.getSubject());
+            EtContent.setText(emailMessage.getContent());
+            if (emailMessage.getIsAttachment() != 0) {
+                AttachmentService attachmentService = new AttachmentService(this);
+                String[] ids = emailMessage.getAttachment().split("[&]");
+                for (String id : ids) {
+                    if (!id.equals("")) {
+                        id_item.add(Integer.parseInt(id));
+                    }
+                    attachments = attachmentService.querySelectAttachment(id_item);
+                    if (attachments != null) {
+                        //选择Attachment时,网格布局
+                        writeLtter_Rv.setVisibility(View.VISIBLE);
+                        StaggeredGridLayoutManager layoutManager = new
+                                StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+                        writeLtter_Rv.setLayoutManager(layoutManager);
+                        WriteAttachmentAdapter adapter = new WriteAttachmentAdapter(this, attachments);
+                        writeLtter_Rv.setAdapter(adapter);
+                    }
+                }
+            }
+        }catch (Exception e){
+
+        }
+
+
 
         EtContent.setText(initContent);
 
@@ -179,20 +203,27 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
 
 
     /**
-     * 检查必要属性
+     * 检查必要属性,发送，成功保存
      */
     public void CheckMail(){
         if(isEmptyS(EtTO).isEmpty()){
-            Toast.makeText(this,"JiaMail:请输入收件人",Toast.LENGTH_SHORT).show();
+            ToastUtil.showTextToas(this,"JiaMail: 错误! 请输入收件人!");
         }else{
             if(isEmptyS(EtSubject).isEmpty()){
-                Toast.makeText(this,"JiaMail:请输入主题",Toast.LENGTH_SHORT).show();
+                ToastUtil.showTextToas(this,"JiaMail: 错误! 请输入主题!");
             }else{
                 setEmailMessage();
+                final SaveMessage saveMessage = new SaveMessage(emailMessage,this);
+                final SendMessage sendMessage = new SendMessage(emailMessage,email,attachments);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        SendMessage();
+                        if(sendMessage.SendMessage()){
+                            saveMessage.saveSendMessage();
+                            finish();
+                        }else{
+
+                        }
                     }
                 }).start();
             }
@@ -200,55 +231,15 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
     }
 
     /**
-     * 发送邮件，选择发送邮箱类型
-     */
-    private void SendMessage(){
-        AttachmentService attachmentService = new AttachmentService(this);
-        List<Attachment> attachments = attachmentService.querySelectAttachment(id_item);
-        sendMessage = new SendMessage(emailMessage,email,attachments);
-        switch (email.getType()){
-            case "qq.com":
-                sendMessage.QQSend();
-                saveMessage();
-                finish();
-                break;
-            case  "sina.com":
-                sendMessage.SinaSend();
-                saveMessage();
-                finish();
-                break;
-            default:
-        }
-    }
-
-    /**
-     * 保存到数据库，在已发送中
-     */
-    private void saveMessage(){
-        Date date;
-        @SuppressLint("SimpleDateFormat") DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String str;
-        mailDao = new MailDao(this);
-        String from_mail = "wu"+"<"+ email.getAddress() + ">";
-        emailMessage.setFrom(from_mail);
-        emailMessage.setIsSend(1);
-        date = new Date();
-        str = format.format(date);
-        emailMessage.setSendDate(str);
-        mailDao.InsertMessages(emailMessage);
-    }
-
-    /**
      * 显示对话框是否保存到草稿箱
      */
     private void showDialog(){
-        saveMessageDialogFragment = new SaveMessageDialogFragment();
+        SaveMessageDialogFragment saveMessageDialogFragment = new SaveMessageDialogFragment();
         setEmailMessage();
         emailMessage.setIsSend(0);
         Bundle bundle = new Bundle();
         bundle.putParcelable("message",emailMessage);
         saveMessageDialogFragment.setArguments(bundle);
-//        contactsDialogFragment.setTargetFragment(ContactsFragment.this,REQUEST_CODE);
         saveMessageDialogFragment.show(getSupportFragmentManager(),"saveMessageDialogFragment");
 
     }
@@ -269,13 +260,16 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
         emailMessage.setCc(isEmptyS(EtCC));
         emailMessage.setBcc(isEmptyS(EtBCC));
         emailMessage.setContent(isEmptyS(EtContent));
-        emailMessage.setIsAttachment(1);
-        StringBuilder attachments = new StringBuilder("&&");
-        for(int id:id_item){
-            attachments.append(String.valueOf(id)).append("&&");
+        if(id_item!=null){
+            emailMessage.setIsAttachment(1);
+            StringBuilder attachments = new StringBuilder("");
+            for(int id:id_item){
+                attachments.append(String.valueOf(id)).append("&");
+            }
+            emailMessage.setAttachment(attachments.toString());
+        }else {
+            emailMessage.setIsAttachment(0);
         }
-        emailMessage.setAttachment(attachments.toString());
-
     }
 
     /**
@@ -321,7 +315,7 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
                         StaggeredGridLayoutManager layoutManager = new
                                 StaggeredGridLayoutManager(4,StaggeredGridLayoutManager.VERTICAL);
                         writeLtter_Rv.setLayoutManager(layoutManager);
-                        adapter = new WriteAttachmentAdapter(this,attachments);
+                        WriteAttachmentAdapter adapter = new WriteAttachmentAdapter(this, attachments);
                         writeLtter_Rv.setAdapter(adapter);
                     }
                 }

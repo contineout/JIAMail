@@ -9,10 +9,10 @@ import android.widget.Toast;
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.Service.ContactService;
 import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.RegularUtil;
+import com.example.ttett.util.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,34 +24,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private static String ContactInfo = "ContactInfo";
     private Contact contact = null;
     private ContactService contactService = new ContactService(this);
-
-    /**
-     * 手机格式
-     * @param value
-     * @return
-     */
-    public boolean checkIphoneNumber(String value){
-        if(value != null && value.length() == 11){
-            String pattern = "^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$";
-            boolean isMatch = Pattern.matches(pattern,value);
-            return isMatch;
-        }
-        return false;
-    }
-
-    /**
-     * 邮件格式
-     * @param value
-     * @return
-     */
-    public boolean checkEmail(String value){
-        if(value != null){
-            String pattern = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
-            boolean isMatch = Pattern.matches(pattern,value);
-            return isMatch;
-        }
-        return false;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,21 +80,21 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     public void checkContact(){
         contact = new Contact();
         if(name.getText().toString().isEmpty()){
-            Toast.makeText(ContactsActivity.this,"用户名为空",Toast.LENGTH_SHORT).show();
+            ToastUtil.showTextToas(this,"JiaMail: 错误! 请填写联系人名称!");
         }else {
             contact.setName(isEmptyS(name));
             if(email.getText().toString().isEmpty()){
-                Toast.makeText(ContactsActivity.this,"邮箱地址为空",Toast.LENGTH_SHORT).show();
+                ToastUtil.showTextToas(this,"JiaMail: 错误! 请填写联系人邮件地址!");
             }else{
-                if(!checkEmail(isEmptyS(email))){
-                    Toast.makeText(ContactsActivity.this,"邮箱地址格式不对",Toast.LENGTH_SHORT).show();
+                if(!RegularUtil.checkEmail(isEmptyS(email))){
+                    ToastUtil.showTextToas(this,"JiaMail: 错误! 请检查邮箱地址格式!");
                 }else{
                     contact.setEmail(email.getText().toString());
                     if(isEmptyS(iphone).equals("")){
                         contact.setIphone(isEmptyS(iphone));
                     }else {
-                        if(!checkIphoneNumber(iphone.getText().toString())){
-                            Toast.makeText(ContactsActivity.this,"手机号码格式不对",Toast.LENGTH_SHORT).show();
+                        if(!RegularUtil.checkIphoneNumber(iphone.getText().toString())){
+                            ToastUtil.showTextToas(this,"JiaMail: 错误! 手机号码格式不对!");
                         }else{
 
                         };

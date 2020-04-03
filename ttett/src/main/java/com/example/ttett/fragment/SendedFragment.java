@@ -93,7 +93,7 @@ public class SendedFragment extends Fragment {
                 emailMessages = mailService.querySendedMessage(email);
                 if(emailMessages!=null){
                     SendedRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                    inboxAdapter = new InboxAdapter(getContext(),emailMessages);
+                    inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.sendedFragment);
                     SendedRv.setAdapter(inboxAdapter);
                 }
             }

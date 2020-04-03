@@ -125,7 +125,6 @@ public class RecipientMessage{
                     emailMessage.setIsRead(0);
                     emailMessage.setIsStar(0);
                     emailMessage.setIsDelete(0);
-                    emailMessage.setIsSend(1);
                     re.getMailContent((Part) temp[i]);
                     String BodyText = "\r\n" + re.getBodyText();
                     emailMessage.setMessage_text(BodyText);

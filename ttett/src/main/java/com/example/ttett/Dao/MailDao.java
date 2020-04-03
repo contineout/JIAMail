@@ -72,8 +72,9 @@ public class MailDao {
      */
     public List<EmailMessage> QueryDraftMessage(Email email){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail = ? and isSend = ?",
-                new String[]{("%"+ email.getAddress() + "%"),("0")},null,null,null,null);
+        Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail = ? or from_mail = ? and isSend = ? ",
+                new String[]{("%"+ email.getAddress() + "%"),(email.getAddress()),("0")},null,null,null,null);
+        Log.d(TAG,"da"+cursor.getCount());
         return setMessages(cursor);
     }
 

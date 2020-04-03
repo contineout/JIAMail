@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.ttett.Adapter.InboxAdapter;
+import com.example.ttett.Adapter.DraftsAdapter;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
@@ -39,7 +39,7 @@ public class DraftsFragment extends Fragment {
     private MailService mailService;
     private List<EmailMessage> emailMessages;
     private RecyclerView DraftsRv;
-    private InboxAdapter inboxAdapter;
+    private DraftsAdapter draftsAdapter;
     private String TAG = "DraftsFragment";
 
     @Override
@@ -81,13 +81,13 @@ public class DraftsFragment extends Fragment {
             if(emailMessages!=null){
                 emailMessages.clear();
                 emailMessages.addAll(mailService.queryDraftsMessage(email));
-                inboxAdapter.notifyDataSetChanged();
+                draftsAdapter.notifyDataSetChanged();
             }else{
                 emailMessages = mailService.queryDraftsMessage(email);
                 if(emailMessages!=null){
                     DraftsRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                    inboxAdapter = new InboxAdapter(getContext(),emailMessages);
-                    DraftsRv.setAdapter(inboxAdapter);
+                    draftsAdapter = new DraftsAdapter(getContext(),emailMessages);
+                    DraftsRv.setAdapter(draftsAdapter);
                 }
             }
         }

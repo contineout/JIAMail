@@ -107,7 +107,9 @@ private TextView TvRegister;
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_login:
-                Login();
+//                Login();
+                Intent intent1 = new Intent(this,MainActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.register:
                 Intent intent = new Intent(LoginActivity.this,RegisteredActivity.class);

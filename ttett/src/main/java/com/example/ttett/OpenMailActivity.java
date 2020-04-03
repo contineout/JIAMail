@@ -1,34 +1,30 @@
 package com.example.ttett;
 
 import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ttett.Adapter.AttachmentAdapter;
+import com.example.ttett.Adapter.InboxAdapter;
+import com.example.ttett.Adapter.WriteAttachmentAdapter;
 import com.example.ttett.Entity.Attachment;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Service.AttachmentService;
 import com.example.ttett.Service.MailService;
-import com.example.ttett.util.ImageGetterUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 public class OpenMailActivity extends AppCompatActivity {
-    private TextView TvSubject,TvFromId,TvFromMail,TvToId,TvToMail,TvDate,TvContent;
-    private ImageView Iv_mail;
-    private MailService mailService;
-    private AttachmentService attachmentService;
-    private AttachmentAdapter attachmentAdapter;
-    private RecyclerView AttachmentRv;
     private String TAG = "OpenMailActivity";
+    private AttachmentService attachmentService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,52 +33,76 @@ public class OpenMailActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         EmailMessage emailMessage = bundle.getParcelable("emailMessage");
+        String fromFrag = bundle.getString("from_Frag");
 
-        mailService = new MailService(this);
+        MailService mailService = new MailService(this);
         mailService.updateReadMessage(emailMessage.getId());
 
-
-        TvSubject = findViewById(R.id.mail_subject);
-        TvFromId = findViewById(R.id.from_id);
-        TvFromMail = findViewById(R.id.from_mail);
-        TvToId = findViewById(R.id.to_id);
-        TvToMail = findViewById(R.id.to_mail);
-        TvDate = findViewById(R.id.mail_date);
-        Iv_mail = findViewById(R.id.mail_button);
-        TvContent = findViewById(R.id.mail_context);
-        AttachmentRv = findViewById(R.id.mail_attachment_rv);
+        TextView tvSubject = findViewById(R.id.mail_subject);
+        TextView tvFromId = findViewById(R.id.from_id);
+        TextView tvFromMail = findViewById(R.id.from_mail);
+        TextView tvToId = findViewById(R.id.to_id);
+        TextView tvToMail = findViewById(R.id.to_mail);
+        TextView tvDate = findViewById(R.id.mail_date);
+        ImageView iv_mail = findViewById(R.id.mail_button);
+        TextView tvContent = findViewById(R.id.mail_context);
+        RecyclerView attachmentRv = findViewById(R.id.mail_attachment_rv);
+        attachmentRv.setVisibility(View.GONE);
 
         try {
             if (!emailMessage.getFrom().isEmpty() && !emailMessage.getTo().isEmpty()) {
                 String[] from = emailMessage.getFrom().split("[<>]");
                 String[] to = emailMessage.getTo().split("[<>]");
-                TvFromId.setText(from[0]);
-                TvFromMail.setText(from[1]);
-                TvToId.setText(to[0]);
-                TvToMail.setText(to[1]);
+                tvFromId.setText(from[0]);
+                tvFromMail.setText(from[1]);
+                tvToId.setText(to[0]);
+                tvToMail.setText(to[1]);
             }
         }catch (Exception e){
 
         }
 
-        TvSubject.setText(emailMessage.getSubject());
-        TvContent.setText(Html.fromHtml(emailMessage.getContent(),new ImageGetterUtils.MyImageGetter(this,TvContent),null));
-        TvDate.setText(emailMessage.getSendDate());
-        attachmentService = new AttachmentService(this);
-        AttachmentRv.setVisibility(View.GONE);
-        Log.d(TAG,emailMessage.getMessage_id());
+        tvSubject.setText(emailMessage.getSubject());
+        tvContent.setText(emailMessage.getContent());
+        tvDate.setText(emailMessage.getSendDate());
+
+        List<Attachment> attachments;
+        List<Integer> id_item = new ArrayList<>();
+
+        //判断打开时的fragment
         if(emailMessage.getIsAttachment() != 0){
-            List<Attachment> attachments = attachmentService.queryMessageAllAttachment(emailMessage.getMessage_id());
-            if(attachments!=null){
-                AttachmentRv.setVisibility(View.VISIBLE);
-                AttachmentRv.setLayoutManager(new LinearLayoutManager(this));
-                attachmentAdapter = new AttachmentAdapter(this,attachments);
-                attachmentAdapter.setOPEN_MESSAGE();
-                AttachmentRv.setAdapter(attachmentAdapter);
+            attachmentService = new AttachmentService(this);
+            if(!fromFrag.equals(InboxAdapter.inboxFragment)){
+                String[] ids = emailMessage.getAttachment().split("[&]");
+                for(String id:ids){
+                    if(!id.equals("")){
+                        id_item.add(Integer.parseInt(id));
+                    }
+                }
+                 attachments = attachmentService.querySelectAttachment(id_item);
+                if(attachments!=null){
+                    //选择Attachment时,网格布局
+                    attachmentRv.setVisibility(View.VISIBLE);
+                    StaggeredGridLayoutManager layoutManager = new
+                            StaggeredGridLayoutManager(4,StaggeredGridLayoutManager.VERTICAL);
+                    attachmentRv.setLayoutManager(layoutManager);
+                    WriteAttachmentAdapter adapter = new WriteAttachmentAdapter(this, attachments);
+                    attachmentRv.setAdapter(adapter);
+                }
+            }else{
+                 attachments = attachmentService.queryMessageAllAttachment(emailMessage.getMessage_id());
+                if(attachments!=null){
+                    //收到Attachment时,线性布局
+                    attachmentRv.setVisibility(View.VISIBLE);
+                    attachmentRv.setLayoutManager(new LinearLayoutManager(this));
+                    AttachmentAdapter attachmentAdapter = new AttachmentAdapter(this, attachments);
+                    attachmentAdapter.setOPEN_MESSAGE();
+                    attachmentRv.setAdapter(attachmentAdapter);
+                }
             }
         }
 
-        Iv_mail.setOnClickListener(new View.OnClickListener() {
+        iv_mail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(OpenMailActivity.this, "mail_button", Toast.LENGTH_SHORT).show();
