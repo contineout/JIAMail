@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import com.example.ttett.Adapter.AttachmentAdapter;
 import com.example.ttett.Adapter.InboxAdapter;
-import com.example.ttett.Adapter.WriteAttachmentAdapter;
 import com.example.ttett.Entity.Attachment;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Service.AttachmentService;
@@ -20,11 +19,11 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 public class OpenMailActivity extends AppCompatActivity {
     private String TAG = "OpenMailActivity";
     private AttachmentService attachmentService;
+    EmailMessage emailMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,7 @@ public class OpenMailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_open_mail);
 
         Bundle bundle = getIntent().getExtras();
-        EmailMessage emailMessage = bundle.getParcelable("emailMessage");
+        emailMessage = bundle.getParcelable("emailMessage");
         String fromFrag = bundle.getString("from_Frag");
 
         MailService mailService = new MailService(this);
@@ -72,7 +71,7 @@ public class OpenMailActivity extends AppCompatActivity {
         //判断打开时的fragment
         if(emailMessage.getIsAttachment() != 0){
             attachmentService = new AttachmentService(this);
-            if(!fromFrag.equals(InboxAdapter.inboxFragment)){
+            if(fromFrag.equals(InboxAdapter.sendedFragment)){
                 String[] ids = emailMessage.getAttachment().split("[&]");
                 for(String id:ids){
                     if(!id.equals("")){
@@ -80,25 +79,15 @@ public class OpenMailActivity extends AppCompatActivity {
                     }
                 }
                  attachments = attachmentService.querySelectAttachment(id_item);
-                if(attachments!=null){
-                    //选择Attachment时,网格布局
-                    attachmentRv.setVisibility(View.VISIBLE);
-                    StaggeredGridLayoutManager layoutManager = new
-                            StaggeredGridLayoutManager(4,StaggeredGridLayoutManager.VERTICAL);
-                    attachmentRv.setLayoutManager(layoutManager);
-                    WriteAttachmentAdapter adapter = new WriteAttachmentAdapter(this, attachments);
-                    attachmentRv.setAdapter(adapter);
-                }
             }else{
                  attachments = attachmentService.queryMessageAllAttachment(emailMessage.getMessage_id());
-                if(attachments!=null){
-                    //收到Attachment时,线性布局
-                    attachmentRv.setVisibility(View.VISIBLE);
-                    attachmentRv.setLayoutManager(new LinearLayoutManager(this));
-                    AttachmentAdapter attachmentAdapter = new AttachmentAdapter(this, attachments);
-                    attachmentAdapter.setOPEN_MESSAGE();
-                    attachmentRv.setAdapter(attachmentAdapter);
-                }
+            }
+            if(attachments!=null){
+                attachmentRv.setVisibility(View.VISIBLE);
+                attachmentRv.setLayoutManager(new LinearLayoutManager(this));
+                AttachmentAdapter attachmentAdapter = new AttachmentAdapter(this, attachments);
+                attachmentAdapter.setOPEN_MESSAGE();
+                attachmentRv.setAdapter(attachmentAdapter);
             }
         }
 

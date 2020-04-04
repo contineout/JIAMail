@@ -23,6 +23,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "email_address text," +
             "AuthorizationCode text," +
             "email_name text," +
+            "message_count integer," +
             "FOREIGN KEY (user_id) REFERENCES User (id)" +
             ")";
 

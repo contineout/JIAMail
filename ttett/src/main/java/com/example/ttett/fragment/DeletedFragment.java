@@ -80,14 +80,19 @@ public class DeletedFragment extends Fragment {
         mailService = new MailService(getContext());
         if(email!=null){
             if(emailMessages!=null){
-                emailMessages.clear();
-                emailMessages.addAll(mailService.queryDeleteMessage(email));
-                inboxAdapter.notifyDataSetChanged();
+                if(mailService.queryDeleteMessage(email)!=null){
+                    emailMessages.clear();
+                    emailMessages.addAll(mailService.queryDeleteMessage(email));
+                    inboxAdapter.notifyDataSetChanged();
+                }else{
+                    emailMessages.clear();
+                    inboxAdapter.notifyDataSetChanged();
+                }
             }else{
                 emailMessages = mailService.queryDeleteMessage(email);
                 if(emailMessages!=null){
                     DeletedRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                    inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.deleteFragment);
+                    inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.deleteFragment,email);
                     DeletedRv.setAdapter(inboxAdapter);
                 }
             }

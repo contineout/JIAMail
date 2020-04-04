@@ -17,13 +17,14 @@ public class EmailService {
     }
 
     /**
-     * 判断又没有相同的邮箱，若无则保存
+     * 判断又没有相同的邮箱，若无则保存,创建inbox文件夹
      * @param email
      * @return
      */
     public Boolean SaveEmail(Email email) {
         EmailDao emailDao = new EmailDao(mContext);
         if (!emailDao.isExistEmail(email.getAddress())){
+
             return emailDao.InsertEmail(email);
         }else{
             return false;
@@ -64,5 +65,15 @@ public class EmailService {
         EmailDao emailDao = new EmailDao(mContext);
         Log.d(TAG,"f"+user_id);
         return emailDao.QueryAllEmail(user_id);
+    }
+
+    /**
+     * 修改邮箱邮件数量
+     * @param email
+     * @return
+     */
+    public void updateMessageCount(Email email){
+        EmailDao emailDao = new EmailDao(mContext);
+        emailDao.updateMessageCount(email);
     }
 }

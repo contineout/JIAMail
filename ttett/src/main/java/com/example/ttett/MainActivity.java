@@ -2,7 +2,6 @@ package com.example.ttett;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,7 +12,9 @@ import com.example.ttett.Adapter.EmailAdapter;
 import com.example.ttett.CustomDialog.ContactsDialogFragment;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
+import com.example.ttett.Entity.Folder;
 import com.example.ttett.Service.EmailService;
+import com.example.ttett.Service.FolderService;
 import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.ContactsFragment;
@@ -101,10 +102,16 @@ public class MainActivity extends AppCompatActivity {
         mailDao.CreateMessageTable();
 //        user_id = getIntent().getIntExtra("user_id",0);
 
-        user_id = 1;
-        emails = emailService.queryAllEmail(user_id);
-        Log.d(TAG,"user_id = "+user_id);
+        try{
+            user_id = 1;
+        }catch (Exception e){
+        }
+
         initEmail();
+        if(emails!=null){
+            Email email = emails.get(0);
+            initPara(email);
+        }
         add_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,34 +137,39 @@ public class MainActivity extends AppCompatActivity {
 
     public void initEmail(){
         if(emails!=null){
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-            Email_Rv.setLayoutManager(layoutManager);
-            emailAdapter = new EmailAdapter(this,emails);
-            Email_Rv.setAdapter(emailAdapter);
+            emails.clear();
+            emails.addAll(emailService.queryAllEmail(user_id));
+            emailAdapter.notifyDataSetChanged();
+        }else {
+            emails = emailService.queryAllEmail(user_id);
             if(emails!=null){
-                Email email = emails.get(0);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("email",email);
-                inboxFragment.setArguments(bundle);
-                folderFragment.setArguments(bundle);
-                sendedFragment.setArguments(bundle);
-                draftsFragment.setArguments(bundle);
-                contactsFragment.setArguments(bundle);
-                trashFragment.setArguments(bundle);
-                attachmentFragment.setArguments(bundle);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                Email_Rv.setLayoutManager(layoutManager);
+                emailAdapter = new EmailAdapter(this,emails);
+                Email_Rv.setAdapter(emailAdapter);
             }
         }
     }
 
+    public void initPara(Email email){
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("email",email);
+        inboxFragment.setArguments(bundle);
+        folderFragment.setArguments(bundle);
+        sendedFragment.setArguments(bundle);
+        draftsFragment.setArguments(bundle);
+        contactsFragment.setArguments(bundle);
+        trashFragment.setArguments(bundle);
+        attachmentFragment.setArguments(bundle);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        final int user_id = getIntent().getIntExtra("user_id",0);
         if (requestCode == 1 && resultCode == LoginEmailActivity.RESULT_CODE) {
             Bundle bundle = data.getExtras();
             boolean strResult = bundle.getBoolean("result");
             final String address = bundle.getString("address");
-            Log.d(TAG,"address=" + address );
 
             if(strResult){
                 new Thread(new Runnable() {
@@ -166,18 +178,17 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(emails!=null){
-                                    emails.clear();
-                                    emails.addAll(emailService.queryAllEmail(user_id));
-                                    emailAdapter.notifyDataSetChanged();
-                                }else{
-                                    emails = emailService.queryAllEmail(user_id);
-                                    initEmail();
-                                }
+                                initEmail();
                                 if(!address.isEmpty()){
                                     final Email email = emailService.queryEmail(address);
-                                    Log.d(TAG,"address=" + email.getAddress() );
                                     EventBus.getDefault().post(new MessageEvent("New_Email",address));
+                                    initPara(email);
+                                    FolderService folderService = new FolderService(MainActivity.this);
+                                    Folder folder = new Folder();
+                                    folder.setFolder_name("inbox");
+                                    folder.setEmail_id(email.getEmail_id());
+                                    folder.setFolder_id(1);
+                                    folderService.SaveFolder(folder);
                                 }
                             }
                         });

@@ -100,7 +100,7 @@ public class SendMessage {
 
         MimeMessage msg = new MimeMessage(session);
         //发件人
-        msg.setFrom(new InternetAddress(emailMessage.getFrom(), "WUJIA", "UTF-8"));
+        msg.setFrom(new InternetAddress(emailMessage.getFrom(), email.getName(), "UTF-8"));
         //接收人
         msg.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(emailMessage.getTo(), "LL", "UTF-8"));
         //密送

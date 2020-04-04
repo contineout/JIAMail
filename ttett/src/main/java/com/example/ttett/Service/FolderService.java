@@ -27,9 +27,9 @@ public class FolderService {
             if (!folderDao.isExistFolder(folder.getFolder_name())) {
                 folderDao.InsertFolder(folder);
             }else {
-
+                return false;
             }
-        return folderDao.isExistFolder(folder.getFolder_name());
+        return true;
     }
 
     /**

@@ -38,6 +38,22 @@ public class MailDao {
     }
 
     /**
+     * message_id查询邮件所属Email_id
+     * @param id
+     * @return
+     */
+    public int QueryEmail_id(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"email_id"},"id = ?",
+                new String[]{String.valueOf(id)},null,null,null,null);
+        int email_id = 0;
+        if(cursor.moveToFirst()){
+            email_id = cursor.getInt(cursor.getColumnIndex("email_id"));
+        }
+        return email_id;
+    }
+
+    /**
      * 读取SQLite存放的邮件
      * @param email 每个邮件账号
      * @return
@@ -249,7 +265,7 @@ public class MailDao {
      * 彻底删除邮件信息
      * @param id
      */
-    public void DeleteMessage(int id){
+    public void deleteMessage(int id){
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete("EMAILMESSAGE","id = ?",new String[]{String.valueOf(id)});
     }

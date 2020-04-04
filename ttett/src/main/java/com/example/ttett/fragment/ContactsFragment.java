@@ -17,6 +17,7 @@ import com.example.ttett.Entity.Contact;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
 import com.example.ttett.Service.ContactService;
+import com.example.ttett.Service.EmailService;
 import com.example.ttett.bean.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -80,18 +81,23 @@ public class ContactsFragment extends Fragment {
     }
 
     /**
-     * 添加联系人更新UI
-     * @param event
+     * 新加入的邮箱进行刷新
+     * @param messageEvent
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public void addContactRefresh(MessageEvent event){
-        Log.d(TAG,event.getMessage());
-       email_id = event.getEmail_id();
-        if(event.getMessage().equals("add_contact")){
+    public void NewEmail(MessageEvent messageEvent) {
+        if (messageEvent.getMessage().equals("New_Email")) {
+            EmailService emailService = new EmailService(getContext());
+            email = emailService.queryEmail(messageEvent.getAddress());
+            Log.d(TAG,email.getAddress());
             initContacts();
         }
     }
 
+    /**
+     * 切换邮箱
+     * @param messageEvent
+     */
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void SwitchContact(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
@@ -100,6 +106,12 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initContacts();
+    }
 
     public void initContacts(){
         contactService = new ContactService(getContext());

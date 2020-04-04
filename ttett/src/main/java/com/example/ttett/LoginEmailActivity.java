@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Service.EmailService;
 import com.example.ttett.util.EmailLogin;
+import com.example.ttett.util.ToastUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,10 +39,10 @@ public class LoginEmailActivity extends AppCompatActivity {
 
     private void EmailConnection(final String address, final String password){
         if(password.isEmpty()){
-            Toast.makeText(LoginEmailActivity.this,"请输入邮箱密码",Toast.LENGTH_SHORT).show();
+            ToastUtil.showTextToas(this,"请输入邮箱密码");
         }else{
             if(address.isEmpty()){
-                Toast.makeText(LoginEmailActivity.this,"请输入邮箱地址",Toast.LENGTH_SHORT).show();
+                ToastUtil.showTextToas(this,"请输入邮箱地址");
             }else{
                 final EmailService emailService = new EmailService(this);
                 new Thread(new Runnable() {
@@ -54,7 +54,7 @@ public class LoginEmailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if(isConnection){
-                                    Toast.makeText(LoginEmailActivity.this,"连接成功",Toast.LENGTH_SHORT).show();
+                                    ToastUtil.showTextToas(LoginEmailActivity.this,"请输入邮箱地址");
                                     emailService.SaveEmail(email);
                                     Intent intent = new Intent();
                                     intent.putExtra("result",isConnection);
@@ -62,7 +62,7 @@ public class LoginEmailActivity extends AppCompatActivity {
                                     setResult(RESULT_CODE,intent);
                                     finish();
                                 }else {
-                                    Toast.makeText(LoginEmailActivity.this,"连接失败",Toast.LENGTH_SHORT).show();
+                                    ToastUtil.showTextToas(LoginEmailActivity.this,"连接失败");
                                 }
                             }
                         });
@@ -82,6 +82,7 @@ public class LoginEmailActivity extends AppCompatActivity {
         email.setType(email_type[1]);
         email.setAuthorizationCode(password);
         email.setUser_id(getIntent().getIntExtra("user_id",0));
+        email.setMessage_count(0);
         switch (email_type[1]){
             case "qq.com":
                 return emailLogin.QQLogin(email);

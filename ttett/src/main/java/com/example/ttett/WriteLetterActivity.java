@@ -17,6 +17,7 @@ import com.example.ttett.Entity.Attachment;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Service.AttachmentService;
+import com.example.ttett.selectAcitvity.SelectAttachmentActivity;
 import com.example.ttett.util.SaveMessage;
 import com.example.ttett.util.SendMessage;
 import com.example.ttett.util.ToastUtil;
@@ -186,7 +187,7 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(this,"密送人",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.fab_attachment:
-                Intent intent = new Intent(this,SelectAttachmentActivity.class);
+                Intent intent = new Intent(this, SelectAttachmentActivity.class);
                 intent.putExtra("email_id",email.getEmail_id());
                 startActivityForResult(intent,1);
                 break;

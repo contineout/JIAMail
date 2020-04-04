@@ -52,6 +52,18 @@ public class EmailDao {
     }
 
     /**
+     * 修改邮箱邮件数量
+     * @param email
+     * @return
+     */
+    public void updateMessageCount(Email email){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("message_count",email.getMessage_count());
+        db.update("EMAIL",values,"id = ?",new String[]{String.valueOf(email.getEmail_id())});
+    }
+
+    /**
      * 插入邮箱信息
      * @param email
      */
@@ -63,6 +75,7 @@ public class EmailDao {
             values.put("email_address",email.getAddress());
             values.put("AuthorizationCode",email.getAuthorizationCode());
             values.put("email_name", email.getName());
+            values.put("message_count",email.getMessage_count());
             db.insert("EMAIL",null,values);
             values.clear();
             db.close();
@@ -91,6 +104,7 @@ public class EmailDao {
                 email.setAddress(cursor.getString(cursor.getColumnIndex("email_address")));
                 email.setAuthorizationCode(cursor.getString(cursor.getColumnIndex("AuthorizationCode")));
                 email.setName(cursor.getString(cursor.getColumnIndex("email_name")));
+                email.setMessage_count(cursor.getInt(cursor.getColumnIndex("message_count")));
                 emails.add(email);
             }while (cursor.moveToNext());
             cursor.close();
@@ -119,6 +133,7 @@ public class EmailDao {
                 email.setAddress(cursor.getString(cursor.getColumnIndex("email_address")));
                 email.setAuthorizationCode(cursor.getString(cursor.getColumnIndex("AuthorizationCode")));
                 email.setName(cursor.getString(cursor.getColumnIndex("email_name")));
+                email.setMessage_count(cursor.getInt(cursor.getColumnIndex("message_count")));
             }while (cursor.moveToNext());
             cursor.close();
             Log.d(TAG,"查询了+"+cursor.getCount() + email.getAddress());

@@ -1,13 +1,20 @@
-package com.example.ttett;
+package com.example.ttett.selectAcitvity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.ttett.Adapter.InboxAdapter;
 import com.example.ttett.Adapter.SelectAdapter;
+import com.example.ttett.CustomDialog.DeleteDialogFragment;
+import com.example.ttett.CustomDialog.SelectFolderDialogFragment;
+import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.R;
+import com.example.ttett.Service.FolderService;
 import com.example.ttett.Service.MailService;
 import com.example.ttett.bean.MessageEvent;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -41,6 +48,8 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
     private boolean setStar = true;
     MailService mailService = new MailService(this);
     private List<Integer> id_item;
+    private String mFromFrag;
+    private Email email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +68,9 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
         setSupportActionBar(mToolbar);
         Bundle bundle = getIntent().getExtras();
         emailMessages = bundle.getParcelableArrayList("emailMessages");
+        mFromFrag = bundle.getString("from_Frag");
+        email = bundle.getParcelable("email");
+        Log.d(TAG,email.getAddress());
         checkStatus = new HashMap<>();
         for(int i =0;i < emailMessages.size();i++){
             checkStatus.put(i,false);
@@ -175,17 +187,23 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
                     finish();
                     break;
                 case R.id.set_delete:
-                    if(id_item != null){
-                        for(int id:id_item){
-                            mailService.updateisDelete(id);
+                    if(id_item != null) {
+                        if(mFromFrag.equals(InboxAdapter.deleteFragment)){
+                            DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
+                            deleteDialogFragment.show(getSupportFragmentManager(),"deleteDialogFragment");
+                            Bundle bundle = new Bundle();
+                            bundle.putIntegerArrayList("id_item", (ArrayList<Integer>) id_item);
+                            deleteDialogFragment.setArguments(bundle);
+                        }else{
+                            for(int id:id_item){
+                                mailService.updateisDelete(id);
+                                finish();
+                            }
                         }
-                        EventBus.getDefault().post("addDeleteMessage");
                     }
-                    finish();
                     break;
                 case R.id.set_tran:
-
-                    return true;
+                    showDialog();
                 default:
                     break;
 
@@ -193,7 +211,14 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
             return false;
         }
     };
-
+    public void showDialog(){
+        FolderService folderService = new FolderService(this);
+        SelectFolderDialogFragment dialogFragment = new SelectFolderDialogFragment ();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("email",email);
+        dialogFragment.setArguments(bundle);
+        dialogFragment.show(getSupportFragmentManager(),"contactsDialogFragment");
+    }
 
     @Override
     public void onClick(View v) {

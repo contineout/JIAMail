@@ -1,4 +1,4 @@
-package com.example.ttett;
+package com.example.ttett.selectAcitvity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.ttett.Adapter.SelectAttachmentAdapter;
 import com.example.ttett.Entity.Attachment;
+import com.example.ttett.R;
 import com.example.ttett.Service.AttachmentService;
 import com.example.ttett.bean.MessageEvent;
 

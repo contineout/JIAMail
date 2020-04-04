@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/add_folder_dialog">
+
+    <TextView
+        android:id="@+id/jia_mail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/black"
+        android:text="Move to"
+        android:textSize="20sp"
+    />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/select_folder_rv"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
+
+        <TextView
+            android:layout_gravity="right|bottom"
+            android:id="@+id/cancel"
+            android:layout_width="60dp"
+            android:layout_height="45dp"
+            android:textSize="15sp"
+            android:text="取消"
+            android:layout_marginEnd="20dp"
+            android:gravity="center"
+            android:textColor="#0099FF"/>
+
+
+</LinearLayout>

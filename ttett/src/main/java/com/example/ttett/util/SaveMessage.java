@@ -31,7 +31,7 @@ public class SaveMessage {
      */
     public void saveSendMessage(){
         MailDao mailDao = new MailDao(context);
-        String from_mail = "wu"+"<"+ emailMessage.getFrom() + ">";
+        String from_mail = email.getName()+"<"+ emailMessage.getFrom() + ">";
         emailMessage.setFrom(from_mail);
         emailMessage.setIsSend(1);
         emailMessage.setSendDate(newDate());

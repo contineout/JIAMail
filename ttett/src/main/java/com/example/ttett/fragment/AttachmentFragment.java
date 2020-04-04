@@ -15,6 +15,11 @@ import com.example.ttett.Entity.Attachment;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
 import com.example.ttett.Service.AttachmentService;
+import com.example.ttett.Service.EmailService;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -62,7 +67,6 @@ public class AttachmentFragment extends Fragment {
             email = getArguments().getParcelable("email");
         }catch (NullPointerException ignored){
         }
-        Log.d(TAG,"email=" + email.getEmail_id());
         initAttach();
 
         return view;
@@ -89,6 +93,32 @@ public class AttachmentFragment extends Fragment {
                     AttachmentRv.setAdapter(attachmentAdapter);
                 }
             }
+        }
+    }
+
+    /**
+     * 新加入的邮箱进行刷新
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void NewEmail(MessageEvent messageEvent) {
+        if (messageEvent.getMessage().equals("New_Email")) {
+            EmailService emailService = new EmailService(getContext());
+            email = emailService.queryEmail(messageEvent.getAddress());
+            Log.d(TAG,email.getAddress());
+            initAttach();
+        }
+    }
+
+    /**
+     * 切换邮箱
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void SwitchContact(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("Switch_Email")){
+            email = messageEvent.getEmail();
+            initAttach();
         }
     }
 

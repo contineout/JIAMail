@@ -22,6 +22,20 @@ android {
         }
     }
 
+    sourceSets{
+        main{
+            res.srcDirs=[
+                    'src/main/res/layout/select_activity',
+                    'src/main/res/layout/contact_activity',
+                    'src/main/res/layout/rv_item',
+                    'src/main/res/layout/fragment',
+                    'src/main/res/layout/dialog',
+                    'src/main/res/layout',
+                    'src/main/res'
+            ]
+        }
+    }
+
 }
 
 dependencies {
@@ -45,4 +59,5 @@ dependencies {
     implementation 'com.sun.mail:android-activation:1.6.2'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'org.sufficientlysecure:html-textview:3.9'
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 }

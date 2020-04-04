@@ -26,7 +26,7 @@ public class MailService {
      * @param emailMessages
      * @return
      */
-    public Boolean SaveMessage( List<EmailMessage> emailMessages) {
+    public int SaveMessage( List<EmailMessage> emailMessages) {
         MailDao mailDao = new MailDao(mContext);
         int i = 0;
         for (EmailMessage emailMessage : emailMessages) {
@@ -35,7 +35,15 @@ public class MailService {
                 i+=1;
             }
         }
-        return i > 0;
+        return i;
+    }
+
+    public int queryEmail_id(int id){
+        MailDao mailDao = new MailDao(mContext);
+        if(mailDao.isExistMessage(id)){
+            return mailDao.QueryEmail_id(id);
+        }
+        return 0;
     }
 
     /**
@@ -45,10 +53,10 @@ public class MailService {
      * @return
      */
     public Message[] isNewMessage(Email email, Message[] messages) {
-        MailDao mailDao = new MailDao(mContext);
-        int MessageCount = mailDao.QueryMessageCount(email);
-        Log.d(TAG,"MessageCount"+MessageCount);
+        int MessageCount = email.getMessage_count();
+        Log.d(TAG, "MessageCount: "+"邮件数量:　" + MessageCount);
         int RecipientMessageCount = messages.length;
+        Log.d(TAG, "RecipientMessageCount: "+"邮件数量:　" + RecipientMessageCount);
         if(MessageCount == 0){
             return messages;
         }
@@ -70,20 +78,28 @@ public class MailService {
      */
     public void SynchronizeMessage(Email email){
         RecipientMessage recipientMessage = new RecipientMessage(email,mContext);
-        List<EmailMessage> emailMessages;
         switch (email.getType()){
             case "sina.com":
-                emailMessages = recipientMessage.SinaRecipient();
-                if(SaveMessage(emailMessages)){
-                    Log.d(TAG,"sina有新邮件保存成功");
-                }
+                List<EmailMessage> emailMessages = recipientMessage.SinaRecipient();
+                checkSaveMessage(email,emailMessages);
                 break;
             case "qq.com":
                 emailMessages = recipientMessage.QQRecipient();
-                if(SaveMessage(emailMessages)){
-                    Log.d(TAG,"sina有新邮件保存成功");
-                }
+                checkSaveMessage(email,emailMessages);
                 break;
+        }
+    }
+
+    public void checkSaveMessage(Email email,List<EmailMessage> emailMessages){
+        EmailService emailService;
+        int saveCount = SaveMessage(emailMessages);
+        if(saveCount!=0){
+            emailService = new EmailService(mContext);
+            email.setMessage_count(saveCount+email.getMessage_count());
+            emailService.updateMessageCount(email);
+            Log.d(TAG,email.getType()+"有新邮件保存成功");
+        }else {
+            Log.d(TAG,email.getType()+"无新邮件");
         }
     }
 
@@ -204,6 +220,17 @@ public class MailService {
         MailDao mailDao = new MailDao(mContext);
         if(mailDao.isExistMessage(id)){
             mailDao.updateisDelete(id);
+        }
+    }
+
+    /**
+     * 彻底删除邮件
+     * @param id
+     */
+    public void deleteMessage(int id) {
+        MailDao mailDao = new MailDao(mContext);
+        if(mailDao.isExistMessage(id)){
+            mailDao.deleteMessage(id);
         }
     }
 

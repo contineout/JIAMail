@@ -95,11 +95,10 @@ public class FolderFragment extends Fragment{
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void addFolder(MessageEvent event){
-        if (event.getMessage().equals("add_folder")){
-            initFolder();
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+        initFolder();
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

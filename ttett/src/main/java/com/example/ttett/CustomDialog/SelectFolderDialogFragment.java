@@ -12,24 +12,30 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.ttett.Adapter.SelectFolderAdapter;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
 import com.example.ttett.R;
 import com.example.ttett.Service.FolderService;
-import com.example.ttett.util.ToastUtil;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class FolderDialogFragment extends DialogFragment implements View.OnClickListener{
+public class SelectFolderDialogFragment extends DialogFragment implements View.OnClickListener{
     private TextView TvConfirm,TvCancel;
     private EditText EtName;
 //    private Folder folder;
     private Email email;
     private FolderService folderService;
     private String folder_name;
-    private String TAG = "FolderDialogFragment";
+    private String TAG = "SelectFolderDialogFragment";
+    private RecyclerView Rv;
+    private SelectFolderAdapter adapter;
 
 
 
@@ -44,19 +50,23 @@ public class FolderDialogFragment extends DialogFragment implements View.OnClick
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.add_folder_dialog,null);
-        TvConfirm = view.findViewById(R.id.add_folder_dialog_confirm);
-        TvCancel = view.findViewById(R.id.add_folder_dialog_cancel);
-        EtName = view.findViewById(R.id.add_folder_dialog_name);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.select_folder_dialog,null);
+
+        TvCancel = view.findViewById(R.id.cancel);
         try{
             email = getArguments().getParcelable("email");
         }catch (Exception e){
         }
         Log.d(TAG,"email=" + email.getEmail_id());
 
-
-        TvConfirm.setOnClickListener(this);
         TvCancel.setOnClickListener(this);
+        Rv = view.findViewById(R.id.select_folder_rv);
+        Rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        folderService = new FolderService(getContext());
+        List<Folder> folders = folderService.queryAllFolder(email);
+        adapter = new SelectFolderAdapter(getContext(),folders);
+        Rv.setAdapter(adapter);
+
         builder.setView(view);
         return builder.create();
     }
@@ -64,33 +74,11 @@ public class FolderDialogFragment extends DialogFragment implements View.OnClick
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.add_folder_dialog_confirm:
-                folder_name = EtName.getText().toString();
-                addFolder(folder_name);
-                break;
-                case R.id.add_folder_dialog_cancel:
+                case R.id.cancel:
                     dismiss();
                     break;
                     default:
          }
     }
 
-
-    private void addFolder(String name) {
-        folderService = new FolderService(getContext());
-        if(name.isEmpty()){
-            ToastUtil.showTextToas(getContext(), "JiaMail:请输入文件名");
-        }else {
-            Folder folder = new Folder();
-            Log.d(TAG,"email=" + name);
-            folder.setFolder_name(name);
-            folder.setEmail_id(email.getEmail_id());
-            Boolean addResult = folderService.SaveFolder(folder);
-            if (addResult) {
-                dismiss();
-            } else {
-                ToastUtil.showTextToas(getContext(), "JiaMail:同名文件夹已经存在");
-            }
-        }
-    }
 }

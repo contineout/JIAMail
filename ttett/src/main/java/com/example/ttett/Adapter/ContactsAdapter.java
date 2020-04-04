@@ -6,9 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.R;
 import com.example.ttett.SimpleContactActivity;
@@ -18,7 +19,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder> {
+public class ContactsAdapter extends RecyclerSwipeAdapter<ContactsAdapter.ContactViewHolder> {
 
     private List<Contact> mContacts ;
     private Context mContext;
@@ -54,6 +55,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     @Override
     public void onBindViewHolder(@NonNull ContactsAdapter.ContactViewHolder holder, int position) {
         Contact contact = mContacts.get(position);
+        holder.contact_item.setShowMode(SwipeLayout.ShowMode.LayDown);
         holder.contact_name.setText(contact.getName());
         holder.contact_email.setText(contact.getEmail());
 
@@ -64,9 +66,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         return mContacts.size();
     }
 
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return position;
+    }
+
     static class ContactViewHolder extends RecyclerView.ViewHolder{
         TextView contact_name,contact_email;
-        LinearLayout contact_item;
+        SwipeLayout contact_item;
 
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);

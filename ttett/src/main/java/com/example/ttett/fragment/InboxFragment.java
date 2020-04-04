@@ -201,7 +201,7 @@ public class InboxFragment extends Fragment {
                     InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     InboxRv.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
 
-                    inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.inboxFragment);
+                    inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.inboxFragment,email);
                     InboxRv.setAdapter(inboxAdapter);
 
                     DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();

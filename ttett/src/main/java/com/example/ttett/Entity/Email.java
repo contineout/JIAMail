@@ -10,14 +10,19 @@ public class Email implements Parcelable {
     private String type;
     private String address;
     private String name;
+    private int message_count;
 
-    public Email(Parcel in) {
+    public Email() {
+    }
+
+    protected Email(Parcel in) {
         email_id = in.readInt();
         user_id = in.readInt();
         AuthorizationCode = in.readString();
         type = in.readString();
         address = in.readString();
         name = in.readString();
+        message_count = in.readInt();
     }
 
     public static final Creator<Email> CREATOR = new Creator<Email>() {
@@ -31,18 +36,6 @@ public class Email implements Parcelable {
             return new Email[size];
         }
     };
-
-    public Email() {
-
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public int getEmail_id() {
         return email_id;
@@ -84,11 +77,26 @@ public class Email implements Parcelable {
         this.address = address;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMessage_count() {
+        return message_count;
+    }
+
+    public void setMessage_count(int message_count) {
+        this.message_count = message_count;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
-
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -98,5 +106,6 @@ public class Email implements Parcelable {
         dest.writeString(type);
         dest.writeString(address);
         dest.writeString(name);
+        dest.writeInt(message_count);
     }
 }

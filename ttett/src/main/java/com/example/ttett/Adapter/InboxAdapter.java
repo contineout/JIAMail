@@ -10,10 +10,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.OpenMailActivity;
 import com.example.ttett.R;
-import com.example.ttett.SelectMailActivity;
+import com.example.ttett.selectAcitvity.SelectMailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +27,16 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     private List<EmailMessage> mEmailMessages ;
     private Context mContext;
     private String mFromFrag;
-    public static String draftsFragment = "draftsFragment";
+    private Email mEmail;
     public static String inboxFragment = "inboxFragment";
     public static String sendedFragment = "sendedFragment";
     public static String deleteFragment = "deleteFragment";
 
-    public InboxAdapter(Context context,List<EmailMessage> emailMessages,String fromFrag){
+    public InboxAdapter(Context context, List<EmailMessage> emailMessages, String fromFrag, Email email){
         this.mContext = context;
         this.mEmailMessages = emailMessages;
         this.mFromFrag = fromFrag;
+        this.mEmail = email;
     }
     @NonNull
     @Override
@@ -65,6 +67,8 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
                 Bundle bundle = new Bundle();
                 ArrayList<EmailMessage> Messages = (ArrayList<EmailMessage>) mEmailMessages;
                 bundle.putParcelableArrayList("emailMessages",Messages);
+                bundle.putString("from_Frag",mFromFrag);
+                bundle.putParcelable("email",mEmail);
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
                 return true;
@@ -77,58 +81,31 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     @Override
     public void onBindViewHolder(@NonNull InboxAdapter.InboxViewHolder holder, int position) {
         EmailMessage message = mEmailMessages.get(position);
-        if(mFromFrag.equals(inboxFragment) || mFromFrag.equals(sendedFragment)||mFromFrag.equals(deleteFragment)){
-            if(message.getIsRead() == 0){
-                holder.isReadflag.setVisibility(View.VISIBLE);
-            }else {
-                holder.isReadflag.setVisibility(View.GONE);
-            }
-            if(message.getIsStar() == 0){
-                holder.isStarflag.setVisibility(View.GONE);
-            }else {
-                holder.isStarflag.setVisibility(View.VISIBLE);
-            }
-            if(message.getIsAttachment() == 1){
-                holder.isAttachment.setVisibility(View.VISIBLE);
-            }else{
-                holder.isAttachment.setVisibility(View.GONE);
-            }
-            holder.mTime.setText(message.getSendDate().substring(5,16));
-            holder.mSubject.setText(message.getSubject());
-            holder.mContent.setText(message.getContent());
-            if(mFromFrag.equals(inboxFragment)){
-                String[] from = message.getFrom().split("[<>]");
-                holder.mName.setText(from[0]);
-            }else {
-                String to = message.getTo();
-                holder.mName.setText("TO:" + " " + to);
-            }
-        }else if(mFromFrag.equals(draftsFragment)){
-            holder.isStarflag.setImageResource(R.mipmap.drafts_save);
-            holder.isStarflag.setMaxHeight(20);
-            holder.isStarflag.setMaxWidth(20);
-            if(message.getSubject().equals("")){
-                holder.mSubject.setText("(无主题)");
-            }else {
-                holder.mSubject.setText(message.getSubject());
-            }
-            if(message.getTo().equals("")){
-                holder.mName.setText("(无收件人)");
-            }else{
-                holder.mName.setText(message.getTo());
-            }
-            if(message.getIsAttachment() == 1){
-                holder.isAttachment.setVisibility(View.VISIBLE);
-            }else{
-                holder.isAttachment.setVisibility(View.GONE);
-            }
+        if (message.getIsRead() == 0) {
+            holder.isReadflag.setVisibility(View.VISIBLE);
+        } else {
             holder.isReadflag.setVisibility(View.GONE);
-            holder.Icon.setVisibility(View.GONE);
-            holder.mTime.setText(message.getSendDate().substring(5,16));
-            holder.mContent.setText(message.getContent());
         }
-
-
+        if (message.getIsStar() == 0) {
+            holder.isStarflag.setVisibility(View.GONE);
+        } else {
+            holder.isStarflag.setVisibility(View.VISIBLE);
+        }
+        if (message.getIsAttachment() == 1) {
+            holder.isAttachment.setVisibility(View.VISIBLE);
+        } else {
+            holder.isAttachment.setVisibility(View.GONE);
+        }
+        holder.mTime.setText(message.getSendDate().substring(5, 16));
+        holder.mSubject.setText(message.getSubject());
+        holder.mContent.setText(message.getContent());
+        if (mFromFrag.equals(sendedFragment)) {
+            String to = message.getTo();
+            holder.mName.setText("TO:" + " " + to);
+        } else {
+            String[] from = message.getFrom().split("[<>]");
+            holder.mName.setText(from[0]);
+        }
     }
 
     @Override

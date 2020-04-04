@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SelectAttachmentActivity">
+    tools:context=".selectAcitvity.SelectMailActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -20,37 +20,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp">
                 <TextView
-                    android:id="@+id/cancel_select"
+                    android:id="@+id/select_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="取消"
                     android:layout_centerVertical="true"
                     android:textSize="18sp"
-                    android:textColor="@color/Attachment_Tv"/>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center">
-                    <TextView
-                        android:id="@+id/select_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="多选"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        />
-                </RelativeLayout>
+                    android:textColor="@color/black"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
                 <TextView
-                    android:id="@+id/confirm_select"
+                    android:id="@+id/select_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="多选"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    />
+            </RelativeLayout>
+                <TextView
+                    android:id="@+id/All_select"
                     android:layout_marginRight="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="确定"
+                    android:text="全选"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:textSize="18sp"
-                    android:textColor="@color/Attachment_Tv"/>
+                    android:textColor="@color/black"/>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -60,5 +60,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/select_Bnv"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:background="@color/colorPrimary"
+            app:itemTextColor="@color/xiahua"
+            app:menu="@menu/select_bottomnav_item"
+            app:labelVisibilityMode="labeled"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </LinearLayout>
