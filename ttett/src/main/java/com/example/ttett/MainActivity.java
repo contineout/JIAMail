@@ -14,11 +14,11 @@ import com.example.ttett.Contact_module.ContactsFragment;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Folder_module.FolderFragment;
+import com.example.ttett.MailDialog_module.DialogMailFragment;
 import com.example.ttett.Service.EmailService;
 import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.fragment.AttachmentFragment;
 import com.example.ttett.fragment.DeletedFragment;
-import com.example.ttett.fragment.DialogMailFragment;
 import com.example.ttett.fragment.DraftsFragment;
 import com.example.ttett.fragment.InboxFragment;
 import com.example.ttett.fragment.SendedFragment;
@@ -160,6 +160,8 @@ public class MainActivity extends AppCompatActivity {
         contactsFragment.setArguments(bundle);
         trashFragment.setArguments(bundle);
         attachmentFragment.setArguments(bundle);
+        dialogMailFragment.setArguments(bundle);
+
     }
 
     @Override

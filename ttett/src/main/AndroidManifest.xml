@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".selectAcitvity.SelectAttachmentActivity"></activity>
+        <activity android:name=".MailDialogActivity"></activity>
+        <activity android:name=".selectAcitvity.SelectAttachmentActivity" />
         <activity
             android:name=".selectAcitvity.SelectMailActivity"
             android:theme="@style/Anim_fade" />

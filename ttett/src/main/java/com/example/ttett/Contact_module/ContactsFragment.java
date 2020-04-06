@@ -126,8 +126,10 @@ public class ContactsFragment extends Fragment {
         if(email!=null){
             if(contacts!=null){
                 contacts.clear();
-                contacts.addAll(contactService.queryAllContact(email.getEmail_id()));
-                contactsAdapter.notifyDataSetChanged();
+                if(contactService.queryAllContact(email.getEmail_id())!=null){
+                    contacts.addAll(contactService.queryAllContact(email.getEmail_id()));
+                    contactsAdapter.notifyDataSetChanged();
+                }
             }else{
                 contacts = contactService.queryAllContact(email.getEmail_id());
                 if(contacts!=null){

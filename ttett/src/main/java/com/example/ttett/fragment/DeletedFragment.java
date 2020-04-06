@@ -16,6 +16,7 @@ import com.example.ttett.R;
 import com.example.ttett.Service.MailService;
 import com.example.ttett.bean.MessageEvent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -59,6 +60,7 @@ public class DeletedFragment extends Fragment {
         mToolbar = view.findViewById(R.id.trash_toolbar);
         DeletedRv = view.findViewById(R.id.trash_rv);
 
+        EventBus.getDefault().register(this);
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.mipmap.menu);
@@ -124,5 +126,11 @@ public class DeletedFragment extends Fragment {
         if(item.getItemId() == R.id.trash_find)
             Toast.makeText(getContext(),"你点击了已删除搜索",Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

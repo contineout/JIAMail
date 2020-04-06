@@ -36,24 +36,11 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<ContactsAdapter.Contac
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_rv_item,parent,false);
-        final ContactsAdapter.ContactViewHolder holder = new ContactsAdapter.ContactViewHolder(view);
-        holder.contact_item.getSurfaceView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                Contact contact = mContacts.get(position);
-                Intent intent = new Intent(mContext, SimpleContactActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("contact",contact);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-            }
-        });
-        return holder;
+        return new ContactViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactsAdapter.ContactViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ContactsAdapter.ContactViewHolder holder, int position) {
         Contact contact = mContacts.get(position);
         holder.contact_item.setShowMode(SwipeLayout.ShowMode.PullOut);
         holder.contact_name.setText(contact.getName());
@@ -69,6 +56,19 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<ContactsAdapter.Contac
             @Override
             public void onClick(View v) {
                 ToastUtil.showTextToas(mContext,"发送");
+            }
+        });
+
+        holder.contact_item.getSurfaceView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                Contact contact = mContacts.get(position);
+                Intent intent = new Intent(mContext, SimpleContactActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("contact",contact);
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
             }
         });
     }

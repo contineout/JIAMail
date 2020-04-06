@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.ttett.Entity.Contact;
+import com.example.ttett.Entity.Email;
 import com.example.ttett.MailSqlite.MyDatabaseHelper;
 
 import java.util.ArrayList;
@@ -108,6 +109,34 @@ public class ContactDao {
                 contact.setEmail(cursor.getString(cursor.getColumnIndex("contacts_email")));
                 contact.setIphone(cursor.getString(cursor.getColumnIndex("contacts_iphone")));
                 contact.setAddress(cursor.getString(cursor.getColumnIndex("contact_address")));
+                contacts.add(contact);
+            }while (cursor.moveToNext());
+            cursor.close();
+            return contacts;
+        }
+        cursor.close();
+        return null;
+    }
+
+    /**
+     * 查询所有往来邮件联系人
+     * @param email
+     * @return
+     */
+    public List<Contact> QueryAllEmailContact(Email email){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"distinct from_mail"},"email_id = ? and not from_mail = ?",
+                new String[]{String.valueOf(email.getEmail_id()),(email.getAddress())},null,null,"id desc",null);
+        Log.d(TAG,"查询了+"+cursor.getCount());
+
+        List<Contact> contacts =new ArrayList<>();
+        Contact contact;
+        if(cursor.moveToFirst()){
+            do {
+                String[] str = cursor.getString(cursor.getColumnIndex("from_mail")).split("[<>]");
+                contact = new Contact();
+                contact.setName(str[0]);
+                contact.setEmail(str[1]);
                 contacts.add(contact);
             }while (cursor.moveToNext());
             cursor.close();

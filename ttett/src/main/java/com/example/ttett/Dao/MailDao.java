@@ -76,6 +76,32 @@ public class MailDao {
         return setMessages(cursor);
     }
 
+    /**
+     * 读取对话邮件存放的邮件
+     * @param address 每个邮件账号
+     * @return
+     */
+    public List<EmailMessage> queryDialogMessage(String address){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? or from_mail LIKE ?",
+                new String[]{("%"+ address + "%"),("%"+ address + "%")},null,null,"SendDate desc",null);
+        Log.d(TAG,"查询了+"+cursor.getCount());
+        return setMessages(cursor);
+    }
+
+    /**
+     * 是否有对话邮件
+     * @param address
+     * @return
+     */
+    public boolean queryIsDialogMessage(String address){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? or from_mail LIKE ?",
+                new String[]{("%"+ address + "%"),("%"+ address + "%")},null,null,"SendDate desc",null);
+        Log.d(TAG,"查询了+"+cursor.getCount());
+        return cursor.moveToFirst();
+    }
+
 
     /**
      * 查询SQLite已发送邮件数量

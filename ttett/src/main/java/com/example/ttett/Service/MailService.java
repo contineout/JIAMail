@@ -46,6 +46,14 @@ public class MailService {
         return 0;
     }
 
+    public List<EmailMessage> queryDialogMessage(String address){
+        MailDao mailDao = new MailDao(mContext);
+        if(mailDao.queryIsDialogMessage(address)){
+           return mailDao.queryDialogMessage(address);
+        }
+        return null;
+    }
+
     /**
      * 判断有没有新邮件
      * @param email

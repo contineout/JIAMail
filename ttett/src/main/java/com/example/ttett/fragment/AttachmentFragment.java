@@ -18,6 +18,7 @@ import com.example.ttett.Service.AttachmentService;
 import com.example.ttett.Service.EmailService;
 import com.example.ttett.bean.MessageEvent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -56,6 +57,7 @@ public class AttachmentFragment extends Fragment {
 
         AttachmentRv = view.findViewById(R.id.attachment_rv);
         mToolbar = view.findViewById(R.id.attachment_toolbar);
+        EventBus.getDefault().register(this);
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -115,9 +117,10 @@ public class AttachmentFragment extends Fragment {
      * @param messageEvent
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public void SwitchContact(MessageEvent messageEvent){
+    public void SwitchAttachment(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
             email = messageEvent.getEmail();
+            Log.d(TAG,email.getAddress());
             initAttach();
         }
     }
@@ -127,5 +130,11 @@ public class AttachmentFragment extends Fragment {
         if(item.getItemId() == R.id.attachment_find)
             Toast.makeText(getContext(),"你点击了附件搜索",Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

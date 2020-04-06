@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.ttett.Entity.Contact;
+import com.example.ttett.Entity.Email;
 
 import java.util.List;
 
@@ -39,6 +40,17 @@ public class ContactService {
         Log.d(TAG,"f"+email_id);
         return contactDao.QueryAllContact(email_id);
     }
+
+    /**
+     * 查询所有往来邮件联系人
+     * @param email
+     * @return
+     */
+    public List<Contact> queryAllEmailContact(Email email){
+        ContactDao contactDao = new ContactDao(mContext);
+        return contactDao.QueryAllEmailContact(email);
+    }
+
 
     /**
      * 导入邮件联系人

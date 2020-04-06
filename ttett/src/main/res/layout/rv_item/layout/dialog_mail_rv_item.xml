@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#EEEEEE">
+    <RelativeLayout
+        android:id="@+id/dialog_out"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="3dp"
+        android:background="@color/white"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/dialog_Iv"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="20dp"
+            android:src="@mipmap/folder_in"
+            android:layout_centerVertical="true"/>
+
+
+        <TextView
+            android:id="@+id/dialog_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/dialog_Iv"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="星标邮件" />
+        <TextView
+            android:id="@+id/dialog_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/dialog_Iv"
+            android:layout_below="@+id/dialog_name"
+            android:textSize="14sp"
+            android:textColor="@color/xiahua"
+            android:text="星标邮件" />
+
+
+        <TextView
+            android:id="@+id/dialog_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:textSize="14sp"
+            android:textColor="@color/xiahua"
+            android:text="03-30" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/white">
+        <TextView
+            android:id="@+id/mail_subject"
+            android:layout_width="320dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="10dp"
+            android:textSize="15dp"
+            android:text="A Crackerjack filled with Slavic myth, mons trosity  a FREEbie about accepta nceheroes,no monster slaye"
+            android:textColor="@color/black"
+            />
+
+        <ImageView
+            android:id="@+id/mail_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/mail_subject"
+            android:src="@mipmap/mail_menu" />
+
+        <TextView
+            android:id="@+id/ff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mail_subject"
+            android:layout_marginStart="10dp"
+            android:text="发件人:"/>
+        <TextView
+            android:id="@+id/from_id"
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mail_subject"
+            android:layout_toRightOf="@+id/ff"
+            android:textColor="#66B3FF"
+            android:text="112"/>
+        <TextView
+            android:id="@+id/from_mail"
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/from_id"
+            android:layout_toRightOf="@+id/ff"
+            android:text="1023851233@qq.com"/>
+        <TextView
+            android:id="@+id/dd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/from_mail"
+            android:layout_marginStart="10dp"
+            android:text="收件人:"/>
+        <TextView
+            android:id="@+id/to_id"
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/from_mail"
+            android:layout_toRightOf="@+id/ff"
+            android:textColor="#66B3FF"
+            android:text="wy335665873"/>
+        <TextView
+            android:id="@+id/to_mail"
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/to_id"
+            android:layout_toRightOf="@+id/ff"
+            android:text="335665873@163.com"/>
+        <TextView
+            android:id="@+id/cc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/to_mail"
+            android:layout_marginStart="10dp"
+            android:text="日期:"/>
+        <TextView
+            android:id="@+id/mail_date"
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/to_mail"
+            android:layout_toRightOf="@+id/ff"
+            android:text="2020-01-02 17:13:32"/>
+    </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        >
+
+        <TextView
+            android:id="@+id/mail_context"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:textSize="18sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/white">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mail_attachment_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"/>
+    </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
