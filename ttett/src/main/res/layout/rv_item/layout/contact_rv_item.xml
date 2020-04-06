@@ -1,44 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:id="@+id/contact_item"
-    android:layout_height="70dp"
-    android:background="@drawable/item_selector">
+    android:layout_height="61dp"
+    android:background="@drawable/item_selector"
+    app:clickToClose="true">
 
     <LinearLayout
+        android:tag="Bottom"
         android:id="@+id/bottom_wrapper"
-        android:layout_width="160dp"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_width="wrap_content"
+        android:layout_height="59dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center">
         <!--What you want to show-->
         <TextView
-            android:layout_width="90dp"
+            android:id="@+id/contact_swipe_send"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:gravity="center"
             android:textColor="@color/white"
+            android:layout_gravity="center"
             android:text="发送邮件"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:background="#0968F7"/>
         <TextView
-            android:layout_width="70dp"
+            android:id="@+id/contact_swipe_delete"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:textColor="@color/white"
             android:text="删除"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:background="#FF0033"/>
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+
     <RelativeLayout
+        android:tag="Hover"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="49dp"
-        android:layout_margin="10dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="10dp"
         >
         <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_marginStart="10dp"
             android:id="@+id/contacts_Iv"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -51,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_toRightOf="@+id/contacts_Iv"
             android:textSize="15sp"
             android:textColor="@color/black"
@@ -66,12 +82,13 @@
             android:layout_toRightOf="@+id/contacts_Iv"
             android:textSize="13sp"
             android:text="1023851233@qq.com" />
-    </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
             android:background="@color/xiahua"/>
-    </LinearLayout>
+    </RelativeLayout>
+
+
 
 </com.daimajia.swipe.SwipeLayout>

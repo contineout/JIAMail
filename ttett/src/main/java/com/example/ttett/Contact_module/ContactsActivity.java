@@ -1,4 +1,4 @@
-package com.example.ttett;
+package com.example.ttett.Contact_module;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.ttett.Entity.Contact;
-import com.example.ttett.Service.ContactService;
+import com.example.ttett.R;
 import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.util.RegularUtil;
 import com.example.ttett.util.ToastUtil;

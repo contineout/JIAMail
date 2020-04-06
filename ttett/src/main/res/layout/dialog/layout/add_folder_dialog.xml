@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="@drawable/add_folder_dialog">
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/add_folder_dialog_title"

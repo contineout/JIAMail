@@ -192,8 +192,10 @@ public class InboxFragment extends Fragment {
         if(email!=null){
             if(emailMessages!=null){
                 emailMessages.clear();
-                emailMessages.addAll(mailService.queryAllMessage(email));
-                inboxAdapter.notifyDataSetChanged();
+                if(mailService.queryAllMessage(email)!=null){
+                    emailMessages.addAll(mailService.queryAllMessage(email));
+                    inboxAdapter.notifyDataSetChanged();
+                }
             }else{
                 emailMessages = mailService.queryAllMessage(email);
                 if(emailMessages!=null){

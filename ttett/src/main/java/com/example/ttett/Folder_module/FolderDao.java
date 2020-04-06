@@ -1,4 +1,4 @@
-package com.example.ttett.Dao;
+package com.example.ttett.Folder_module;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -43,10 +43,7 @@ public class FolderDao {
      * @param folder
      */
     public void InsertFolder(Folder folder){
-        Date date = new Date();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String str = format.format(date);
-        folder.setDatetime(str);
+        folder.setDatetime(NewDate());
         Log.d(TAG,folder.getEmail_id()+"ddd");
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -66,8 +63,8 @@ public class FolderDao {
     public List<Folder> QueryAllFolder(Email email){
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Log.d(TAG,email.getEmail_id()+"dd");
-        Cursor cursor = db.query("FOLDER", null,"email_id = ?",
-                new String[]{String.valueOf(email.getEmail_id())},null,null,"id desc",null);
+        Cursor cursor = db.query("FOLDER", null,"email_id = ? or id = ?",
+                new String[]{String.valueOf(email.getEmail_id()),("1")},null,null,"id desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
 
         List<Folder> folders =new ArrayList<>();
@@ -86,5 +83,19 @@ public class FolderDao {
         }
         cursor.close();
         return null;
+    }
+
+    public void updateFolder_id(int id,int folder_id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("folder_id",folder_id);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
+    }
+
+    public String NewDate(){
+        Date date = new Date();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String str = format.format(date);
+        return str;
     }
 }

@@ -9,19 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ttett.Adapter.EmailAdapter;
-import com.example.ttett.CustomDialog.ContactsDialogFragment;
+import com.example.ttett.Contact_module.ContactsDialogFragment;
+import com.example.ttett.Contact_module.ContactsFragment;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
-import com.example.ttett.Entity.Folder;
+import com.example.ttett.Folder_module.FolderFragment;
 import com.example.ttett.Service.EmailService;
-import com.example.ttett.Service.FolderService;
 import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.fragment.AttachmentFragment;
-import com.example.ttett.fragment.ContactsFragment;
 import com.example.ttett.fragment.DeletedFragment;
 import com.example.ttett.fragment.DialogMailFragment;
 import com.example.ttett.fragment.DraftsFragment;
-import com.example.ttett.fragment.FolderFragment;
 import com.example.ttett.fragment.InboxFragment;
 import com.example.ttett.fragment.SendedFragment;
 import com.example.ttett.fragment.SpamFragment;
@@ -183,12 +181,6 @@ public class MainActivity extends AppCompatActivity {
                                     final Email email = emailService.queryEmail(address);
                                     EventBus.getDefault().post(new MessageEvent("New_Email",address));
                                     initPara(email);
-                                    FolderService folderService = new FolderService(MainActivity.this);
-                                    Folder folder = new Folder();
-                                    folder.setFolder_name("inbox");
-                                    folder.setEmail_id(email.getEmail_id());
-                                    folder.setFolder_id(1);
-                                    folderService.SaveFolder(folder);
                                 }
                             }
                         });

@@ -1,4 +1,4 @@
-package com.example.ttett.fragment;
+package com.example.ttett.Folder_module;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ttett.Adapter.FolderAdapter;
-import com.example.ttett.CustomDialog.FolderDialogFragment;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
 import com.example.ttett.R;
-import com.example.ttett.Service.FolderService;
 import com.example.ttett.bean.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -100,6 +97,14 @@ public class FolderFragment extends Fragment{
         super.onResume();
         initFolder();
     }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void NewFolder(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("New_folder")){
+            initFolder();
+        }
+    }
+
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void SwitchFolder(MessageEvent messageEvent){

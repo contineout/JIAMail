@@ -15,13 +15,20 @@ import java.util.List;
 public class AttachmentDao {
 
     private static final String TAG ="AttachmentDao" ;
-    private final MyDatabaseHelper mHelper;
+    private static MyDatabaseHelper mHelper = null;
 
     private Context mContext;
 
     public AttachmentDao(Context context) {
-        mHelper = new MyDatabaseHelper(context);
         this.mContext = context;
+        mHelper = getInstance(mContext);
+    }
+
+    public synchronized MyDatabaseHelper getInstance(Context context){
+        if(mHelper == null){
+            mHelper = new MyDatabaseHelper(context);
+        }
+        return mHelper;
     }
 
     /**

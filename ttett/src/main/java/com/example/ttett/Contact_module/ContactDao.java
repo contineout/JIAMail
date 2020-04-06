@@ -1,4 +1,4 @@
-package com.example.ttett.Dao;
+package com.example.ttett.Contact_module;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,16 +15,20 @@ import java.util.List;
 public class ContactDao {
 
     private static final String TAG = "ContactDao.this" ;
-    private final MyDatabaseHelper mHelper;
+    private static MyDatabaseHelper mHelper = null;
 
     private Context mContext;
 
     public ContactDao(Context context) {
-        mHelper = new MyDatabaseHelper(context);
         this.mContext = context;
+        mHelper = getInstance(mContext);
     }
-
-
+    public synchronized MyDatabaseHelper getInstance(Context context){
+        if(mHelper == null){
+            mHelper = new MyDatabaseHelper(context);
+        }
+        return mHelper;
+    }
     /**
      * 判断联系人是否存在
      * @param email

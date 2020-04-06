@@ -1,7 +1,9 @@
 package com.example.ttett.bean;
 
 import com.example.ttett.Entity.Email;
+import com.example.ttett.Entity.EmailMessage;
 
+import java.util.List;
 import java.util.Map;
 
 public class MessageEvent {
@@ -10,6 +12,32 @@ public class MessageEvent {
     private Email email;
     private Map<Integer,Boolean> checkStatus;
     private String address;
+    private String mFlag;
+    private List<EmailMessage> emailMessages;
+
+    public List<EmailMessage> getEmailMessages() {
+        return emailMessages;
+    }
+
+    public void setEmailMessages(List<EmailMessage> emailMessages) {
+        this.emailMessages = emailMessages;
+    }
+
+    public MessageEvent(String message, Email email, String mFlag, List<EmailMessage> emailMessages) {
+        this.message = message;
+        this.email = email;
+        this.mFlag = mFlag;
+        this.emailMessages = emailMessages;
+    }
+
+    public String getmFlag() {
+        return mFlag;
+    }
+
+    public void setmFlag(String mFlag) {
+        this.mFlag = mFlag;
+    }
+
 
     public String getAddress() {
         return address;

@@ -1,4 +1,4 @@
-package com.example.ttett.CustomDialog;
+package com.example.ttett.Contact_module;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,10 +16,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.example.ttett.ContactsActivity;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
-import com.example.ttett.Service.ContactService;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -76,6 +77,7 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
             case R.id.contacts_import:
                 contactService = new ContactService(getContext());
                 contactService.insertAllMailContact(email_id);
+                EventBus.getDefault().post(new MessageEvent("import_contact"));
                 dismiss();
                 break;
             case R.id.contacts_new:

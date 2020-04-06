@@ -1,4 +1,4 @@
-package com.example.ttett;
+package com.example.ttett.Contact_module;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.Contact;
+import com.example.ttett.R;
 import com.example.ttett.Service.EmailService;
+import com.example.ttett.WriteLetterActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -51,7 +53,7 @@ public class SimpleContactActivity extends AppCompatActivity implements View.OnC
                 startActivity(intent);
                 break;
             case R.id.edit_contact:
-                intent = new Intent(SimpleContactActivity.this,ContactsActivity.class);
+                intent = new Intent(SimpleContactActivity.this, ContactsActivity.class);
                 intent.putExtra("contact",contact);
                 startActivity(intent);
                 break;

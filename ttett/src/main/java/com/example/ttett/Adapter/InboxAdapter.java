@@ -14,9 +14,11 @@ import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.OpenMailActivity;
 import com.example.ttett.R;
+import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.selectAcitvity.SelectMailActivity;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -64,16 +66,26 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
             @Override
             public boolean onLongClick(View v) {
                 Intent intent = new Intent(mContext, SelectMailActivity.class);
-                Bundle bundle = new Bundle();
-                ArrayList<EmailMessage> Messages = (ArrayList<EmailMessage>) mEmailMessages;
-                bundle.putParcelableArrayList("emailMessages",Messages);
-                bundle.putString("from_Frag",mFromFrag);
-                bundle.putParcelable("email",mEmail);
-                intent.putExtras(bundle);
+                EventBus.getDefault().postSticky(new MessageEvent("selectMessage",mEmail,mFromFrag,mEmailMessages));
                 mContext.startActivity(intent);
                 return true;
             }
         });
+
+//        LongClickUtils.setLongClick(new Handler(), view, 1000, new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                Intent intent = new Intent(mContext, SelectMailActivity.class);
+//                Bundle bundle = new Bundle();
+//                ArrayList<EmailMessage> Messages = (ArrayList<EmailMessage>) mEmailMessages;
+//                bundle.putParcelableArrayList("emailMessages",Messages);
+//                bundle.putString("from_Frag",mFromFrag);
+//                bundle.putParcelable("email",mEmail);
+//                intent.putExtras(bundle);
+//                mContext.startActivity(intent);
+//                return true;
+//            }
+//        });
 
         return holder;
     }

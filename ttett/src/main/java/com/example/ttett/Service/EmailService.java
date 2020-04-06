@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.example.ttett.Dao.EmailDao;
 import com.example.ttett.Entity.Email;
+import com.example.ttett.Entity.Folder;
+import com.example.ttett.Folder_module.FolderService;
 
 import java.util.List;
 
@@ -24,7 +26,10 @@ public class EmailService {
     public Boolean SaveEmail(Email email) {
         EmailDao emailDao = new EmailDao(mContext);
         if (!emailDao.isExistEmail(email.getAddress())){
-
+            FolderService folderService = new FolderService(mContext);
+            Folder folder = new Folder();
+            folder.setFolder_name("inbox");
+            folderService.SaveFolder(folder);
             return emailDao.InsertEmail(email);
         }else{
             return false;

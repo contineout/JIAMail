@@ -1,4 +1,4 @@
-package com.example.ttett.Adapter;
+package com.example.ttett.Contact_module;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.R;
-import com.example.ttett.SimpleContactActivity;
+import com.example.ttett.util.ToastUtil;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<ContactsAdapter.Contac
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_rv_item,parent,false);
         final ContactsAdapter.ContactViewHolder holder = new ContactsAdapter.ContactViewHolder(view);
-        holder.contact_item.setOnClickListener(new View.OnClickListener() {
+        holder.contact_item.getSurfaceView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
@@ -55,10 +55,22 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<ContactsAdapter.Contac
     @Override
     public void onBindViewHolder(@NonNull ContactsAdapter.ContactViewHolder holder, int position) {
         Contact contact = mContacts.get(position);
-        holder.contact_item.setShowMode(SwipeLayout.ShowMode.LayDown);
+        holder.contact_item.setShowMode(SwipeLayout.ShowMode.PullOut);
         holder.contact_name.setText(contact.getName());
         holder.contact_email.setText(contact.getEmail());
-
+        holder.contact_item.addDrag(SwipeLayout.DragEdge.Right, holder.contact_item.findViewById(R.id.bottom_wrapper));
+        holder.contact_item.findViewById(R.id.contact_swipe_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showTextToas(mContext,"删除");
+            }
+        });
+        holder.contact_item.findViewById(R.id.contact_swipe_send).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showTextToas(mContext,"发送");
+            }
+        });
     }
 
     @Override

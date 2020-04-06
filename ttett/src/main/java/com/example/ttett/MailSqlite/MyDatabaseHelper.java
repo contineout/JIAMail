@@ -89,7 +89,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "FOREIGN KEY (email_id) REFERENCES EMAIL(email_id)" +
             ")";
 
-
     private Context mContext;
 
     public MyDatabaseHelper(@Nullable Context context) {

@@ -1,9 +1,8 @@
-package com.example.ttett.Service;
+package com.example.ttett.Contact_module;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.example.ttett.Dao.ContactDao;
 import com.example.ttett.Entity.Contact;
 
 import java.util.List;

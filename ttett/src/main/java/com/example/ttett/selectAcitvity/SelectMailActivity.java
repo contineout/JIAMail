@@ -10,11 +10,9 @@ import android.widget.TextView;
 import com.example.ttett.Adapter.InboxAdapter;
 import com.example.ttett.Adapter.SelectAdapter;
 import com.example.ttett.CustomDialog.DeleteDialogFragment;
-import com.example.ttett.CustomDialog.SelectFolderDialogFragment;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
-import com.example.ttett.Service.FolderService;
 import com.example.ttett.Service.MailService;
 import com.example.ttett.bean.MessageEvent;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -65,11 +63,9 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
 
         EventBus.getDefault().register(this);
 
+
         setSupportActionBar(mToolbar);
         Bundle bundle = getIntent().getExtras();
-        emailMessages = bundle.getParcelableArrayList("emailMessages");
-        mFromFrag = bundle.getString("from_Frag");
-        email = bundle.getParcelable("email");
         Log.d(TAG,email.getAddress());
         checkStatus = new HashMap<>();
         for(int i =0;i < emailMessages.size();i++){
@@ -101,6 +97,16 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
             switch_Bnv(checkStatus);
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void selectMessage(MessageEvent event){
+        if(event.getMessage().equals("selectMessage")){
+            mFromFrag = event.getmFlag();
+            emailMessages = event.getEmailMessages();
+            email = event.getEmail();
+        }
+    }
+
 
     /**
      * 切换buttomNavigation图标
@@ -206,18 +212,26 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
                     showDialog();
                 default:
                     break;
-
             }
             return false;
         }
     };
     public void showDialog(){
-        FolderService folderService = new FolderService(this);
-        SelectFolderDialogFragment dialogFragment = new SelectFolderDialogFragment ();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("email",email);
-        dialogFragment.setArguments(bundle);
-        dialogFragment.show(getSupportFragmentManager(),"contactsDialogFragment");
+        if(id_item !=null){
+            SelectFolderDialogFragment dialogFragment = new SelectFolderDialogFragment ();
+            Bundle bundle = new Bundle();
+            bundle.putIntegerArrayList("id_item", (ArrayList<Integer>) id_item);
+            bundle.putParcelable("email",email);
+            dialogFragment.setArguments(bundle);
+            dialogFragment.show(getSupportFragmentManager(),"contactsDialogFragment");
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void Exit(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("dismiss")){
+            finish();
+        }
     }
 
     @Override

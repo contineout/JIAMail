@@ -5,9 +5,13 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.ttett.R;
@@ -78,5 +82,21 @@ public class DeleteDialogFragment extends DialogFragment implements View.OnClick
 //                emailService.updateMessageCount(email);
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Window win = getDialog().getWindow();
+        win.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        WindowManager.LayoutParams params = win.getAttributes();
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.width = 1200;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        win.setAttributes(params);
     }
 }

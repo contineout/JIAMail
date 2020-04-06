@@ -54,7 +54,7 @@ public class LoginEmailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if(isConnection){
-                                    ToastUtil.showTextToas(LoginEmailActivity.this,"请输入邮箱地址");
+                                    ToastUtil.showTextToas(LoginEmailActivity.this,"连接成功");
                                     emailService.SaveEmail(email);
                                     Intent intent = new Intent();
                                     intent.putExtra("result",isConnection);

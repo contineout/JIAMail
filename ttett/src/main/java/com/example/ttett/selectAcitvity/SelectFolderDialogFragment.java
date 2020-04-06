@@ -1,22 +1,24 @@
-package com.example.ttett.CustomDialog;
+package com.example.ttett.selectAcitvity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.ttett.Adapter.SelectFolderAdapter;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
+import com.example.ttett.Folder_module.FolderService;
 import com.example.ttett.R;
-import com.example.ttett.Service.FolderService;
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class SelectFolderDialogFragment extends DialogFragment implements View.O
     private String TAG = "SelectFolderDialogFragment";
     private RecyclerView Rv;
     private SelectFolderAdapter adapter;
+    private List<Integer> id_item;
 
 
 
@@ -49,22 +52,23 @@ public class SelectFolderDialogFragment extends DialogFragment implements View.O
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = LayoutInflater.from(getContext()).inflate(R.layout.select_folder_dialog,null);
 
         TvCancel = view.findViewById(R.id.cancel);
         try{
             email = getArguments().getParcelable("email");
+            id_item = getArguments().getIntegerArrayList("id_item");
         }catch (Exception e){
         }
-        Log.d(TAG,"email=" + email.getEmail_id());
 
         TvCancel.setOnClickListener(this);
         Rv = view.findViewById(R.id.select_folder_rv);
         Rv.setLayoutManager(new LinearLayoutManager(getContext()));
         folderService = new FolderService(getContext());
         List<Folder> folders = folderService.queryAllFolder(email);
-        adapter = new SelectFolderAdapter(getContext(),folders);
+        adapter = new SelectFolderAdapter(getContext(),folders,id_item);
         Rv.setAdapter(adapter);
 
         builder.setView(view);
@@ -81,4 +85,25 @@ public class SelectFolderDialogFragment extends DialogFragment implements View.O
          }
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Window win = getDialog().getWindow();
+        win.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        WindowManager.LayoutParams params = win.getAttributes();
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.width = 1200;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        win.setAttributes(params);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

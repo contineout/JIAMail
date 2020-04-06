@@ -1,4 +1,4 @@
-package com.example.ttett.fragment;
+package com.example.ttett.Contact_module;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.ttett.Adapter.ContactsAdapter;
-import com.example.ttett.CustomDialog.ContactsDialogFragment;
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
-import com.example.ttett.Service.ContactService;
 import com.example.ttett.Service.EmailService;
 import com.example.ttett.bean.MessageEvent;
 
@@ -89,10 +86,21 @@ public class ContactsFragment extends Fragment {
         if (messageEvent.getMessage().equals("New_Email")) {
             EmailService emailService = new EmailService(getContext());
             email = emailService.queryEmail(messageEvent.getAddress());
-            Log.d(TAG,email.getAddress());
             initContacts();
         }
     }
+
+    /**
+     * 新加入的邮箱进行刷新
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void ImportContact(MessageEvent messageEvent) {
+        if (messageEvent.getMessage().equals("import_contact")) {
+            initContacts();
+        }
+    }
+
 
     /**
      * 切换邮箱

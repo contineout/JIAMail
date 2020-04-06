@@ -1,22 +1,28 @@
-package com.example.ttett.CustomDialog;
+package com.example.ttett.Folder_module;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
 import com.example.ttett.R;
-import com.example.ttett.Service.FolderService;
+import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.util.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,9 +94,26 @@ public class FolderDialogFragment extends DialogFragment implements View.OnClick
             Boolean addResult = folderService.SaveFolder(folder);
             if (addResult) {
                 dismiss();
+                EventBus.getDefault().post(new MessageEvent("New_folder"));
             } else {
                 ToastUtil.showTextToas(getContext(), "JiaMail:同名文件夹已经存在");
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Window win = getDialog().getWindow();
+        win.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        WindowManager.LayoutParams params = win.getAttributes();
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.width = 1200;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        win.setAttributes(params);
     }
 }

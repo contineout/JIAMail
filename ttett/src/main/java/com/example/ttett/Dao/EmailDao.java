@@ -16,14 +16,19 @@ import java.util.List;
 public class EmailDao {
 
     private static final String TAG = "EmailDao.this" ;
-    private final MyDatabaseHelper mHelper;
+    private static MyDatabaseHelper mHelper = null;
 
     private Context mContext;
 
     public EmailDao(Context context) {
-        mHelper = new MyDatabaseHelper(context);
         this.mContext = context;
-
+        mHelper = getInstance(mContext);
+    }
+    public synchronized MyDatabaseHelper getInstance(Context context){
+        if(mHelper == null){
+            mHelper = new MyDatabaseHelper(context);
+        }
+        return mHelper;
     }
 
     /**

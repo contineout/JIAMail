@@ -1,9 +1,8 @@
-package com.example.ttett.Service;
+package com.example.ttett.Folder_module;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.example.ttett.Dao.FolderDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
 
@@ -41,5 +40,12 @@ public class FolderService {
         FolderDao folderDao = new FolderDao(mContext);
         Log.d(TAG,"f"+email.getEmail_id());
         return folderDao.QueryAllFolder(email);
+    }
+
+    public void updateFolder(List<Integer> id_item,int folder_id){
+        FolderDao folderDao = new FolderDao(mContext);
+        for(int id:id_item){
+            folderDao.updateFolder_id(id,folder_id);
+        }
     }
 }

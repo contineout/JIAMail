@@ -11,14 +11,19 @@ import com.example.ttett.MailSqlite.MyDatabaseHelper;
 public class UserDao {
 
     private static final String TAG = "UserDao.this" ;
-    private final MyDatabaseHelper mHelper;
+    private static MyDatabaseHelper mHelper = null;
 
     private Context mContext;
 
     public UserDao(Context context) {
-        mHelper = new MyDatabaseHelper(context);
         this.mContext = context;
-
+        mHelper = getInstance(mContext);
+    }
+    public synchronized MyDatabaseHelper getInstance(Context context){
+        if(mHelper == null){
+            mHelper = new MyDatabaseHelper(context);
+        }
+        return mHelper;
     }
     /**
      * 判断User是否存在

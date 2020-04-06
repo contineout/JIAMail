@@ -16,7 +16,7 @@
             android:name=".selectAcitvity.SelectMailActivity"
             android:theme="@style/Anim_fade" />
         <activity android:name=".LoginEmailActivity" />
-        <activity android:name=".SimpleContactActivity" />
+        <activity android:name=".Contact_module.SimpleContactActivity" />
         <activity android:name=".RegisteredActivity" />
         <activity android:name=".OpenMailActivity" />
         <activity
@@ -25,7 +25,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Anim_fade" />
-        <activity android:name=".ContactsActivity" />
+        <activity android:name=".Contact_module.ContactsActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
