@@ -42,10 +42,22 @@ public class FolderService {
         return folderDao.QueryAllFolder(email);
     }
 
+    /**
+     * 更改文件夹
+     * @param id_item
+     * @param folder_id
+     */
     public void updateFolder(List<Integer> id_item,int folder_id){
         FolderDao folderDao = new FolderDao(mContext);
         for(int id:id_item){
             folderDao.updateFolder_id(id,folder_id);
         }
     }
+
+    public int queryFolderMessageCount(int id){
+        FolderDao folderDao = new FolderDao(mContext);
+        return folderDao.queryFolderMessageCount(id);
+    }
+
+
 }

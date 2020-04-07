@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:id="@+id/drawer_layout">
+    android:id="@+id/drawer_layout"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,21 +40,200 @@
     </LinearLayout>
 
 <!--侧栏菜单-->
-    <com.google.android.material.navigation.NavigationView
-        android:layout_width="250dp"
-        android:layout_height="match_parent"
-        android:id="@+id/nav_view"
-        android:background="@color/colorPrimary"
-        android:layout_gravity = "start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_item"/>
     <LinearLayout
-        android:layout_width="30dp"
-        android:layout_height="match_parent">
-        <TextView
+        android:layout_width="230dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="start"
+        android:background="#fff">
+        <RelativeLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:background="#2E476B">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/email_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/add_email"/>
+            <ImageView
+                android:id="@+id/user_info"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@mipmap/user_info"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/nav_bottom"
+                android:clickable="true"/>
+            <ImageView
+                android:id="@+id/add_email"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginBottom="15dp"
+                android:src="@mipmap/add_mail"
+                android:layout_gravity="bottom"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/user_info"
+                android:background="@drawable/nav_bottom"
+                android:clickable="true"/>
+        </RelativeLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="dasd"/>
+            android:orientation="vertical"
+            android:background="#334F77">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp">
+                <TextView
+                    android:id="@+id/email_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="xl335665873@sina.com"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="20dp"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/nav_inbox"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/nav_item">
+                <ImageView
+                    android:id="@+id/aa"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:src = "@mipmap/nav_inbox"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/aa"
+                    android:layout_marginStart="20dp"
+                    android:text="收件箱"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/nav_sended"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <ImageView
+                    android:id="@+id/bb"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:src = "@mipmap/sended"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/bb"
+                    android:layout_marginStart="20dp"
+                    android:text="已发送"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/nav_drafts"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <ImageView
+                    android:id="@+id/cc"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="13dp"
+                    android:src = "@mipmap/draft"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/cc"
+                    android:layout_marginStart="20dp"
+                    android:text="草稿箱"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/nav_delete"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <ImageView
+                    android:id="@+id/dd"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:src = "@mipmap/trash_d"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/dd"
+                    android:layout_marginStart="20dp"
+                    android:text="已删除邮件"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/nav_spam"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/qq"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="10dp"
+                android:src = "@mipmap/spam"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/qq"
+                android:layout_marginStart="20dp"
+                android:text="垃圾邮件"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/nav_folder"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:clickable="true">
+                <ImageView
+                    android:id="@+id/yy"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:src = "@mipmap/folder"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/yy"
+                    android:layout_marginStart="20dp"
+                    android:text="文件夹"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+        </LinearLayout>
     </LinearLayout>
+<!--    <com.google.android.material.navigation.NavigationView-->
+<!--        android:layout_width="250dp"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:id="@+id/nav_view"-->
+<!--        android:background="@color/colorPrimary"-->
+<!--        android:layout_gravity = "start"-->
+<!--        app:headerLayout="@layout/nav_header"-->
+<!--        app:menu="@menu/nav_item"/>-->
 
 </androidx.drawerlayout.widget.DrawerLayout>

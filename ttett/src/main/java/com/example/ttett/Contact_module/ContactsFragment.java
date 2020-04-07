@@ -114,13 +114,6 @@ public class ContactsFragment extends Fragment {
         }
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        initContacts();
-    }
-
     public void initContacts(){
         contactService = new ContactService(getContext());
         if(email!=null){

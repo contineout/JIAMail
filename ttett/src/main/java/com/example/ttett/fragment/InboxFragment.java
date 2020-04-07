@@ -64,6 +64,7 @@ public class InboxFragment extends Fragment {
     private int UPDATE_MESSAGES = 1;
     private MailService mailService;
     private EmailService emailService;
+    private boolean folderflag  = false;
     @SuppressLint("HandlerLeak")
     private
     Handler handler = new Handler() {
@@ -76,12 +77,6 @@ public class InboxFragment extends Fragment {
         }
     };
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        initEmailMessage();
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,7 +100,6 @@ public class InboxFragment extends Fragment {
         }catch (NullPointerException ignored){
         }
          if(email!=null){
-                 initEmailMessage();
              swipeRefreshLayout.post(new Runnable() {
                  @Override
                  public void run() {
@@ -118,6 +112,8 @@ public class InboxFragment extends Fragment {
                  swipeRefreshLayout.setRefreshing(false);
              }
          }
+
+        initEmailMessage();
 
         /**
          * swipe刷新inbox
@@ -184,6 +180,7 @@ public class InboxFragment extends Fragment {
     }
 
 
+
     /**
      * 初始化EmailMessag
      */
@@ -243,7 +240,6 @@ public class InboxFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
-
             case  R.id.inbox_find:
                 Toast.makeText(getContext(),"你点击了搜索",Toast.LENGTH_SHORT).show();
                 break;

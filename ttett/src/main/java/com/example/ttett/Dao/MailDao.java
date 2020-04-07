@@ -16,21 +16,12 @@ import java.util.List;
 public class MailDao {
 
     private static final String TAG = "MailDao.this" ;
-    private static MyDatabaseHelper mHelper = null;
-
+    private SQLiteDatabase db;
     private Context mContext;
 
     public MailDao(Context context) {
         this.mContext = context;
-        mHelper = getInstance(mContext);
-
-    }
-
-    public synchronized MyDatabaseHelper getInstance(Context context){
-        if(mHelper == null){
-            mHelper = new MyDatabaseHelper(context);
-        }
-        return mHelper;
+        db = SQLiteDatabaseUtil.getInstance(context).getWritableDatabase();
     }
 
     /**
@@ -39,7 +30,6 @@ public class MailDao {
      * @return
      */
     public int QueryMessageCount(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", new String[]{"isSend"},"to_mail LIKE ?",
                 new String[]{"%"+ email.getAddress() + "%"},null,null,null,null);
         return cursor.getCount();
@@ -52,7 +42,6 @@ public class MailDao {
      * @return
      */
     public int QueryEmail_id(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", new String[]{"email_id"},"id = ?",
                 new String[]{String.valueOf(id)},null,null,null,null);
         int email_id = 0;
@@ -68,7 +57,6 @@ public class MailDao {
      * @return
      */
     public List<EmailMessage> QueryAllMessage(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isDelete = ? and folder_id = ?",
                 new String[]{("%"+ email.getAddress() + "%"),("0"),("1")},null,null,"to_mail desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
@@ -82,9 +70,15 @@ public class MailDao {
      * @return
      */
     public List<EmailMessage> queryDialogMessage(String address){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? or from_mail LIKE ?",
                 new String[]{("%"+ address + "%"),("%"+ address + "%")},null,null,"SendDate desc",null);
+        Log.d(TAG,"查询了+"+cursor.getCount());
+        return setMessages(cursor);
+    }
+
+    public List<EmailMessage> queryFolderMessage(int folder_id){
+        Cursor cursor = db.query("EMAILMESSAGE", null,"folder_id = ?",
+                new String[]{(String.valueOf(folder_id))},null,null,"SendDate desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
         return setMessages(cursor);
     }
@@ -95,7 +89,6 @@ public class MailDao {
      * @return
      */
     public boolean queryIsDialogMessage(String address){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? or from_mail LIKE ?",
                 new String[]{("%"+ address + "%"),("%"+ address + "%")},null,null,"SendDate desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
@@ -109,7 +102,6 @@ public class MailDao {
      * @return
      */
     public List<EmailMessage> QuerySendedMessage(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail LIKE ? and isSend = ? and isDelete = ?",
                 new String[]{("%"+ email.getAddress() + "%"),("1"),("0")},null,null,null,null);
         return setMessages(cursor);
@@ -122,7 +114,6 @@ public class MailDao {
      * @return
      */
     public List<EmailMessage> QueryDraftMessage(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail = ? or from_mail = ? and isSend = ? ",
                 new String[]{("%"+ email.getAddress() + "%"),(email.getAddress()),("0")},null,null,null,null);
         Log.d(TAG,"da"+cursor.getCount());
@@ -135,7 +126,6 @@ public class MailDao {
      * @return
      */
     public List<EmailMessage> QueryUnReadMessage(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isRead = ? and isDelete = ?",
                 new String[]{("%"+ email.getAddress() + "%"),("0"),("0")},null,null,null,null);
         return setMessages(cursor);
@@ -147,7 +137,6 @@ public class MailDao {
      * @return
      */
     public List<EmailMessage> QueryStarMessage(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isStar = ? and isDelete = ?",
                 new String[]{("%"+ email.getAddress() + "%"),("1"),("0")},null,null,null,null);
         return setMessages(cursor);
@@ -159,7 +148,6 @@ public class MailDao {
      * @return
      */
     public List<EmailMessage> QueryDelteMessage(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isDelete = ? and folder_id = ?",
                 new String[]{("%"+ email.getAddress() + "%"),("1"),("1")},null,null,null,null);
         return setMessages(cursor);
@@ -180,7 +168,6 @@ public class MailDao {
      * @return
      */
     public Boolean isExistMail(String message_id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", new String[]{"message_id"},"message_id = ?",
                 new String[]{message_id},null,null,null,null);
         return cursor.moveToFirst();
@@ -192,7 +179,6 @@ public class MailDao {
      * @return
      */
     public Boolean isExistMessage(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", null,"id = ?",
                 new String[]{String.valueOf(id)},null,null,null,null);
         return cursor.moveToFirst();
@@ -204,8 +190,6 @@ public class MailDao {
      * @param emailMessage
      */
     public void InsertMessages(EmailMessage emailMessage){
-
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
             values.put("message_id",emailMessage.getMessage_id());
             values.put("email_id",emailMessage.getEmail_id());
@@ -234,8 +218,9 @@ public class MailDao {
      * @param id isRead = 1
      */
     public void updateRead(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-
+        ContentValues values = new ContentValues();
+        values.put("isRead",1);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
 
     /**
@@ -243,7 +228,6 @@ public class MailDao {
      * @param id isRead = 0
      */
     public void updateunRead(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("isRead",0);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
@@ -254,7 +238,6 @@ public class MailDao {
      * @param id isRead
      */
     public int queryisRead(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         int isRead = 0;
         Cursor cursor = db.query("EMAILMESSAGE", null,"id = ?",
                 new String[]{(String.valueOf(id))},null,null,null,null);
@@ -270,7 +253,6 @@ public class MailDao {
      * @param id isStar
      */
     public int queryisStar(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         int isStar = 0;
         Cursor cursor = db.query("EMAILMESSAGE", null,"id = ?",
                 new String[]{(String.valueOf(id))},null,null,null,null);
@@ -288,7 +270,6 @@ public class MailDao {
      * @param id
      */
     public void updateisDelete(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("isDelete",1);
         values.put("isStar",0);
@@ -300,7 +281,6 @@ public class MailDao {
      * @param id
      */
     public void deleteMessage(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete("EMAILMESSAGE","id = ?",new String[]{String.valueOf(id)});
     }
 
@@ -310,7 +290,6 @@ public class MailDao {
      * @param id
      */
     public void updatefolder(int id,int folder_id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("folder_id",folder_id);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
@@ -321,7 +300,6 @@ public class MailDao {
      * @param id
      */
     public void updateStar(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("isStar",1);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
@@ -332,7 +310,6 @@ public class MailDao {
      * @param id
      */
     public void updateUnStar(int id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("isStar",0);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});

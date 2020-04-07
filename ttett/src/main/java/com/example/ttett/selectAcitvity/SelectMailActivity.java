@@ -65,7 +65,6 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
 
 
         setSupportActionBar(mToolbar);
-        Bundle bundle = getIntent().getExtras();
         Log.d(TAG,email.getAddress());
         checkStatus = new HashMap<>();
         for(int i =0;i < emailMessages.size();i++){

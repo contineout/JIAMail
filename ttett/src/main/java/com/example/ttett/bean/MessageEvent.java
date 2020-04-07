@@ -2,6 +2,7 @@ package com.example.ttett.bean;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.Entity.Folder;
 
 import java.util.List;
 import java.util.Map;
@@ -14,9 +15,24 @@ public class MessageEvent {
     private String address;
     private String mFlag;
     private List<EmailMessage> emailMessages;
+    private Folder folder;
 
     public List<EmailMessage> getEmailMessages() {
         return emailMessages;
+    }
+
+    public MessageEvent(String message, Folder folder,Email email) {
+        this.message = message;
+        this.folder = folder;
+        this.email = email;
+    }
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 
     public void setEmailMessages(List<EmailMessage> emailMessages) {

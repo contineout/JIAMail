@@ -5,35 +5,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
-import com.example.ttett.bean.MessageEvent;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 //xkdmegyobzcdhggd
 //1272179741@qq.com
 //"d8405717ca1664a2" xl335665873@sina.com
 //    ykqxthnonvynbbeh 1023851233@qq.com
-public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> {
+public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.ViewHolder> {
     private List<Email> mEmails;
     private Context mContext;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         private RelativeLayout email_item ;
+        private TextView address;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            email_item = itemView.findViewById(R.id.Email_cv);
+            address = itemView.findViewById(R.id.email_address);
         }
     }
 
-    public EmailAdapter(Context context,List<Email> emails){
-
+    public UserEmailAdapter(Context context, List<Email> emails){
         mEmails = emails;
         mContext = context;
     }
@@ -46,24 +45,14 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> 
         if(mContext == null){
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.eamil_item,parent,false);
-        final ViewHolder holder = new ViewHolder(view);
-        holder.email_item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                Email email = mEmails.get(position);
-                MessageEvent messageEvent = new MessageEvent();
-                messageEvent.setEmail(email);
-                EventBus.getDefault().post(new MessageEvent("Switch_Email",email));
-            }
-        });
-        return holder;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_mail_rv_item,parent,false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Email email = mEmails.get(position);
+        holder.address.setText(email.getAddress());
     }
 
     @Override

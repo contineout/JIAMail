@@ -90,6 +90,22 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         return holder;
     }
 
+    /**
+     * 增加数据
+     */
+    public void addData(int position) {
+        mEmailMessages.add(0,mEmailMessages.get(mEmailMessages.size()-1));
+        notifyItemInserted(position);
+    }
+
+    /**
+     * 移除数据
+     */
+    public void removeData(int position) {
+        mEmailMessages.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull InboxAdapter.InboxViewHolder holder, int position) {
         EmailMessage message = mEmailMessages.get(position);

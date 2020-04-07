@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.ttett.Adapter.EmailAdapter;
@@ -24,7 +25,6 @@ import com.example.ttett.fragment.InboxFragment;
 import com.example.ttett.fragment.SendedFragment;
 import com.example.ttett.fragment.SpamFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -42,13 +42,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private DrawerLayout drawerLayout;
     private FrameLayout coordinatorLayout;
-    private NavigationView navigationView;
     private BottomNavigationView bottomNavigationView;
-    private ImageView add_email;
-    private TextView nav_email;
     private String TAG = "MainActivity.this";
 
     private ContactsDialogFragment contactsDialogFragment = new ContactsDialogFragment();
@@ -75,13 +72,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initView();
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-
-        add_email = headerView.findViewById(R.id.nav_add_email);
-        nav_email = headerView.findViewById(R.id.nav_view);
-        Email_Rv = headerView.findViewById(R.id.email_rv);
 
         //Tooldar标题栏
         Toolbar mToolber = findViewById(R.id.inbox_toolbar);
@@ -110,21 +100,11 @@ public class MainActivity extends AppCompatActivity {
             Email email = emails.get(0);
             initPara(email);
         }
-        add_email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,LoginEmailActivity.class);
-                intent.putExtra("user_id",user_id);
-                startActivityForResult(intent,1);
-            }
-        });
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -142,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             emails = emailService.queryAllEmail(user_id);
             if(emails!=null){
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-                layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 Email_Rv.setLayoutManager(layoutManager);
                 emailAdapter = new EmailAdapter(this,emails);
                 Email_Rv.setAdapter(emailAdapter);
@@ -209,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     /**
      * Fragment初始化
      */
@@ -226,7 +208,19 @@ public class MainActivity extends AppCompatActivity {
         spamFragment = new SpamFragment();
         folderFragment = new FolderFragment();
 
+        drawerLayout = findViewById(R.id.drawer_layout);
 
+        ImageView add_email = findViewById(R.id.add_email);
+        ImageView user_info = findViewById(R.id.user_info);
+        RelativeLayout nav_inbox = findViewById(R.id.nav_inbox);
+        RelativeLayout nav_sended = findViewById(R.id.nav_sended);
+        RelativeLayout nav_drafts = findViewById(R.id.nav_drafts);
+        RelativeLayout nav_delete = findViewById(R.id.nav_delete);
+        RelativeLayout nav_spam = findViewById(R.id.nav_spam);
+        RelativeLayout nav_folder = findViewById(R.id.nav_folder);
+
+        TextView tvaddress = findViewById(R.id.email_address);
+        Email_Rv = findViewById(R.id.email_rv);
 
         fragments = new Fragment[]{inboxFragment,dialogMailFragment,contactsFragment,attachmentFragment,//bottomNavigationView 0 - 3
                 sendedFragment,draftsFragment,trashFragment,spamFragment,folderFragment};//NavigationView 4 - 8
@@ -238,63 +232,18 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.Bnv);
         bottomNavigationView.setOnNavigationItemSelectedListener(onBottomNavigationItemSelectedListener);
 
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
+        nav_inbox.setOnClickListener(this);
+        nav_sended.setOnClickListener(this);
+        nav_drafts.setOnClickListener(this);
+        nav_delete.setOnClickListener(this);
+        nav_spam.setOnClickListener(this);
+        nav_folder.setOnClickListener(this);
+        user_info.setOnClickListener(this);
+        add_email.setOnClickListener(this);
+        //nav_inbox nav_sended nav_drafts nav_delete nav_spam nav_folder user_info add_email email_address
     }
 
-    /**
-     * NavigationView点击切换frag
-     */
-    private NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
-            = new NavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            switch (menuItem.getItemId()){
-                case R.id.inbox:
-                    if(lastfragmen != 0){
-                        switchFragment(lastfragmen,0);
-                        lastfragmen = 0;
-                    }
-                    drawerLayout.closeDrawers();
-                    return true;
-                case R.id.sended:
-                    if(lastfragmen != 4){
-                        switchFragment(lastfragmen,4);
-                        lastfragmen = 4;
-                    }
-                    return true;
-                case R.id.draft:
-                    if(lastfragmen != 5){
-                        switchFragment(lastfragmen,5);
-                        lastfragmen = 5;
-                    }
-                    return true;
-                case R.id.trash:
-                    if(lastfragmen != 6){
-                        switchFragment(lastfragmen,6);
-                        lastfragmen = 6;
-                    }
-                    return true;
-                case R.id.spam:
-                    if(lastfragmen != 7){
-                        switchFragment(lastfragmen,7);
-                        lastfragmen = 7;
-                    }
-                    return true;
 
-                case R.id.folder:
-                    if(lastfragmen != 8){
-                        switchFragment(lastfragmen,8);
-                        lastfragmen = 8;
-                    }
-                    return true;
-                default:
-                    break;
-
-            }
-            return false;
-        }
-    };
     /**
      * bottomNavigationViewd点击切换frag
      */
@@ -352,4 +301,62 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.closeDrawers();
     }
 
+    @Override
+    public void onClick(View v) {
+        Intent intent = null;
+        switch (v.getId()){
+            case R.id.add_email:
+                intent = new Intent(MainActivity.this,LoginEmailActivity.class);
+                intent.putExtra("user_id",user_id);
+                startActivityForResult(intent,1);
+                break;
+            case R.id.user_info:
+                intent = new Intent(MainActivity.this,UserinfoActivity.class);
+                intent.putExtra("user_id",user_id);
+                startActivity(intent);
+                break;
+            case R.id.nav_inbox:
+                if(lastfragmen != 0){
+                    switchFragment(lastfragmen,0);
+                    lastfragmen = 0;
+                }
+                break;
+            case R.id.nav_sended:
+                if(lastfragmen != 4){
+                    switchFragment(lastfragmen,4);
+                    lastfragmen = 4;
+                }
+                break;
+            case R.id.nav_drafts:
+                if(lastfragmen != 5){
+                    switchFragment(lastfragmen,5);
+                    lastfragmen = 5;
+                }
+                break;
+            case R.id.nav_delete:
+                if(lastfragmen != 6){
+                    switchFragment(lastfragmen,6);
+                    lastfragmen =6;
+                }
+                break;
+            case R.id.nav_spam:
+                if(lastfragmen != 7){
+                    switchFragment(lastfragmen,7);
+                    lastfragmen = 7;
+                }
+                break;
+            case R.id.nav_folder:
+                if(lastfragmen != 8){
+                    switchFragment(lastfragmen,8);
+                    lastfragmen = 8;
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 }

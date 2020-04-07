@@ -1,7 +1,6 @@
 package com.example.ttett.Folder_module;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,10 +61,9 @@ public class FolderFragment extends Fragment{
         assert getArguments() != null;
         try{
             email = getArguments().getParcelable("email");
-        }catch (NullPointerException e){
+        }catch(NullPointerException ignored){
 
         }
-        Log.d(TAG,"email=" + email.getEmail_id());
         initFolder();
         return view;
     }
@@ -74,28 +72,22 @@ public class FolderFragment extends Fragment{
         inflater.inflate(R.menu.toobar_folder_item,menu);
     }
 
-    public void initFolder(){
+    public void initFolder() {
         folderService = new FolderService(getContext());
-        if(email!=null){
-            if (folders!= null){
+        if (email != null) {
+            if (folders != null) {
                 folders.clear();
                 folders.addAll(folderService.queryAllFolder(email));
                 folderAdapter.notifyDataSetChanged();
-            }else {
+            } else {
                 folders = folderService.queryAllFolder(email);
-                if(folders!=null){
+                if (folders != null) {
                     FolderRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                    folderAdapter = new FolderAdapter(getContext(),folders);
+                    folderAdapter = new FolderAdapter(getContext(), folders,email);
                     FolderRv.setAdapter(folderAdapter);
                 }
             }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        initFolder();
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

@@ -11,5 +11,8 @@
     <color name="blue">#0000ff</color>
     <color name="login_email">#919191</color>
     <color name="Attachment_Tv">#0099FF</color>
+    <color name="nav">#334F77</color>
+    <color name="Underline">#444444</color>
+    #444444
 
 </resources>

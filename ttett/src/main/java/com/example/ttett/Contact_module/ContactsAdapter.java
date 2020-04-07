@@ -40,8 +40,8 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<ContactsAdapter.Contac
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ContactsAdapter.ContactViewHolder holder, int position) {
-        Contact contact = mContacts.get(position);
+    public void onBindViewHolder(@NonNull final ContactsAdapter.ContactViewHolder holder, final int position) {
+        final Contact contact = mContacts.get(position);
         holder.contact_item.setShowMode(SwipeLayout.ShowMode.PullOut);
         holder.contact_name.setText(contact.getName());
         holder.contact_email.setText(contact.getEmail());
@@ -49,7 +49,13 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<ContactsAdapter.Contac
         holder.contact_item.findViewById(R.id.contact_swipe_delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showTextToas(mContext,"删除");
+                ContactService contactService = new ContactService(mContext);
+                if(contactService.deleteContact(contact.getContact_id()));{
+                    ToastUtil.showTextToas(mContext,"联系人"+contact.getName()+"删除成功");
+                    removeData(position);
+                }
+
+
             }
         });
         holder.contact_item.findViewById(R.id.contact_swipe_send).setOnClickListener(new View.OnClickListener() {
@@ -71,6 +77,22 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<ContactsAdapter.Contac
                 mContext.startActivity(intent);
             }
         });
+    }
+
+    /**
+     * 增加数据
+     */
+    public void addData(int position) {
+        mContacts.add(0,mContacts.get(mContacts.size()-1));
+        notifyItemInserted(position);
+    }
+
+    /**
+     * 移除数据
+     */
+    public void removeData(int position) {
+        notifyItemRemoved(position);
+        mContacts.remove(position);
     }
 
     @Override

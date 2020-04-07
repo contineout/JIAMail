@@ -6,9 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.ttett.Dao.SQLiteDatabaseUtil;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
-import com.example.ttett.MailSqlite.MyDatabaseHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,22 +17,19 @@ import java.util.Date;
 import java.util.List;
 
 public class FolderDao {
+
     private String TAG = "FolderDAO";
-    private final MyDatabaseHelper mHelper;
+    private SQLiteDatabase db;
 
-    private Context mContext;
-
-    public FolderDao(Context context) {
-        mHelper = new MyDatabaseHelper(context);
-        this.mContext = context;
+    FolderDao(Context context) {
+        db = SQLiteDatabaseUtil.getInstance(context).getWritableDatabase();
     }
     /**
      * 判断文件夹是否存在
      * @param folder_name
      * @return
      */
-    public Boolean isExistFolder(String folder_name){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
+    Boolean isExistFolder(String folder_name){
         Cursor cursor = db.query("FOLDER", new String[]{"folder_name"},"folder_name = ?",
                 new String[]{folder_name},null,null,null,null);
         return cursor.moveToFirst();
@@ -42,10 +39,9 @@ public class FolderDao {
      * 插入文件夹信息
      * @param folder
      */
-    public void InsertFolder(Folder folder){
+    void InsertFolder(Folder folder){
         folder.setDatetime(NewDate());
         Log.d(TAG,folder.getEmail_id()+"ddd");
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("email_id",folder.getEmail_id());
         values.put("folder_name",folder.getFolder_name());
@@ -60,9 +56,7 @@ public class FolderDao {
      * @param email
      * @return
      */
-    public List<Folder> QueryAllFolder(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        Log.d(TAG,email.getEmail_id()+"dd");
+    List<Folder> QueryAllFolder(Email email){
         Cursor cursor = db.query("FOLDER", null,"email_id = ? or id = ?",
                 new String[]{String.valueOf(email.getEmail_id()),("1")},null,null,"id desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
@@ -84,15 +78,26 @@ public class FolderDao {
         cursor.close();
         return null;
     }
-
-    public void updateFolder_id(int id,int folder_id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
+    /**
+     * 更改文件夹
+     * @param id
+     * @param folder_id
+     */
+    void updateFolder_id(int id, int folder_id){
         ContentValues values = new ContentValues();
         values.put("folder_id",folder_id);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
 
-    public String NewDate(){
+    int queryFolderMessageCount(int id){
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"id"},"folder_id = ?",
+                new String[]{String.valueOf(id)},null,null,null,null);
+        return cursor.getCount();
+    }
+
+
+
+    private String NewDate(){
         Date date = new Date();
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String str = format.format(date);

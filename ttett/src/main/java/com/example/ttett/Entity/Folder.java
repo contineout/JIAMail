@@ -1,11 +1,37 @@
 package com.example.ttett.Entity;
 
-public class Folder {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Folder implements Parcelable {
     private int folder_id;
     private int email_id;
     private String folder_name;
     private String message_number;
     private String datetime;
+
+    public Folder() {
+    }
+
+    protected Folder(Parcel in) {
+        folder_id = in.readInt();
+        email_id = in.readInt();
+        folder_name = in.readString();
+        message_number = in.readString();
+        datetime = in.readString();
+    }
+
+    public static final Creator<Folder> CREATOR = new Creator<Folder>() {
+        @Override
+        public Folder createFromParcel(Parcel in) {
+            return new Folder(in);
+        }
+
+        @Override
+        public Folder[] newArray(int size) {
+            return new Folder[size];
+        }
+    };
 
     public int getFolder_id() {
         return folder_id;
@@ -45,5 +71,19 @@ public class Folder {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(folder_id);
+        dest.writeInt(email_id);
+        dest.writeString(folder_name);
+        dest.writeString(message_number);
+        dest.writeString(datetime);
     }
 }

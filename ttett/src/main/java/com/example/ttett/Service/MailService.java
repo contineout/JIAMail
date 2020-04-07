@@ -54,6 +54,11 @@ public class MailService {
         return null;
     }
 
+    public List<EmailMessage> queryFolderMessage(int folder_id){
+        MailDao mailDao = new MailDao(mContext);
+        return  mailDao.queryFolderMessage(folder_id);
+    }
+
     /**
      * 判断有没有新邮件
      * @param email

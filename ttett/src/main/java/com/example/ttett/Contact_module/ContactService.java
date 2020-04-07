@@ -71,4 +71,12 @@ public class ContactService {
         }
     }
 
+    public boolean deleteContact(int id){
+        ContactDao contactDao = new ContactDao(mContext);
+        if(contactDao.isExistMail(id)){
+            contactDao.deleteContact(id);
+        }
+        return !contactDao.isExistMail(id);
+    }
+
 }

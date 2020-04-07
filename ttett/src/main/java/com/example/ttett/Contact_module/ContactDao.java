@@ -6,9 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.ttett.Dao.SQLiteDatabaseUtil;
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.Entity.Email;
-import com.example.ttett.MailSqlite.MyDatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,27 +16,37 @@ import java.util.List;
 public class ContactDao {
 
     private static final String TAG = "ContactDao.this" ;
-    private static MyDatabaseHelper mHelper = null;
+    private SQLiteDatabase db;
 
     private Context mContext;
 
     public ContactDao(Context context) {
         this.mContext = context;
-        mHelper = getInstance(mContext);
+        db = SQLiteDatabaseUtil.getInstance(context).getWritableDatabase();
     }
-    public synchronized MyDatabaseHelper getInstance(Context context){
-        if(mHelper == null){
-            mHelper = new MyDatabaseHelper(context);
-        }
-        return mHelper;
+
+    /**
+     * 判断联系人是否存在
+     * @param id
+     * @return
+     */
+    public Boolean isExistMail(int id){
+        Cursor cursor = db.query("CONTACT", null,"id = ?",
+                new String[]{String.valueOf(id)},null,null,null,null);
+        return cursor.moveToFirst();
     }
+
+    public void deleteContact(int id){
+        db.delete("CONTACT","id = ?",new String[]{String.valueOf(id)});
+    }
+
+
     /**
      * 判断联系人是否存在
      * @param email
      * @return
      */
     public Boolean isExistMail(String email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("CONTACT", new String[]{"id"},"contacts_email = ?",
                 new String[]{email},null,null,null,null);
         return cursor.moveToFirst();
@@ -44,7 +54,6 @@ public class ContactDao {
 
 //select distinct from_mail from EMAILMESSAGE where user_id = 1;
     public List<String> queryRecipientMailContact(int email_id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", new String[]{"DISTINCT from_mail"},"email_id = ?",
                 new String[]{String.valueOf(email_id)},null,null,null,null);
         List<String> form_mail = new ArrayList<>();
@@ -64,8 +73,6 @@ public class ContactDao {
      * @param contact
      */
     public boolean InsertContact(Contact contact){
-
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("email_id",contact.getEmail_id());
         values.put("contacts_name",contact.getName());
@@ -89,7 +96,6 @@ public class ContactDao {
      * @return
      */
     public List<Contact> QueryAllContact(int email_id){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("CONTACT", null,"email_id = ?",
                 new String[]{String.valueOf(email_id)},null,null,"id desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
@@ -99,6 +105,7 @@ public class ContactDao {
         if(cursor.moveToFirst()){
             do {
                 contact = new Contact();
+                contact.setContact_id(cursor.getInt(cursor.getColumnIndex("id")));
                 contact.setEmail_id(cursor.getInt(cursor.getColumnIndex("email_id")));
                 contact.setName(cursor.getString(cursor.getColumnIndex("contacts_name")));
                 contact.setRemark(cursor.getString(cursor.getColumnIndex("contacts_remark")));
@@ -124,7 +131,6 @@ public class ContactDao {
      * @return
      */
     public List<Contact> QueryAllEmailContact(Email email){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cursor = db.query("EMAILMESSAGE", new String[]{"distinct from_mail"},"email_id = ? and not from_mail = ?",
                 new String[]{String.valueOf(email.getEmail_id()),(email.getAddress())},null,null,"id desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
