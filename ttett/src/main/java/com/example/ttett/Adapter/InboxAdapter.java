@@ -16,6 +16,7 @@ import com.example.ttett.OpenMailActivity;
 import com.example.ttett.R;
 import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.selectAcitvity.SelectMailActivity;
+import com.example.ttett.util.CircleTextImage.CircleTextImage;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -133,6 +134,8 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         } else {
             String[] from = message.getFrom().split("[<>]");
             holder.mName.setText(from[0]);
+            holder.Icon.setText4CircleImage(from[0].substring(0,1));
+            holder.Icon.setCircleColor(message.getAvatar_color());
         }
     }
 
@@ -142,7 +145,8 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     }
 
     static class InboxViewHolder extends RecyclerView.ViewHolder{
-        CircleImageView Icon,isReadflag;
+        CircleImageView isReadflag;
+        CircleTextImage Icon;
         TextView mName,mTime,mSubject,mContent;
         LinearLayout inbox_item;
         ImageView isStarflag,isAttachment;

@@ -13,11 +13,10 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         >
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.example.ttett.util.CircleTextImage.CircleTextImage
             android:id="@+id/dialog_Iv"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@mipmap/folder_in"
             android:layout_centerVertical="true"/>
 
 
@@ -32,7 +31,7 @@
             android:textColor="@color/black"
             android:text="星标邮件" />
         <TextView
-            android:id="@+id/dialog_content"
+            android:id="@+id/dialog_mail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"

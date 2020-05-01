@@ -53,12 +53,11 @@
         android:layout_marginBottom="5dp"
         android:layout_marginStart="10dp"
         >
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.example.ttett.util.CircleTextImage.CircleTextImage
             android:layout_marginStart="10dp"
             android:id="@+id/contacts_Iv"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@mipmap/folder_in"
             android:layout_centerVertical="true"/>
 
 

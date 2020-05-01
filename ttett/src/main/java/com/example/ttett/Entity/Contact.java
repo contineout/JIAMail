@@ -7,6 +7,38 @@ public class Contact implements Parcelable {
     private int email_id;
     private int contact_id;
     private String name,remark,birthday,company,department,position,email,iphone,address;
+    private String avatar_color;
+    private String last_date;
+    private int mType;
+
+    public Contact(String name, int type) {
+        this.name = name;
+        mType = type;
+    }
+
+    public int getmType() {
+        return mType;
+    }
+
+    public void setmType(int mType) {
+        this.mType = mType;
+    }
+
+    public String getLast_date() {
+        return last_date;
+    }
+
+    public void setLast_date(String last_date) {
+        this.last_date = last_date;
+    }
+
+    public String getAvatar_color() {
+        return avatar_color;
+    }
+
+    public void setAvatar_color(String avatar_color) {
+        this.avatar_color = avatar_color;
+    }
 
     public Contact(Parcel in) {
         email_id = in.readInt();
@@ -20,6 +52,7 @@ public class Contact implements Parcelable {
         email = in.readString();
         iphone = in.readString();
         address = in.readString();
+        avatar_color = in.readString();
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {
@@ -144,5 +177,6 @@ public class Contact implements Parcelable {
         dest.writeString(email);
         dest.writeString(iphone);
         dest.writeString(address);
+        dest.writeString(avatar_color);
     }
 }

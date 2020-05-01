@@ -9,6 +9,7 @@ import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.util.RecipientMessage;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.mail.Message;
 
@@ -31,6 +32,8 @@ public class MailService {
         int i = 0;
         for (EmailMessage emailMessage : emailMessages) {
             if (!mailDao.isExistMail(emailMessage.getMessage_id())) {
+                String color = queryAvatar_color(emailMessage.getFrom());
+                emailMessage.setAvatar_color(color);
                 mailDao.InsertMessages(emailMessage);
                 i+=1;
             }
@@ -275,6 +278,29 @@ public class MailService {
     public List<EmailMessage> queryStarMessage(Email email){
         MailDao mailDao = new MailDao(mContext);
         return mailDao.QueryStarMessage(email);
+    }
+
+    public String queryAvatar_color(String from){
+        MailDao mailDao = new MailDao(mContext);
+        if(!mailDao.isExistFrom(from).equals("")){
+            return mailDao.isExistFrom(from);
+        }else {
+            return getRandColor();
+        }
+    }
+
+    public String getRandColor() {
+        String R, G, B;
+        Random random = new Random();
+        R = Integer.toHexString(random.nextInt(256)).toUpperCase();
+        G = Integer.toHexString(random.nextInt(256)).toUpperCase();
+        B = Integer.toHexString(random.nextInt(256)).toUpperCase();
+
+        R = R.length() == 1 ? "0" + R : R;
+        G = G.length() == 1 ? "0" + G : G;
+        B = B.length() == 1 ? "0" + B : B;
+
+        return "#" + R + G + B;
     }
 
 }

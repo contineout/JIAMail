@@ -77,7 +77,7 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
             case R.id.contacts_import:
                 contactService = new ContactService(getContext());
                 contactService.insertAllMailContact(email_id);
-                EventBus.getDefault().post(new MessageEvent("import_contact"));
+                EventBus.getDefault().postSticky(new MessageEvent("import_contact"));
                 dismiss();
                 break;
             case R.id.contacts_new:

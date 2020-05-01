@@ -14,12 +14,11 @@
         android:layout_marginBottom="3dp"
         android:background="@color/white"
         >
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.example.ttett.util.CircleTextImage.CircleTextImage
             android:id="@+id/dialog_Iv"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="20dp"
-            android:src="@mipmap/folder_in"
             android:layout_centerVertical="true"/>
 
 
@@ -35,7 +34,7 @@
             android:text="星标邮件" />
         <TextView
             android:id="@+id/dialog_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_alignParentBottom="true"
@@ -43,6 +42,9 @@
             android:layout_below="@+id/dialog_name"
             android:textSize="14sp"
             android:textColor="@color/xiahua"
+            android:maxLines="1"
+            android:maxEms="15"
+            android:ellipsize="end"
             android:text="星标邮件" />
 
 
@@ -160,19 +162,17 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:layout_marginTop="1dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         >
 
-        <TextView
-            android:id="@+id/mail_context"
+        <WebView
+            android:id="@+id/dialogWebView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:textSize="18sp"/>
+            android:layout_height="match_parent"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

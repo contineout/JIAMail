@@ -183,13 +183,11 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
                     if(id_item != null){
                         mailService.updateStarMessage(id_item,setStar);
                     }
-                    finish();
                     break;
                 case R.id.set_unread:
                     if(id_item != null){
                         mailService.updateReadMessage(id_item,setUnRead);
                     }
-                    finish();
                     break;
                 case R.id.set_delete:
                     if(id_item != null) {
@@ -202,7 +200,7 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
                         }else{
                             for(int id:id_item){
                                 mailService.updateisDelete(id);
-                                finish();
+
                             }
                         }
                     }
@@ -212,6 +210,8 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
                 default:
                     break;
             }
+            EventBus.getDefault().postSticky(new MessageEvent("update_message"));
+            finish();
             return false;
         }
     };

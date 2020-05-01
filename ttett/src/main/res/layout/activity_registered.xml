@@ -73,7 +73,7 @@
             android:layout_centerVertical="true"
             android:hint="请输入JiaMail账号密码"
             android:background="@null"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textPassword"/>
 
     </RelativeLayout>
 

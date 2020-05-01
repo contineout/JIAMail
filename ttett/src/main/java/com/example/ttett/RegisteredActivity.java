@@ -2,6 +2,7 @@ package com.example.ttett;
 
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ private Button BtnRegister;
         mLogin_Exit = findViewById(R.id.login_exit);
         mRegister_account = findViewById(R.id.register_account);
         mRegister_password = findViewById(R.id.register_password);
+        mRegister_password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         BtnRegister = findViewById(R.id.btn_register);
 
         mLogin_Exit.setOnClickListener(this);

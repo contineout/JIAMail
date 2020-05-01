@@ -2,6 +2,7 @@ package com.example.ttett;
 
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ public class OpenMailActivity extends AppCompatActivity {
         MailService mailService = new MailService(this);
         mailService.updateReadMessage(emailMessage.getId());
 
+        WebView webView = findViewById(R.id.webView);
         TextView tvSubject = findViewById(R.id.mail_subject);
         TextView tvFromId = findViewById(R.id.from_id);
         TextView tvFromMail = findViewById(R.id.from_mail);
@@ -44,7 +46,6 @@ public class OpenMailActivity extends AppCompatActivity {
         TextView tvToMail = findViewById(R.id.to_mail);
         TextView tvDate = findViewById(R.id.mail_date);
         ImageView iv_mail = findViewById(R.id.mail_button);
-        TextView tvContent = findViewById(R.id.mail_context);
         RecyclerView attachmentRv = findViewById(R.id.mail_attachment_rv);
         attachmentRv.setVisibility(View.GONE);
 
@@ -62,7 +63,8 @@ public class OpenMailActivity extends AppCompatActivity {
         }
 
         tvSubject.setText(emailMessage.getSubject());
-        tvContent.setText(emailMessage.getContent());
+        webView.loadDataWithBaseURL(null,
+                getHtmlData(emailMessage.getContent()), "text/html", "utf-8", null);
         tvDate.setText(emailMessage.getSendDate());
 
         List<Attachment> attachments;
@@ -97,5 +99,13 @@ public class OpenMailActivity extends AppCompatActivity {
                 Toast.makeText(OpenMailActivity.this, "mail_button", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private String getHtmlData(String bodyHTML) {
+        String head = "<head>" +
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"> " +
+                "<style>img{max-width: 100%; width:auto; height:auto!important;}</style>" +
+                "</head>";
+        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 }

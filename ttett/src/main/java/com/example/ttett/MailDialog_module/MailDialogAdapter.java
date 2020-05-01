@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
+import com.example.ttett.util.CircleTextImage.CircleTextImage;
 
 import java.util.List;
 
@@ -54,16 +56,24 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
                 holder.tvToMail.setText(to[1]);
                 if (from[0].equals("")) {
                     holder.dialog_name.setText(from[1]);
+                    holder.dialog_icon .setText4CircleImage(from[1]);
                 }else{
                     holder.dialog_name.setText(from[0]);
+                    holder.dialog_icon .setText4CircleImage(from[0]);
                 }
 
             }
         }catch (Exception ignored){
         }
 
+        holder.dialog_date.setText(message.getSendDate());
+        holder.dialog_content.setText(message.getSubject());
+        holder.dialog_icon.setCircleColor(message.getAvatar_color());
+
+
         holder.tvSubject.setText(message.getSubject());
-        holder.tvContent.setText(message.getContent());
+        holder.tvContent.loadDataWithBaseURL(null,
+                getHtmlData(message.getContent()), "text/html", "utf-8", null);
         holder.tvDate.setText(message.getSendDate());
 
 
@@ -93,7 +103,6 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
         return messages.size();
     }
 
-
     static class ContactViewHolder extends RecyclerView.ViewHolder{
         RelativeLayout dialog_out;
         LinearLayout dialog_in;
@@ -104,15 +113,20 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
         TextView tvToMail;
         TextView tvDate;
         ImageView iv_mail;
-        TextView tvContent;
+        WebView tvContent;
         RecyclerView attachmentRv;
-        TextView dialog_name,dialog_date;
+        TextView dialog_name,dialog_date,dialog_content;
+        CircleTextImage dialog_icon;
 
 
         ContactViewHolder(@NonNull View itemView) {
             super(itemView);
             dialog_name = itemView.findViewById(R.id.dialog_name);
             dialog_date = itemView.findViewById(R.id.dialog_date);
+            dialog_content = itemView.findViewById(R.id.dialog_content);
+            dialog_icon = itemView.findViewById(R.id.dialog_Iv);
+
+
             dialog_out = itemView.findViewById(R.id.dialog_out);
             dialog_in = itemView.findViewById(R.id.dialog_in);
             tvSubject = itemView.findViewById(R.id.mail_subject);
@@ -122,7 +136,7 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
             tvToMail = itemView.findViewById(R.id.to_mail);
             tvDate = itemView.findViewById(R.id.mail_date);
             iv_mail = itemView.findViewById(R.id.mail_button);
-            tvContent = itemView.findViewById(R.id.mail_context);
+            tvContent = itemView.findViewById(R.id.dialogWebView);
             attachmentRv = itemView.findViewById(R.id.mail_attachment_rv);
             dialog_out.setVisibility(View.VISIBLE);
             dialog_in.setVisibility(View.GONE);
@@ -130,4 +144,11 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
         }
     }
 
+    private String getHtmlData(String bodyHTML) {
+        String head = "<head>" +
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"> " +
+                "<style>img{max-width: 100%; width:auto; height:auto!important;}</style>" +
+                "</head>";
+        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
+    }
 }

@@ -60,4 +60,6 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'org.sufficientlysecure:html-textview:3.9'
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    implementation 'com.github.open-android:pinyin4j:2.5.0'
+//    implementation 'circletextimage.viviant.com.circletextimagelib:circletextimagelib:1.2.0'
 }

@@ -56,8 +56,10 @@ public class SelectAttachmentActivity extends AppCompatActivity implements View.
         attachmentService = new AttachmentService(this);
         attachments = attachmentService.queryAllAttachment(email_id);
         checkStatus = new HashMap<>();
-        for(int i =0;i < attachments.size();i++){
-            checkStatus.put(i,false);
+        if(attachments.size() > 0){
+            for(int i =0;i < attachments.size();i++){
+                checkStatus.put(i,false);
+            }
         }
 
         selectRv.setLayoutManager(new LinearLayoutManager(this));

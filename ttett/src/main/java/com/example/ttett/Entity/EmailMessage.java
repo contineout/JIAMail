@@ -15,6 +15,15 @@ public class EmailMessage implements Parcelable {
     private String subject,from,to,cc,bcc;
     private String content;
     private String attachment;
+    private String avatar_color;
+
+    public String getAvatar_color() {
+        return avatar_color;
+    }
+
+    public void setAvatar_color(String avatar_color) {
+        this.avatar_color = avatar_color;
+    }
 
     public int getIsAttachment() {
         return isAttachment;
@@ -72,6 +81,7 @@ public class EmailMessage implements Parcelable {
         content = in.readString();
         isAttachment = in.readInt();
         attachment = in.readString();
+        avatar_color = in.readString();
     }
 
     public static final Creator<EmailMessage> CREATOR = new Creator<EmailMessage>() {
@@ -97,6 +107,7 @@ public class EmailMessage implements Parcelable {
             emailMessage.content = in.readString();
             emailMessage.isAttachment = in.readInt();
             emailMessage.attachment = in.readString();
+            emailMessage.avatar_color = in.readString();
             return emailMessage;
         }
 
@@ -252,9 +263,10 @@ public class EmailMessage implements Parcelable {
         dest.writeString(content);
         dest.writeInt(isAttachment);
         dest.writeString(attachment);
+        dest.writeString(avatar_color);
     }
 
-    public EmailMessage(int id,String message_id, int email_id, int user_id, int folder_id,int isStar,int isRead, int isDelete, int isSend,int isAttachment, String message_text, String sendDate, String subject, String from, String to, String cc, String bcc, String content,String attachment) {
+    public EmailMessage(int id,String message_id, int email_id, int user_id, int folder_id,int isStar,int isRead, int isDelete, int isSend,int isAttachment, String message_text, String sendDate, String subject, String from, String to, String cc, String bcc, String content,String attachment,String avatar_color) {
         this.id = id;
         this.message_id = message_id;
         this.email_id = email_id;
@@ -274,5 +286,6 @@ public class EmailMessage implements Parcelable {
         this.content = content;
         this.isAttachment = isAttachment;
         this.attachment = attachment;
+        this.avatar_color = avatar_color;
     }
 }

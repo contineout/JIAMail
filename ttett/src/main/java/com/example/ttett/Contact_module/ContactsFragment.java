@@ -16,6 +16,8 @@ import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
 import com.example.ttett.Service.EmailService;
 import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.charsort.SortUtils;
+import com.example.ttett.util.sidebar.LetterView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,6 +46,8 @@ public class ContactsFragment extends Fragment {
     private ContactsAdapter contactsAdapter;
     private Email email;
     private ContactService contactService;
+    private LetterView letterView;
+    private LinearLayoutManager layoutManager;
     int email_id;
 
     @Override
@@ -65,6 +69,20 @@ public class ContactsFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.mipmap.menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        letterView = view.findViewById(R.id.letter_view);
+
+        letterView.setCharacterListener(new LetterView.CharacterClickListener() {
+            @Override
+            public void clickCharacter(String character) {
+                layoutManager.scrollToPositionWithOffset(contactsAdapter.getScrollPosition(character), 0);
+            }
+
+            @Override
+            public void clickArrow() {
+                layoutManager.scrollToPositionWithOffset(0, 0);
+            }
+        });
 
         assert getArguments() != null;
         try{
@@ -91,16 +109,16 @@ public class ContactsFragment extends Fragment {
     }
 
     /**
-     * 新加入的邮箱进行刷新
+     * 新加入的联系人进行刷新
      * @param messageEvent
      */
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
     public void ImportContact(MessageEvent messageEvent) {
-        if (messageEvent.getMessage().equals("import_contact")) {
+        if (messageEvent.getMessage().equals("import_contact")||messageEvent.getMessage().equals("new_contact")||
+                messageEvent.getMessage().equals("updateContact")) {
             initContacts();
         }
     }
-
 
     /**
      * 切换邮箱
@@ -114,19 +132,23 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+    /**
+     * 初始化,刷新联系人
+     */
     public void initContacts(){
         contactService = new ContactService(getContext());
         if(email!=null){
             if(contacts!=null){
                 contacts.clear();
                 if(contactService.queryAllContact(email.getEmail_id())!=null){
-                    contacts.addAll(contactService.queryAllContact(email.getEmail_id()));
+                    contacts.addAll(SortUtils.contactNameSort(contactService.queryAllContact(email.getEmail_id())));
                     contactsAdapter.notifyDataSetChanged();
                 }
             }else{
-                contacts = contactService.queryAllContact(email.getEmail_id());
-                if(contacts!=null){
-                    ContactRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                if(contactService.queryAllContact(email.getEmail_id())!=null){
+                    contacts = SortUtils.contactNameSort(contactService.queryAllContact(email.getEmail_id()));
+                    layoutManager = new LinearLayoutManager(getContext());
+                    ContactRv.setLayoutManager(layoutManager);
                     contactsAdapter = new ContactsAdapter(getContext(),contacts);
                     ContactRv.setAdapter(contactsAdapter);
                 }

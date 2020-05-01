@@ -4,15 +4,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.R;
 import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.CircleTextImage.CircleTextImageUtil;
 import com.example.ttett.util.RegularUtil;
 import com.example.ttett.util.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private static String ContactInfo = "ContactInfo";
     private Contact contact = null;
     private ContactService contactService = new ContactService(this);
+    private boolean isUpdate = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +56,12 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             email.setText(contact.getEmail());
             iphone.setText(contact.getIphone());
         }
+        try{
+            if(Objects.equals(getIntent().getStringExtra("flag"), "update")){
+                isUpdate = true;
+            }
+        }catch (Exception ignored){
+        }
 
 
         mExit.setOnClickListener(this);
@@ -78,42 +87,53 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
      *
      */
     public void checkContact(){
-        contact = new Contact();
+        if(contact == null){
+            contact = new Contact();
+        }
         if(name.getText().toString().isEmpty()){
-            ToastUtil.showTextToas(this,"JiaMail: 错误! 请填写联系人名称!");
+            ToastUtil.showTextToas(this,"错误! 请填写联系人名称!");
         }else {
             contact.setName(isEmptyS(name));
             if(email.getText().toString().isEmpty()){
-                ToastUtil.showTextToas(this,"JiaMail: 错误! 请填写联系人邮件地址!");
+                ToastUtil.showTextToas(this,"错误! 请填写联系人邮件地址!");
             }else{
                 if(!RegularUtil.checkEmail(isEmptyS(email))){
-                    ToastUtil.showTextToas(this,"JiaMail: 错误! 请检查邮箱地址格式!");
+                    ToastUtil.showTextToas(this,"错误! 请检查邮箱地址格式!");
                 }else{
                     contact.setEmail(email.getText().toString());
                     if(isEmptyS(iphone).equals("")){
                         contact.setIphone(isEmptyS(iphone));
                     }else {
                         if(!RegularUtil.checkIphoneNumber(iphone.getText().toString())){
-                            ToastUtil.showTextToas(this,"JiaMail: 错误! 手机号码格式不对!");
+                            ToastUtil.showTextToas(this,"错误! 手机号码格式不对!");
                         }else{
+                            contact.setIphone(isEmptyS(iphone));
+                        }
+                        contact.setRemark(isEmptyS(remark));
+                        contact.setBirthday(isEmptyS(birthday));
+                        contact.setCompany(isEmptyS(company));
+                        contact.setDepartment(isEmptyS(department));
+                        contact.setPosition(isEmptyS(position));
+                        contact.setAddress(isEmptyS(address));
+                        contact.setIphone(isEmptyS(iphone));
+                        contact.setAvatar_color(CircleTextImageUtil.getRandomColor());
+                        int email_id = getIntent().getIntExtra("email_id",0);
+                        contact.setEmail_id(email_id);
 
-                        };
-                    }
-                    contact.setRemark(isEmptyS(remark));
-                    contact.setBirthday(isEmptyS(birthday));
-                    contact.setCompany(isEmptyS(company));
-                    contact.setDepartment(isEmptyS(department));
-                    contact.setPosition(isEmptyS(position));
-                    contact.setAddress(isEmptyS(address));
-                    int email_id = getIntent().getIntExtra("email_id",0);
-                    contact.setEmail_id(email_id);
-
-                    boolean SaveResult = contactService.SaveContact(contact);
-                    if(SaveResult){
-                        EventBus.getDefault().post(new MessageEvent("add_contact",email_id));
-                        finish();
-                    }else {
-                        Toast.makeText(ContactsActivity.this,"该email已经存在联系人",Toast.LENGTH_SHORT).show();
+                        if(isUpdate){
+                            contactService.updateContact(contact);
+                            ToastUtil.showTextToas(this,"修改成功");
+                            EventBus.getDefault().postSticky(new MessageEvent("updateContact",email_id));
+                            finish();
+                        }else {
+                            boolean SaveResult = contactService.SaveContact(contact);
+                            if(SaveResult){
+                                EventBus.getDefault().postSticky(new MessageEvent("new_contact",email_id));
+                                finish();
+                            }else {
+                                ToastUtil.showTextToas(this,"该email已经存在联系人!");
+                            }
+                        }
                     }
                 }
             }

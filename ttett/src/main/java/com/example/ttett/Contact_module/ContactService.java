@@ -37,7 +37,6 @@ public class ContactService {
      */
     public List<Contact> queryAllContact(int email_id){
         ContactDao contactDao = new ContactDao(mContext);
-        Log.d(TAG,"f"+email_id);
         return contactDao.QueryAllContact(email_id);
     }
 
@@ -67,16 +66,50 @@ public class ContactService {
             contact.setEmail_id(email_id);
             contact.setName(str[0]);
             contact.setEmail(str[1]);
+            contact.setAvatar_color(str[2]);
             SaveContact(contact);
         }
     }
 
+    /**
+     * 删除邮件联系人
+     * @param id
+     * @return
+     */
     public boolean deleteContact(int id){
         ContactDao contactDao = new ContactDao(mContext);
         if(contactDao.isExistMail(id)){
             contactDao.deleteContact(id);
         }
         return !contactDao.isExistMail(id);
+    }
+
+    /**
+     * 修改邮件联系人信息
+     * @param contact
+     * @return
+     */
+    public void updateContact(Contact contact){
+        ContactDao contactDao = new ContactDao(mContext);
+        Log.d(TAG,contact.getContact_id()+"ContactId");
+        if(contactDao.isExistMail(contact.getContact_id())){
+
+            contactDao.updateContact(contact);
+        }
+    }
+
+    /**
+     * 联系人信息
+     * @param id
+     * @return
+     */
+    public Contact queryContact(int id){
+        ContactDao contactDao = new ContactDao(mContext);
+        Log.d(TAG,id+"Subscribe22ContactId");
+        if(contactDao.isExistMail(id)){
+            return contactDao.queryContact(id);
+        }
+        return null;
     }
 
 }

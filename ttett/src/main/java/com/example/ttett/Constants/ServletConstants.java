@@ -2,7 +2,7 @@ package com.example.ttett.Constants;
 
 public class ServletConstants {
 
-    public static String ServletIP = "http://192.168.1.6:8888/MailServlet/";
+    public static String ServletIP = "http://192.168.1.5:8888/MailServlet/";
 
     public static String LoginServlet = ServletIP+"UserServlet";
 

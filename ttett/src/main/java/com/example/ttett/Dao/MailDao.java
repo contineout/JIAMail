@@ -114,6 +114,7 @@ public class MailDao {
      * @return
      */
     public List<EmailMessage> QueryDraftMessage(Email email){
+        Log.d(TAG,"da"+ email.getAddress());
         Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail = ? or from_mail = ? and isSend = ? ",
                 new String[]{("%"+ email.getAddress() + "%"),(email.getAddress()),("0")},null,null,null,null);
         Log.d(TAG,"da"+cursor.getCount());
@@ -172,6 +173,19 @@ public class MailDao {
                 new String[]{message_id},null,null,null,null);
         return cursor.moveToFirst();
     }
+    /**
+     * 判断发件人是否存在,返回color
+     * @param from_mail
+     * @return
+     */
+    public String isExistFrom(String from_mail){
+        Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail = ? or from_mail = ?",
+                new String[]{("%"+from_mail+"%"),(from_mail)},"from_mail",null,null,null);
+        if(cursor.moveToFirst()){
+            return cursor.getString(cursor.getColumnIndex("avatar_color"));
+        }
+        return "";
+    }
 
     /**
      * 判断邮件是否存在，增删改时
@@ -183,6 +197,8 @@ public class MailDao {
                 new String[]{String.valueOf(id)},null,null,null,null);
         return cursor.moveToFirst();
     }
+
+
 
 
     /**
@@ -208,9 +224,10 @@ public class MailDao {
             values.put("isDelete",emailMessage.getIsDelete());
             values.put("isAttachment",emailMessage.getIsAttachment());
             values.put("attachment",emailMessage.getAttachment());
+            values.put("avatar_color",emailMessage.getAvatar_color());
             db.insert("EMAILMESSAGE",null,values);
             values.clear();
-            db.close();
+//            db.close();
     }
 
     /**
@@ -344,6 +361,7 @@ public class MailDao {
                 message.setIsStar(cursor.getInt(cursor.getColumnIndex("isStar")));
                 message.setIsAttachment(cursor.getInt(cursor.getColumnIndex("isAttachment")));
                 message.setAttachment(cursor.getString(cursor.getColumnIndex("attachment")));
+                message.setAvatar_color(cursor.getString(cursor.getColumnIndex("avatar_color")));
                 messages.add(message);
             }while (cursor.moveToNext());
             cursor.close();

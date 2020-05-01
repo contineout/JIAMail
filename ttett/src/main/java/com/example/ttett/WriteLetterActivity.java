@@ -214,7 +214,7 @@ public class WriteLetterActivity extends AppCompatActivity implements View.OnCli
                 ToastUtil.showTextToas(this,"JiaMail: 错误! 请输入主题!");
             }else{
                 setEmailMessage();
-                final SaveMessage saveMessage = new SaveMessage(emailMessage,this);
+                final SaveMessage saveMessage = new SaveMessage(emailMessage,this,email);
                 final SendMessage sendMessage = new SendMessage(emailMessage,email,attachments);
                 new Thread(new Runnable() {
                     @Override

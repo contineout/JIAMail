@@ -26,7 +26,7 @@ public class ToastUtil {
     public static void showTextToas(Context context, String message){
         View toastview= LayoutInflater.from(context).inflate(R.layout.toast_message,null);
         TextView text = (TextView) toastview.findViewById(R.id.tv_message);
-        text.setText(message);
+        text.setText("JiaMail: "+message);
         Toast toast=new Toast(context);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL,0,100);
         toast.setDuration(Toast.LENGTH_SHORT);

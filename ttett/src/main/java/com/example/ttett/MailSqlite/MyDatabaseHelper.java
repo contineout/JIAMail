@@ -49,7 +49,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "bcc text," +
             "content text," +
             "sendDate text," +
-            "from_image image," +
+            "avatar_color text," +
             "isStar bit," +
             "isRead bit," +
             "isSend bit," +
@@ -75,6 +75,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "contacts_email text," +
             "contacts_iphone text," +
             "contact_address text," +
+            "avatar_color text,"+
             "FOREIGN KEY (email_id) REFERENCES EMAIL(email_id)" +
             ")";
     public static final String ATTACHMENT="CREATE TABLE ATTACHMENT (" +

@@ -49,7 +49,7 @@ public class FolderDao {
         values.put("message_number",0);
         db.insert("FOLDER",null,values);
         values.clear();
-        db.close();
+//        db.close();
     }
     /**
      * 查询所有文件夹

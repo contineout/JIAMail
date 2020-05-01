@@ -179,6 +179,17 @@ public class InboxFragment extends Fragment {
         }
     }
 
+    /**
+     * 更改inbox
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void updateMessage(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("update_message")){
+            initEmailMessage();
+        }
+    }
+
 
 
     /**

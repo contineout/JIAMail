@@ -63,7 +63,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="15dp"
-                android:background="@drawable/nav_bottom"
                 android:clickable="true"/>
             <ImageView
                 android:id="@+id/add_email"
@@ -74,7 +73,6 @@
                 android:layout_gravity="bottom"
                 android:layout_centerHorizontal="true"
                 android:layout_above="@+id/user_info"
-                android:background="@drawable/nav_bottom"
                 android:clickable="true"/>
         </RelativeLayout>
         <LinearLayout

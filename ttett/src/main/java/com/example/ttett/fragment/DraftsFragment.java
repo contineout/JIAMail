@@ -100,6 +100,7 @@ public class DraftsFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void SwitchMessage(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
+            email = messageEvent.getEmail();
             initEmailMessage();
         }
     }

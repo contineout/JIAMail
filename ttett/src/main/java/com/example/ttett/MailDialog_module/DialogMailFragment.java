@@ -10,6 +10,8 @@ import com.example.ttett.Entity.Contact;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
 import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.charsort.SortUtils;
+import com.example.ttett.util.sidebar.LetterView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,6 +38,8 @@ public class DialogMailFragment extends Fragment {
     private DialogAdapter dialogAdapter;
     private String TAG = "DialogMailFragment";
     private ContactService contactService;
+    private LetterView letterView;
+    private LinearLayoutManager layoutManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +56,21 @@ public class DialogMailFragment extends Fragment {
 
         mToolbar = view.findViewById(R.id.dialogmail_toolbar);
         DialogRv = view.findViewById(R.id.dialog_rv);
+        letterView = view.findViewById(R.id.letter_view);
+
+        letterView.setCharacterListener(new LetterView.CharacterClickListener() {
+            @Override
+            public void clickCharacter(String character) {
+                layoutManager.scrollToPositionWithOffset(dialogAdapter.getScrollPosition(character), 0);
+            }
+
+            @Override
+            public void clickArrow() {
+                layoutManager.scrollToPositionWithOffset(0, 0);
+            }
+        });
+
+
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -72,8 +91,9 @@ public class DialogMailFragment extends Fragment {
         if(email!=null){
             contactService = new ContactService(getContext());
             if(contactService.queryAllEmailContact(email)!=null){
-                contacts = contactService.queryAllEmailContact(email);
-                DialogRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                contacts = SortUtils.contactNameSort(contactService.queryAllEmailContact(email));
+                layoutManager = new LinearLayoutManager(getContext());
+                DialogRv.setLayoutManager(layoutManager);
                 dialogAdapter = new DialogAdapter(getContext(),contacts);
                 DialogRv.setAdapter(dialogAdapter);
             }
@@ -92,7 +112,7 @@ public class DialogMailFragment extends Fragment {
                     email = messageEvent.getEmail();
                     contacts.clear();
                     if(contactService.queryAllEmailContact(email)!=null){
-                        contacts.addAll(contactService.queryAllEmailContact(email));
+                        contacts.addAll(SortUtils.contactNameSort(contactService.queryAllEmailContact(email)));
                         dialogAdapter.notifyDataSetChanged();
                     }
                 }
@@ -100,7 +120,7 @@ public class DialogMailFragment extends Fragment {
                 if(messageEvent.getEmail()!=null){
                     contactService = new ContactService(getContext());
                     if(contactService.queryAllEmailContact(email)!=null){
-                        contacts = contactService.queryAllEmailContact(email);
+                        contacts = SortUtils.contactNameSort(contactService.queryAllEmailContact(email));;
                         DialogRv.setLayoutManager(new LinearLayoutManager(getContext()));
                         dialogAdapter = new DialogAdapter(getContext(),contacts);
                         DialogRv.setAdapter(dialogAdapter);
