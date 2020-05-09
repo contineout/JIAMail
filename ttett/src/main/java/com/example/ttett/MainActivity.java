@@ -1,6 +1,9 @@
 package com.example.ttett;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,9 +27,13 @@ import com.example.ttett.fragment.DraftsFragment;
 import com.example.ttett.fragment.InboxFragment;
 import com.example.ttett.fragment.SendedFragment;
 import com.example.ttett.fragment.SpamFragment;
+import com.example.ttett.util.ToastUtil;
+import com.example.ttett.util.mailUtil.SaveMessage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -35,6 +42,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -65,12 +73,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EmailService emailService = new EmailService(this);
     private EmailAdapter emailAdapter;
     private int user_id;
+    private TextView tv_address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        verifyStoragePermissions(this);
         setContentView(R.layout.activity_main);
-
+        EventBus.getDefault().register(this);
         initView();
 
         //Tooldar标题栏
@@ -187,10 +197,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
-
     /**
      * Fragment初始化
      */
@@ -219,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RelativeLayout nav_spam = findViewById(R.id.nav_spam);
         RelativeLayout nav_folder = findViewById(R.id.nav_folder);
 
-        TextView tvaddress = findViewById(R.id.email_address);
+        tv_address = findViewById(R.id.email_address);
         Email_Rv = findViewById(R.id.email_rv);
 
         fragments = new Fragment[]{inboxFragment,dialogMailFragment,contactsFragment,attachmentFragment,//bottomNavigationView 0 - 3
@@ -286,6 +292,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void SwitchEmail(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("Switch_Email")){
+            tv_address.setText(messageEvent.getEmail().getAddress());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
+    public void SendResult(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("SendSuccess")){
+            SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
+            saveMessage.saveSendMessage();
+            ToastUtil.showTextToas(this,"发送成功");
+        }
+        if (messageEvent.getMessage().equals("SendError")){
+            SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
+            saveMessage.saveDraftsMessage();
+            ToastUtil.showTextToas(this,"发送失败");
+        }
+    }
     /**
      * 切换fragment
      * @param lastfragmen
@@ -357,6 +384,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
+    private  final int REQUEST_EXTERNAL_STORAGE = 1;
+    private  String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE };
+    public  void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE);
+        }
     }
 }

@@ -237,7 +237,12 @@ public class CircleTextImage extends ImageView {
         if(mUseRandomBackgroundColor){
 
         }else{
-            this.mCircleColor = Color.parseColor(color);
+            try{
+                this.mCircleColor = Color.parseColor(color);
+            }catch (Exception ignored){
+
+            }
+
         }
 
         invalidate();

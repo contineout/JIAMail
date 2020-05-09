@@ -17,6 +17,9 @@ import android.widget.TextView;
 import com.example.ttett.R;
 import com.example.ttett.Service.EmailService;
 import com.example.ttett.Service.MailService;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -76,10 +79,7 @@ public class DeleteDialogFragment extends DialogFragment implements View.OnClick
         if(id_item!=null){
             for(int id:id_item){
                 mailService.deleteMessage(id);
-//                int email_id = mailService.queryEmail_id(id);
-//                Email email = emailService.queryEmail(email_id);
-//                email.setMessage_count(email.getMessage_count() - 1);
-//                emailService.updateMessageCount(email);
+                EventBus.getDefault().postSticky(new MessageEvent("update_message"));
             }
         }
     }

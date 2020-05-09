@@ -130,7 +130,7 @@
                 android:layout_marginRight="8dp"
                 >
 
-                <WebView
+                <cn.qzb.richeditor.RichEditor
                     android:id="@+id/webView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

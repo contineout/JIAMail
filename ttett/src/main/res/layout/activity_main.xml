@@ -52,8 +52,10 @@
             android:background="#2E476B">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/email_rv"
-                android:layout_width="match_parent"
+                android:layout_width="36dp"
                 android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentEnd="true"
                 android:layout_above="@+id/add_email"/>
             <ImageView
                 android:id="@+id/user_info"

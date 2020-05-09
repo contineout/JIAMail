@@ -183,24 +183,29 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
                     if(id_item != null){
                         mailService.updateStarMessage(id_item,setStar);
                     }
+                    EventBus.getDefault().postSticky(new MessageEvent("update_message"));
+                    finish();
                     break;
                 case R.id.set_unread:
                     if(id_item != null){
                         mailService.updateReadMessage(id_item,setUnRead);
                     }
+                    EventBus.getDefault().postSticky(new MessageEvent("update_message"));
+                    finish();
                     break;
                 case R.id.set_delete:
                     if(id_item != null) {
                         if(mFromFrag.equals(InboxAdapter.deleteFragment)){
                             DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
-                            deleteDialogFragment.show(getSupportFragmentManager(),"deleteDialogFragment");
                             Bundle bundle = new Bundle();
                             bundle.putIntegerArrayList("id_item", (ArrayList<Integer>) id_item);
                             deleteDialogFragment.setArguments(bundle);
+                            deleteDialogFragment.show(getSupportFragmentManager(),"deleteDialogFragment");
                         }else{
                             for(int id:id_item){
                                 mailService.updateisDelete(id);
-
+                                EventBus.getDefault().postSticky(new MessageEvent("update_message"));
+                                finish();
                             }
                         }
                     }
@@ -210,8 +215,7 @@ public class SelectMailActivity extends AppCompatActivity implements View.OnClic
                 default:
                     break;
             }
-            EventBus.getDefault().postSticky(new MessageEvent("update_message"));
-            finish();
+
             return false;
         }
     };

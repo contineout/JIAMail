@@ -9,6 +9,7 @@ import android.util.Log;
 import com.example.ttett.Dao.SQLiteDatabaseUtil;
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.Entity.Email;
+import com.example.ttett.bean.Person;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +62,19 @@ public class ContactDao {
      * @param email
      * @return
      */
-    public Boolean isExistMail(String email){
-        Cursor cursor = db.query("CONTACT", new String[]{"id"},"contacts_email = ?",
+    public Boolean isExistContact(String email,int email_id){
+        Cursor cursor = db.query("CONTACT", new String[]{"id"},"contacts_email = ? and email_id = ?" ,
+                new String[]{email,String.valueOf(email_id)},null,null,null,null);
+        return cursor.moveToFirst();
+    }
+
+    /**
+     * 判断联系人是否存在
+     * @param email
+     * @return
+     */
+    public Boolean isExistContact(String email){
+        Cursor cursor = db.query("CONTACT", new String[]{"id"},"contacts_email = ?" ,
                 new String[]{email},null,null,null,null);
         return cursor.moveToFirst();
     }
@@ -104,7 +116,7 @@ public class ContactDao {
         db.insert("CONTACT",null,values);
         values.clear();
 //        db.close();
-        return isExistMail(contact.getEmail());
+        return isExistContact(contact.getEmail());
     }
 
     /**
@@ -143,6 +155,24 @@ public class ContactDao {
         return null;
     }
 
+    public List<Person> QueryAllPerson(int email_id){
+        Cursor cursor = db.query("CONTACT", null,"email_id = ?",
+                new String[]{String.valueOf(email_id)},null,null,"id desc",null);
+        List<Person> personList =new ArrayList<>();
+        Person person;
+        if(cursor.moveToFirst()){
+            do {
+                person = new Person();
+                person.setEmail(cursor.getString(cursor.getColumnIndex("contacts_name")));
+                person.setName(cursor.getString(cursor.getColumnIndex("contacts_email")));
+                personList.add(person);
+            }while (cursor.moveToNext());
+            cursor.close();
+            return personList;
+        }
+        cursor.close();
+        return null;
+    }
     /**
      * 查询某个联系人
      * @param id
@@ -176,12 +206,34 @@ public class ContactDao {
     }
 
     /**
+     * 添加发送联系人
+     * @param id
+     * @return
+     */
+    public Person queryPerson(int id){
+        Cursor cursor = db.query("CONTACT", null,"id = ?",
+                new String[]{String.valueOf(id)},null,null,null,null);
+        Person person;
+        if(cursor.moveToFirst()){
+            do {
+                person = new Person();
+                person.setName(cursor.getString(cursor.getColumnIndex("contacts_email")));
+                person.setEmail(cursor.getString(cursor.getColumnIndex("contacts_name")));
+            }while (cursor.moveToNext());
+            cursor.close();
+            return person;
+        }
+        cursor.close();
+        return null;
+    }
+
+    /**
      * 查询所有往来邮件联系人
      * @param email
      * @return
      */
     public List<Contact> QueryAllEmailContact(Email email){
-        Cursor cursor = db.query("EMAILMESSAGE", new String[]{("distinct from_mail"),("avatar_color"),("sendDate")},"email_id = ? and not from_mail = ?",
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{("distinct from_mail"),("avatar_color"),("sendDate"),("email_id")},"email_id = ? and not from_mail = ?",
                 new String[]{String.valueOf(email.getEmail_id()),(email.getAddress())},"from_mail",null,"id DESC");
         Log.d(TAG,"查询了+"+cursor.getCount());
 
@@ -190,7 +242,9 @@ public class ContactDao {
         if(cursor.moveToFirst()){
             do {
                 String[] str = cursor.getString(cursor.getColumnIndex("from_mail")).split("[<>]");
+
                 contact = new Contact();
+                contact.setEmail_id(cursor.getInt(cursor.getColumnIndex("email_id")));
                 contact.setName(str[0]);
                 contact.setEmail(str[1]);
                 contact.setAvatar_color(cursor.getString(cursor.getColumnIndex("avatar_color")));

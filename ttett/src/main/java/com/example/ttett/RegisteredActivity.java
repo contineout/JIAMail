@@ -83,9 +83,7 @@ private Button BtnRegister;
                             RegisteredActivity.this.finish();
                         }else{
                             Toast.makeText(RegisteredActivity.this, "用户名已存在", Toast.LENGTH_SHORT).show();
-
                         }
-
                     } else {
                         Toast.makeText(RegisteredActivity.this, "解析错误", Toast.LENGTH_SHORT).show();
                     }

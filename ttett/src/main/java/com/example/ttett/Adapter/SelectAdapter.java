@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
 import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.CircleTextImage.CircleTextImage;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -65,6 +66,8 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
         holder.mTime.setText(message.getSendDate().substring(5,16));
         String[] from = message.getFrom().split("[<>]");
         holder.mName.setText(from[0]);
+        holder.icon.setText4CircleImage(from[0].substring(0,1));
+        holder.icon.setCircleColor(message.getAvatar_color());
         holder.mSubject.setText(message.getSubject());
         holder.mContent.setText(message.getContent());
         holder.mContent.setEllipsize(END);
@@ -103,7 +106,8 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
     }
 
     static class InboxViewHolder extends RecyclerView.ViewHolder{
-        CircleImageView Icon,isReadflag;
+        CircleImageView isReadflag;
+        CircleTextImage icon;
         TextView mName,mTime,mSubject,mContent;
         CheckBox checkBox;
         LinearLayout inbox_item;
@@ -115,7 +119,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.InboxViewH
             isReadflag = itemView.findViewById(R.id.isReadflag);
             checkBox = itemView.findViewById(R.id.message_cb);
             inbox_item = itemView.findViewById(R.id.inbox_item);
-            Icon = itemView.findViewById(R.id.from_icon);
+            icon = itemView.findViewById(R.id.from_icon);
             mName = itemView.findViewById(R.id.from_name);
             mTime = itemView.findViewById(R.id.from_time);
             mSubject = itemView.findViewById(R.id.mail_subject);

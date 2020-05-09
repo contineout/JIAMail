@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
-import com.example.ttett.util.SaveMessage;
+import com.example.ttett.util.mailUtil.SaveMessage;
 
 import java.util.Objects;
 

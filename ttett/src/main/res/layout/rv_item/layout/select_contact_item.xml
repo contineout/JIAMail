@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:background="@drawable/item_selector"
+    android:id="@+id/contact_item"
+    >
+    <RelativeLayout
+        android:layout_width="30dp"
+        android:layout_height="match_parent">
+        <CheckBox
+            android:id="@+id/contact_cb"
+            android:layout_gravity="center"
+            android:layout_marginLeft="6dp"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:button="@drawable/select_check2"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textSize="10dip" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:tag="Hover"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="10dp"
+        >
+        <com.example.ttett.util.CircleTextImage.CircleTextImage
+            android:layout_marginStart="10dp"
+            android:id="@+id/contacts_Iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"/>
+
+
+        <TextView
+            android:id="@+id/contact_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@+id/contacts_Iv"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="112" />
+        <TextView
+            android:id="@+id/contact_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@+id/contact_name"
+            android:layout_toRightOf="@+id/contacts_Iv"
+            android:textSize="13sp"
+            android:text="1023851233@qq.com" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/xiahua"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/xiahua"/>
+</LinearLayout>

@@ -2,14 +2,19 @@ package com.example.ttett;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Service.EmailService;
-import com.example.ttett.util.EmailLogin;
+import com.example.ttett.util.CircleTextImage.CircleTextImageUtil;
 import com.example.ttett.util.ToastUtil;
+import com.example.ttett.util.mailUtil.EmailProp;
+
+import javax.mail.Session;
+import javax.mail.Transport;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +32,7 @@ public class LoginEmailActivity extends AppCompatActivity {
 
         et_address = findViewById(R.id.login_email_account);
         et_password = findViewById(R.id.login_email_password);
+        et_password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         bt_login_email = findViewById(R.id.btn_login_email);
 
         bt_login_email.setOnClickListener(new View.OnClickListener() {
@@ -73,25 +79,27 @@ public class LoginEmailActivity extends AppCompatActivity {
     }
 
     private boolean selectLogin(String address,String password){
-        EmailLogin emailLogin = new EmailLogin();
-
+        EmailProp emailProp = new EmailProp();
+        boolean isConnected = false;
         String[] email_type = address.split("[@]");
         email = new Email();
         email.setAddress(address);
         email.setName(email_type[0]);
         email.setType(email_type[1]);
         email.setAuthorizationCode(password);
+        email.setAvatar_color(CircleTextImageUtil.getRandomColor());
         email.setUser_id(getIntent().getIntExtra("user_id",0));
         email.setMessage_count(0);
-        switch (email_type[1]){
-            case "qq.com":
-                return emailLogin.QQLogin(email);
-            case "sina.com":
-                return emailLogin.SinaLogin(email);
-                default:
+        Session session = emailProp.getSTMPSession(email);
+        Transport transport = null;
+        try {
+            transport = session.getTransport();
+            transport.connect(email.getAddress(),email.getAuthorizationCode());
+            isConnected = transport.isConnected();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return isConnected;
         }
-        return false;
+        return isConnected;
     }
-
-
 }

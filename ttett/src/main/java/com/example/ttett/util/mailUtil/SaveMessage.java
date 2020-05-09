@@ -1,4 +1,4 @@
-package com.example.ttett.util;
+package com.example.ttett.util.mailUtil;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Context;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.util.RegularUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

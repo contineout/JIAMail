@@ -16,6 +16,29 @@ public class MessageEvent {
     private String mFlag;
     private List<EmailMessage> emailMessages;
     private Folder folder;
+    private List<Integer> id_item;
+    private EmailMessage emailMessage;
+
+    public EmailMessage getEmailMessage() {
+        return emailMessage;
+    }
+
+    public void setEmailMessage(EmailMessage emailMessage) {
+        this.emailMessage = emailMessage;
+    }
+
+    public List<Integer> getId_item() {
+        return id_item;
+    }
+
+    public void setId_item(List<Integer> id_item) {
+        this.id_item = id_item;
+    }
+
+    public MessageEvent(String message, List<Integer> id_item) {
+        this.message = message;
+        this.id_item = id_item;
+    }
 
     public List<EmailMessage> getEmailMessages() {
         return emailMessages;
@@ -37,6 +60,12 @@ public class MessageEvent {
 
     public void setEmailMessages(List<EmailMessage> emailMessages) {
         this.emailMessages = emailMessages;
+    }
+
+    public MessageEvent(String message, Email email, EmailMessage emailMessage) {
+        this.message = message;
+        this.email = email;
+        this.emailMessage = emailMessage;
     }
 
     public MessageEvent(String message, Email email, String mFlag, List<EmailMessage> emailMessages) {

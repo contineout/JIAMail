@@ -169,10 +169,10 @@
         android:layout_marginRight="8dp"
         >
 
-        <WebView
+        <cn.qzb.richeditor.RichEditor
             android:id="@+id/dialogWebView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

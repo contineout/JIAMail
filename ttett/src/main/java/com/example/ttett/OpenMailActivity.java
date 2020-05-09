@@ -2,7 +2,6 @@ package com.example.ttett;
 
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +19,7 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import cn.qzb.richeditor.RichEditor;
 
 public class OpenMailActivity extends AppCompatActivity {
     private String TAG = "OpenMailActivity";
@@ -38,7 +38,7 @@ public class OpenMailActivity extends AppCompatActivity {
         MailService mailService = new MailService(this);
         mailService.updateReadMessage(emailMessage.getId());
 
-        WebView webView = findViewById(R.id.webView);
+        RichEditor webView = findViewById(R.id.webView);
         TextView tvSubject = findViewById(R.id.mail_subject);
         TextView tvFromId = findViewById(R.id.from_id);
         TextView tvFromMail = findViewById(R.id.from_mail);
@@ -63,8 +63,7 @@ public class OpenMailActivity extends AppCompatActivity {
         }
 
         tvSubject.setText(emailMessage.getSubject());
-        webView.loadDataWithBaseURL(null,
-                getHtmlData(emailMessage.getContent()), "text/html", "utf-8", null);
+        webView.setHtml(emailMessage.getContent());
         tvDate.setText(emailMessage.getSendDate());
 
         List<Attachment> attachments;

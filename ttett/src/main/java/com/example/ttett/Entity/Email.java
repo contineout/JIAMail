@@ -11,6 +11,15 @@ public class Email implements Parcelable {
     private String address;
     private String name;
     private int message_count;
+    private String avatar_color;
+
+    public String getAvatar_color() {
+        return avatar_color;
+    }
+
+    public void setAvatar_color(String avatar_color) {
+        this.avatar_color = avatar_color;
+    }
 
     public Email() {
     }
@@ -23,6 +32,7 @@ public class Email implements Parcelable {
         address = in.readString();
         name = in.readString();
         message_count = in.readInt();
+        avatar_color = in.readString();
     }
 
     public static final Creator<Email> CREATOR = new Creator<Email>() {
@@ -107,5 +117,6 @@ public class Email implements Parcelable {
         dest.writeString(address);
         dest.writeString(name);
         dest.writeInt(message_count);
+        dest.writeString(avatar_color);
     }
 }

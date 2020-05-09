@@ -6,7 +6,7 @@ import android.util.Log;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
-import com.example.ttett.util.RecipientMessage;
+import com.example.ttett.util.mailUtil.RecipientMessage;
 
 import java.util.List;
 import java.util.Random;
@@ -49,10 +49,10 @@ public class MailService {
         return 0;
     }
 
-    public List<EmailMessage> queryDialogMessage(String address){
+    public List<EmailMessage> queryDialogMessage(String address,int email_id){
         MailDao mailDao = new MailDao(mContext);
         if(mailDao.queryIsDialogMessage(address)){
-           return mailDao.queryDialogMessage(address);
+           return mailDao.queryDialogMessage(address,email_id);
         }
         return null;
     }

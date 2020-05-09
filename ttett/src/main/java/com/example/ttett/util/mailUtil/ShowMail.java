@@ -1,4 +1,4 @@
-package com.example.ttett.util;
+package com.example.ttett.util.mailUtil;
 
 import android.content.Context;
 import android.os.Environment;

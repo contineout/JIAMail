@@ -21,4 +21,6 @@ public class SizeTran{
             textView.setText(df.format(mSize/ mb) + " "+"M");
         }
     }
+
+
 }

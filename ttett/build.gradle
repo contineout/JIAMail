@@ -61,5 +61,7 @@ dependencies {
     implementation 'org.sufficientlysecure:html-textview:3.9'
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     implementation 'com.github.open-android:pinyin4j:2.5.0'
+    implementation "com.splitwise:tokenautocomplete:3.0.1@aar"
+    implementation 'com.github.Gennki:QRichText:v1.0.3'
 //    implementation 'circletextimage.viviant.com.circletextimagelib:circletextimagelib:1.2.0'
 }

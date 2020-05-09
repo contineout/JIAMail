@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.R;
 import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.CircleTextImage.CircleTextImage;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,14 +27,15 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         private RelativeLayout email_item ;
+        CircleTextImage icon;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             email_item = itemView.findViewById(R.id.Email_cv);
+            icon = itemView.findViewById(R.id.email_icon);
         }
     }
 
     public EmailAdapter(Context context,List<Email> emails){
-
         mEmails = emails;
         mContext = context;
     }
@@ -64,6 +66,8 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Email email = mEmails.get(position);
+        holder.icon.setText4CircleImage(email.getName().substring(0,1));
+        holder.icon.setCircleColor(email.getAvatar_color());
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.Entity.Email;
+import com.example.ttett.bean.Person;
 
 import java.util.List;
 
@@ -21,9 +22,9 @@ public class ContactService {
      * @param contact
      * @return
      */
-    public Boolean SaveContact(Contact contact) {
+    public Boolean SaveContact(Contact contact,int email_id) {
         ContactDao contactDao = new ContactDao(mContext);
-        if (!contactDao.isExistMail(contact.getEmail())) {
+        if (!contactDao.isExistContact(contact.getEmail(),email_id)) {
             return contactDao.InsertContact(contact);
         }else{
             return false;
@@ -67,7 +68,7 @@ public class ContactService {
             contact.setName(str[0]);
             contact.setEmail(str[1]);
             contact.setAvatar_color(str[2]);
-            SaveContact(contact);
+            SaveContact(contact,email_id);
         }
     }
 
@@ -105,9 +106,21 @@ public class ContactService {
      */
     public Contact queryContact(int id){
         ContactDao contactDao = new ContactDao(mContext);
-        Log.d(TAG,id+"Subscribe22ContactId");
         if(contactDao.isExistMail(id)){
             return contactDao.queryContact(id);
+        }
+        return null;
+    }
+
+    /**
+     * 联系人信息
+     * @param id
+     * @return
+     */
+    public Person queryPerson(int id){
+        ContactDao contactDao = new ContactDao(mContext);
+        if(contactDao.isExistMail(id)){
+            return contactDao.queryPerson(id);
         }
         return null;
     }

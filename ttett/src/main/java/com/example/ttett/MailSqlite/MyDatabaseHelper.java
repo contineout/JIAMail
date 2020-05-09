@@ -24,7 +24,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "AuthorizationCode text," +
             "email_name text," +
             "message_count integer," +
-            "FOREIGN KEY (user_id) REFERENCES User (id)" +
+            "avatar_color text,"+
+            "FOREIGN KEY (user_id) REFERENCES USER (id)" +
             ")";
 
     public static final String FOLDER="CREATE TABLE FOLDER (" +
@@ -76,18 +77,20 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "contacts_iphone text," +
             "contact_address text," +
             "avatar_color text,"+
-            "FOREIGN KEY (email_id) REFERENCES EMAIL(email_id)" +
+            "FOREIGN KEY (email_id) REFERENCES EMAIL(id)" +
             ")";
     public static final String ATTACHMENT="CREATE TABLE ATTACHMENT (" +
             "id integer PRIMARY KEY AUTOINCREMENT," +
             "email_id integer," +
+            "emailmessage_id integer,"+
             "message_id text," +
             "name text," +
             "type text," +
             "size text," +
             "saveDate text," +
             "path text," +
-            "FOREIGN KEY (email_id) REFERENCES EMAIL(email_id)" +
+            "FOREIGN KEY (email_id) REFERENCES EMAIL(id)," +
+            "FOREIGN KEY (emailmessage_id) REFERENCES EMAILMESSAGE(id)"+
             ")";
 
     private Context mContext;

@@ -1,4 +1,4 @@
-package com.example.ttett.util;
+package com.example.ttett.util.mailUtil;
 
 import com.example.ttett.Entity.Email;
 

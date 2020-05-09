@@ -69,9 +69,9 @@ public class MailDao {
      * @param address 每个邮件账号
      * @return
      */
-    public List<EmailMessage> queryDialogMessage(String address){
-        Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? or from_mail LIKE ?",
-                new String[]{("%"+ address + "%"),("%"+ address + "%")},null,null,"SendDate desc",null);
+    public List<EmailMessage> queryDialogMessage(String address,int email_id){
+        Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail LIKE ? and email_id = ? and not folder_id = ?",
+                new String[]{("%"+ address + "%"),(String.valueOf(email_id)),("0")},null,null,"SendDate desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
         return setMessages(cursor);
     }
@@ -321,7 +321,6 @@ public class MailDao {
         values.put("isStar",1);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
-
     /**
      * 取消邮件星标
      * @param id

@@ -81,6 +81,7 @@ public class EmailDao {
             values.put("AuthorizationCode",email.getAuthorizationCode());
             values.put("email_name", email.getName());
             values.put("message_count",email.getMessage_count());
+            values.put("avatar_color",email.getAvatar_color());
             db.insert("EMAIL",null,values);
             values.clear();
             db.close();
@@ -110,6 +111,7 @@ public class EmailDao {
                 email.setAuthorizationCode(cursor.getString(cursor.getColumnIndex("AuthorizationCode")));
                 email.setName(cursor.getString(cursor.getColumnIndex("email_name")));
                 email.setMessage_count(cursor.getInt(cursor.getColumnIndex("message_count")));
+                email.setAvatar_color(cursor.getString(cursor.getColumnIndex("avatar_color")));
                 emails.add(email);
             }while (cursor.moveToNext());
             cursor.close();
@@ -138,7 +140,7 @@ public class EmailDao {
                 email.setAddress(cursor.getString(cursor.getColumnIndex("email_address")));
                 email.setAuthorizationCode(cursor.getString(cursor.getColumnIndex("AuthorizationCode")));
                 email.setName(cursor.getString(cursor.getColumnIndex("email_name")));
-                email.setMessage_count(cursor.getInt(cursor.getColumnIndex("message_count")));
+                email.setAvatar_color(cursor.getString(cursor.getColumnIndex("avatar_color")));
             }while (cursor.moveToNext());
             cursor.close();
             Log.d(TAG,"查询了+"+cursor.getCount() + email.getAddress());
@@ -167,6 +169,7 @@ public class EmailDao {
                 email.setAddress(cursor.getString(cursor.getColumnIndex("email_address")));
                 email.setAuthorizationCode(cursor.getString(cursor.getColumnIndex("AuthorizationCode")));
                 email.setName(cursor.getString(cursor.getColumnIndex("email_name")));
+                email.setAvatar_color(cursor.getString(cursor.getColumnIndex("avatar_color")));
             }while (cursor.moveToNext());
             cursor.close();
             return email;

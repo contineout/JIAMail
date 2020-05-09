@@ -142,8 +142,8 @@ public class ContactsFragment extends Fragment {
                 contacts.clear();
                 if(contactService.queryAllContact(email.getEmail_id())!=null){
                     contacts.addAll(SortUtils.contactNameSort(contactService.queryAllContact(email.getEmail_id())));
-                    contactsAdapter.notifyDataSetChanged();
                 }
+                contactsAdapter.notifyDataSetChanged();
             }else{
                 if(contactService.queryAllContact(email.getEmail_id())!=null){
                     contacts = SortUtils.contactNameSort(contactService.queryAllContact(email.getEmail_id()));
@@ -151,6 +151,10 @@ public class ContactsFragment extends Fragment {
                     ContactRv.setLayoutManager(layoutManager);
                     contactsAdapter = new ContactsAdapter(getContext(),contacts);
                     ContactRv.setAdapter(contactsAdapter);
+                }else{
+                    if(contacts!=null){
+                        contacts.clear();
+                    }
                 }
             }
         }

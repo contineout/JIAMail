@@ -126,7 +126,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                             EventBus.getDefault().postSticky(new MessageEvent("updateContact",email_id));
                             finish();
                         }else {
-                            boolean SaveResult = contactService.SaveContact(contact);
+                            boolean SaveResult = contactService.SaveContact(contact,email_id);
                             if(SaveResult){
                                 EventBus.getDefault().postSticky(new MessageEvent("new_contact",email_id));
                                 finish();

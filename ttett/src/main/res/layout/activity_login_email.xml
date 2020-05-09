@@ -88,7 +88,7 @@
             android:layout_centerVertical="true"
             android:hint="请输入邮箱密码"
             android:background="@null"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textPassword"/>
 
     </RelativeLayout>
 

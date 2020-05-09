@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -19,6 +18,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import cn.qzb.richeditor.RichEditor;
 
 public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.ContactViewHolder> {
 
@@ -68,14 +68,16 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
 
         holder.dialog_date.setText(message.getSendDate());
         holder.dialog_content.setText(message.getSubject());
-        holder.dialog_icon.setCircleColor(message.getAvatar_color());
+        try{
+            holder.dialog_icon.setCircleColor(message.getAvatar_color());
+        }catch (Exception ignored){
+        }
+
 
 
         holder.tvSubject.setText(message.getSubject());
-        holder.tvContent.loadDataWithBaseURL(null,
-                getHtmlData(message.getContent()), "text/html", "utf-8", null);
+        holder.tvContent.setHtml(message.getContent());
         holder.tvDate.setText(message.getSendDate());
-
 
 //        if(visibleStatus.get(position)){
 
@@ -113,7 +115,7 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
         TextView tvToMail;
         TextView tvDate;
         ImageView iv_mail;
-        WebView tvContent;
+        RichEditor tvContent;
         RecyclerView attachmentRv;
         TextView dialog_name,dialog_date,dialog_content;
         CircleTextImage dialog_icon;

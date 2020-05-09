@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.Contact;
-import com.example.ttett.MailDialogActivity;
 import com.example.ttett.R;
 import com.example.ttett.util.CircleTextImage.CircleTextImage;
 import com.example.ttett.util.charsort.SortUtils;
@@ -55,7 +54,10 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ((ContactViewHolder) holder).dialog_name.setText(contact.getName());
             ((ContactViewHolder) holder).dialog_mail.setText(contact.getEmail());
             ((ContactViewHolder) holder).dialog_icon.setText4CircleImage(contact.getName().substring(0,1));
-            ((ContactViewHolder) holder).dialog_icon.setCircleColor(contact.getAvatar_color());
+            try{
+                ((ContactViewHolder) holder).dialog_icon.setCircleColor(contact.getAvatar_color());
+            }catch (Exception ignored){
+            }
             ((ContactViewHolder) holder).dialog_date.setText(contact.getLast_date());
             ((ContactViewHolder) holder).dialog_item.setOnClickListener(new View.OnClickListener() {
                 @Override
