@@ -155,6 +155,26 @@ public class ContactDao {
         return null;
     }
 
+    /**
+     * 读取User联系人信息
+     * @param address
+     * @return
+     */
+    public String queryContactName(String address){
+        Cursor cursor = db.query("CONTACT", null,"contacts_email = ?",
+                new String[]{String.valueOf(address)},null,null,null,null);
+        String name;
+        if(cursor.moveToFirst()){
+            do {
+                name = cursor.getString(cursor.getColumnIndex("contacts_name"));
+            }while (cursor.moveToNext());
+            cursor.close();
+            return name;
+        }
+        cursor.close();
+        return null;
+    }
+
     public List<Person> QueryAllPerson(int email_id){
         Cursor cursor = db.query("CONTACT", null,"email_id = ?",
                 new String[]{String.valueOf(email_id)},null,null,"id desc",null);
@@ -165,7 +185,9 @@ public class ContactDao {
                 person = new Person();
                 person.setEmail(cursor.getString(cursor.getColumnIndex("contacts_name")));
                 person.setName(cursor.getString(cursor.getColumnIndex("contacts_email")));
+
                 personList.add(person);
+                Log.d(TAG,personList.toString());
             }while (cursor.moveToNext());
             cursor.close();
             return personList;
@@ -232,27 +254,46 @@ public class ContactDao {
      * @param email
      * @return
      */
-    public List<Contact> QueryAllEmailContact(Email email){
-        Cursor cursor = db.query("EMAILMESSAGE", new String[]{("distinct from_mail"),("avatar_color"),("sendDate"),("email_id")},"email_id = ? and not from_mail = ?",
-                new String[]{String.valueOf(email.getEmail_id()),(email.getAddress())},"from_mail",null,"id DESC");
+    public Contact QueryAllEmailContact(Email email,String names){
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{("distinct from_mail"),("avatar_color"),("sendDate"),("email_id")},
+                "email_id = ? and not from_mail = ? and from_mail LIKE ?",
+                new String[]{String.valueOf(email.getEmail_id()),(email.getAddress()),("%"+names+"%")},
+                "from_mail",null,"id DESC");
         Log.d(TAG,"查询了+"+cursor.getCount());
 
-        List<Contact> contacts =new ArrayList<>();
         Contact contact;
+        if(cursor.moveToFirst()){
+            String[] str = cursor.getString(cursor.getColumnIndex("from_mail")).split("[<>]");
+            contact = new Contact();
+            contact.setEmail_id(cursor.getInt(cursor.getColumnIndex("email_id")));
+            contact.setName(str[0]);
+            contact.setEmail(str[1]);
+            contact.setAvatar_color(cursor.getString(cursor.getColumnIndex("avatar_color")));
+            contact.setLast_date(cursor.getString(cursor.getColumnIndex("sendDate")));
+            cursor.close();
+            return contact;
+        }
+        cursor.close();
+        return null;
+    }
+
+    /**
+     * 查询所有往来邮件联系人
+     * @param email
+     * @return
+     */
+    public List<String> QueryAllEmailNames(Email email){
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{("distinct from_mail")},"email_id = ? and not from_mail = ?",
+                new String[]{String.valueOf(email.getEmail_id()),(email.getAddress())},"from_mail",null,"id DESC");
+
+        List<String> names = new ArrayList<>();
         if(cursor.moveToFirst()){
             do {
                 String[] str = cursor.getString(cursor.getColumnIndex("from_mail")).split("[<>]");
-
-                contact = new Contact();
-                contact.setEmail_id(cursor.getInt(cursor.getColumnIndex("email_id")));
-                contact.setName(str[0]);
-                contact.setEmail(str[1]);
-                contact.setAvatar_color(cursor.getString(cursor.getColumnIndex("avatar_color")));
-                contact.setLast_date(cursor.getString(cursor.getColumnIndex("sendDate")));
-                contacts.add(contact);
+                names.add(str[0]);
             }while (cursor.moveToNext());
             cursor.close();
-            return contacts;
+            return names;
         }
         cursor.close();
         return null;

@@ -80,35 +80,48 @@ public class DraftsFragment extends Fragment {
         if(email!=null){
             if(emailMessages!=null){
                 emailMessages.clear();
-                emailMessages.addAll(mailService.queryDraftsMessage(email));
+                if(mailService.queryDraftsMessage(email)!=null){
+                    emailMessages.addAll(mailService.queryDraftsMessage(email));
+                }
                 draftsAdapter.notifyDataSetChanged();
             }else{
                 emailMessages = mailService.queryDraftsMessage(email);
                 if(emailMessages!=null){
                     DraftsRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                    draftsAdapter = new DraftsAdapter(getContext(),emailMessages);
+                    draftsAdapter = new DraftsAdapter(getContext(),emailMessages,email);
                     DraftsRv.setAdapter(draftsAdapter);
+                }else{
+                    emailMessages.clear();
+                    draftsAdapter.notifyDataSetChanged();
                 }
             }
+        }else {
+            if(emailMessages!=null){
+                emailMessages.clear();
+                draftsAdapter.notifyDataSetChanged();
+            }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void SendResult(MessageEvent messageEvent){
+            if (messageEvent.getMessage().equals("SendSuccess")||
+                    messageEvent.getMessage().equals("SaveSuccess")) {
+                initEmailMessage();
+            }
     }
 
     /**
      * 接送更改DraftsMessage
      * @param messageEvent
      */
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
     public void SwitchMessage(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("Switch_Email")){
+        if (messageEvent.getMessage().equals("Switch_Email")
+        ||messageEvent.getMessage().equals("new_Email")){
             email = messageEvent.getEmail();
             initEmailMessage();
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        initEmailMessage();
     }
 
     @Override

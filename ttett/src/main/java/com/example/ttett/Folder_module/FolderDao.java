@@ -89,9 +89,9 @@ public class FolderDao {
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
 
-    int queryFolderMessageCount(int id){
-        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"id"},"folder_id = ?",
-                new String[]{String.valueOf(id)},null,null,null,null);
+    int queryFolderMessageCount(int id,int email_id){
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"id"},"folder_id = ? and email_id = ?",
+                new String[]{String.valueOf(id),String.valueOf(email_id)},null,null,null,null);
         return cursor.getCount();
     }
 

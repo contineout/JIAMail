@@ -1,4 +1,4 @@
-package com.example.ttett.selectAcitvity;
+package com.example.ttett.Folder_module;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
-import com.example.ttett.Folder_module.FolderService;
 import com.example.ttett.R;
 
 import java.util.List;

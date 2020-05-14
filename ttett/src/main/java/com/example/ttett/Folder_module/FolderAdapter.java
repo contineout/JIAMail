@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
-import com.example.ttett.OpenFolderActivity;
 import com.example.ttett.R;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
 
     private List<Folder> mFolders ;
     private Context mContext;
-    private Email email;
+    public Email email;
     private Folder folder;
 
     public FolderAdapter(Context context,List<Folder> folders,Email email){
@@ -62,8 +61,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
         Log.d("etFolder_id","d"+folder.getFolder_id());
         FolderService folderService = new FolderService(mContext);
         holder.folder_name.setText(folder.getFolder_name());
-        holder.message_count.setText(String.valueOf(folderService.queryFolderMessageCount(folder.getFolder_id())));
-        holder.datetime.setText(folder.getDatetime());
+        holder.message_count.setText(String.valueOf(folderService.queryFolderMessageCount(folder.getFolder_id(),email.getEmail_id())));
+        holder.datetime.setText("最近修改时间: "+folder.getDatetime().substring(5, 16));
 
     }
 

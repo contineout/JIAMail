@@ -81,4 +81,14 @@ public class EmailService {
         EmailDao emailDao = new EmailDao(mContext);
         emailDao.updateMessageCount(email);
     }
+
+    /**
+     * 删除邮箱
+     * @param id
+     * @return
+     */
+    public void deleteEmail(int id){
+        EmailDao emailDao = new EmailDao(mContext);
+        emailDao.deleteEMAIL(id);
+    }
 }

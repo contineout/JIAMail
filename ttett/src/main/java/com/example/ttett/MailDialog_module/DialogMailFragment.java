@@ -104,7 +104,7 @@ public class DialogMailFragment extends Fragment {
      * 接送更改inbox
      * @param messageEvent
      */
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void SwitchMessage(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
             if(email!=null){
@@ -113,8 +113,8 @@ public class DialogMailFragment extends Fragment {
                     contacts.clear();
                     if(contactService.queryAllEmailContact(email)!=null){
                         contacts.addAll(SortUtils.contactNameSort(contactService.queryAllEmailContact(email)));
-                        dialogAdapter.notifyDataSetChanged();
                     }
+                    dialogAdapter.notifyDataSetChanged();
                 }
             }else{
                 if(messageEvent.getEmail()!=null){
@@ -124,11 +124,15 @@ public class DialogMailFragment extends Fragment {
                         DialogRv.setLayoutManager(new LinearLayoutManager(getContext()));
                         dialogAdapter = new DialogAdapter(getContext(),contacts);
                         DialogRv.setAdapter(dialogAdapter);
+                    }else{
+                        contacts.clear();
+                        dialogAdapter.notifyDataSetChanged();
                     }
+                }else{
+                    contacts.clear();
+                    dialogAdapter.notifyDataSetChanged();
                 }
             }
-
-
         }
     }
 

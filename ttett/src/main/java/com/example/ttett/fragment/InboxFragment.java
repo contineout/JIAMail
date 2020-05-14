@@ -41,8 +41,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -154,27 +152,19 @@ public class InboxFragment extends Fragment {
         return view;
     }
 
+
     /**
      * 接送更改inbox
      * @param messageEvent
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public void SwitchMessage(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("Switch_Email")){
-            email = messageEvent.getEmail();
-            initEmailMessage();
-        }
-    }
-
-    /**
-     * 新加入的邮箱进行刷新
-     * @param messageEvent
-     */
-    @Subscribe(threadMode = ThreadMode.POSTING)
     public void NewEmail(MessageEvent messageEvent) {
-        if (messageEvent.getMessage().equals("New_Email")) {
-            emailService = new EmailService(getContext());
-            email = emailService.queryEmail(messageEvent.getAddress());
+        if (messageEvent.getMessage().equals("new_Email")) {
+            email = messageEvent.getEmail();
+            if(emailMessages!=null){
+                emailMessages.clear();
+            }
+            inboxAdapter.notifyDataSetChanged();
             refreshMessage(email);
         }
     }
@@ -185,11 +175,24 @@ public class InboxFragment extends Fragment {
      */
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void updateMessage(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("update_message")){
+        if (messageEvent.getMessage().equals("update_message")||
+                messageEvent.getMessage().equals("Switch_Email")){
             initEmailMessage();
         }
     }
 
+    /**
+     * 更改inbox
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void switchMessage(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("Switch_Email")){
+            email = messageEvent.getEmail();
+            inboxAdapter.mEmail = email;
+            initEmailMessage();
+        }
+    }
 
 
     /**
@@ -202,23 +205,24 @@ public class InboxFragment extends Fragment {
                 emailMessages.clear();
                 if(mailService.queryAllMessage(email)!=null){
                     emailMessages.addAll(mailService.queryAllMessage(email));
-                    inboxAdapter.notifyDataSetChanged();
                 }
+                inboxAdapter.notifyDataSetChanged();
             }else{
                 emailMessages = mailService.queryAllMessage(email);
                 if(emailMessages!=null){
                     InboxRv = view.findViewById(R.id.inbox_rv);
                     InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                    InboxRv.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-
                     inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.inboxFragment,email);
                     InboxRv.setAdapter(inboxAdapter);
-
-                    DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
-                    defaultItemAnimator.setAddDuration(500);
-                    defaultItemAnimator.setRemoveDuration(500);
-                    InboxRv.setItemAnimator(defaultItemAnimator);
+                }else{
+                    emailMessages.clear();
+                    inboxAdapter.notifyDataSetChanged();
                 }
+            }
+        }else {
+            if(emailMessages!=null){
+                emailMessages.clear();
+                inboxAdapter.notifyDataSetChanged();
             }
         }
     }

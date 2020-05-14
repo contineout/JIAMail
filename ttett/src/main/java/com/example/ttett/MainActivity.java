@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -151,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         trashFragment.setArguments(bundle);
         attachmentFragment.setArguments(bundle);
         dialogMailFragment.setArguments(bundle);
-
     }
 
     @Override
@@ -296,21 +297,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void SwitchEmail(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
-            tv_address.setText(messageEvent.getEmail().getAddress());
+            if(messageEvent.getEmail()!=null){
+                tv_address.setText(messageEvent.getEmail().getAddress());
+                initEmail();
+            }else{
+                tv_address.setText("请添加邮箱");
+                emails.clear();
+                emailAdapter.notifyDataSetChanged();
+            }
         }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
     public void SendResult(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("SendSuccess")){
-            SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
-            saveMessage.saveSendMessage();
-            ToastUtil.showTextToas(this,"发送成功");
+            try {
+                int id = messageEvent.getEmailMessage().getId();
+                MailDao dao = new MailDao(this);
+                dao.updateSend(id);
+            }catch (NullPointerException e){
+                SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
+                saveMessage.saveSendMessage();
+                Looper.prepare();
+                ToastUtil.showTextToas(this,"发送成功");
+                Looper.loop();
+            }
         }
         if (messageEvent.getMessage().equals("SendError")){
-            SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
-            saveMessage.saveDraftsMessage();
-            ToastUtil.showTextToas(this,"发送失败");
+            try {
+                int id = messageEvent.getEmailMessage().getId();
+                Log.d(TAG,id+"ddd");
+                Looper.prepare();
+                ToastUtil.showTextToas(this,"发送失败");
+                Looper.loop();
+            }catch (NullPointerException e){
+                SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
+                saveMessage.saveDraftsMessage();
+                Looper.prepare();
+                ToastUtil.showTextToas(this,"发送失败");
+                Looper.loop();
+            }
         }
     }
     /**
@@ -340,6 +366,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.user_info:
                 intent = new Intent(MainActivity.this,UserinfoActivity.class);
                 intent.putExtra("user_id",user_id);
+                drawerLayout.closeDrawers();
                 startActivity(intent);
                 break;
             case R.id.nav_inbox:

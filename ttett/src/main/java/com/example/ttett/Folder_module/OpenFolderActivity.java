@@ -1,4 +1,4 @@
-package com.example.ttett;
+package com.example.ttett.Folder_module;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +8,7 @@ import com.example.ttett.Adapter.InboxAdapter;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Entity.Folder;
+import com.example.ttett.R;
 import com.example.ttett.Service.MailService;
 import com.example.ttett.bean.MessageEvent;
 
@@ -42,7 +43,7 @@ private String TAG = "OpenFolderActivity";
         TvTitle.setText(folder.getFolder_name());
 
         MailService mailService = new MailService(this);
-        List<EmailMessage> emailMessages = mailService.queryFolderMessage(folder.getFolder_id());
+        List<EmailMessage> emailMessages = mailService.queryFolderMessage(folder.getFolder_id(),email.getEmail_id());
         if(emailMessages!=null){
             Rv.setLayoutManager(new LinearLayoutManager(this));
             Rv.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));

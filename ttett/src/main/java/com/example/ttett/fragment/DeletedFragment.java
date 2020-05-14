@@ -96,7 +96,15 @@ public class DeletedFragment extends Fragment {
                     DeletedRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.deleteFragment,email);
                     DeletedRv.setAdapter(inboxAdapter);
+                }else{
+                    emailMessages.clear();
+                    inboxAdapter.notifyDataSetChanged();
                 }
+            }
+        }else {
+            if(emailMessages!=null){
+                emailMessages.clear();
+                inboxAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -105,9 +113,10 @@ public class DeletedFragment extends Fragment {
      * 接送更改Deleted
      * @param messageEvent
      */
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
     public void SwitchMessage(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("Switch_Email")){
+        if (messageEvent.getMessage().equals("Switch_Email")
+                ||messageEvent.getMessage().equals("new_Email")){
             email = messageEvent.getEmail();
             mailService = new MailService(getContext());
             initEmailMessage();

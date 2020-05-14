@@ -177,4 +177,13 @@ public class EmailDao {
         cursor.close();
         return null;
     }
+
+    public void deleteEMAIL(int id){
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.delete("EMAIL","id = ?",new String[]{String.valueOf(id)});
+        db.delete("EMAILMESSAGE","email_id = ?",new String[]{String.valueOf(id)});
+        db.delete("CONTACT","email_id = ?",new String[]{String.valueOf(id)});
+        db.delete("FOLDER","email_id = ?",new String[]{String.valueOf(id)});
+        db.delete("ATTACHMENT","email_id = ?",new String[]{String.valueOf(id)});
+    }
 }

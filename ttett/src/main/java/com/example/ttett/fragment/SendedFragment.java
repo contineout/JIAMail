@@ -87,7 +87,9 @@ public class SendedFragment extends Fragment {
         if(email!=null){
             if(emailMessages!=null){
                 emailMessages.clear();
-                emailMessages.addAll(mailService.querySendedMessage(email));
+                if(mailService.querySendedMessage(email)!=null){
+                    emailMessages.addAll(mailService.querySendedMessage(email));
+                }
                 inboxAdapter.notifyDataSetChanged();
             }else{
                 emailMessages = mailService.querySendedMessage(email);
@@ -95,7 +97,15 @@ public class SendedFragment extends Fragment {
                     SendedRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.sendedFragment,email);
                     SendedRv.setAdapter(inboxAdapter);
+                }else{
+                    emailMessages.clear();
+                    inboxAdapter.notifyDataSetChanged();
                 }
+            }
+        }else {
+            if(emailMessages!=null){
+                emailMessages.clear();
+                inboxAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -104,10 +114,18 @@ public class SendedFragment extends Fragment {
      * 接送更改Sended"NewSendedMessage"
      * @param messageEvent
      */
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
     public void SwitchMessage(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("Switch_Email")){
+        if (messageEvent.getMessage().equals("Switch_Email")
+                ||messageEvent.getMessage().equals("new_Email")){
             email = messageEvent.getEmail();
+            initEmailMessage();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
+    public void SendResult(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("SendSuccess")){
             initEmailMessage();
         }
     }

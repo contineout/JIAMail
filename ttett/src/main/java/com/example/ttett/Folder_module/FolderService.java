@@ -3,6 +3,7 @@ package com.example.ttett.Folder_module;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
 
@@ -49,14 +50,15 @@ public class FolderService {
      */
     public void updateFolder(List<Integer> id_item,int folder_id){
         FolderDao folderDao = new FolderDao(mContext);
+        MailDao mailDao = new MailDao(mContext);
         for(int id:id_item){
-            folderDao.updateFolder_id(id,folder_id);
+            mailDao.updateDelete(id,folder_id);
         }
     }
 
-    public int queryFolderMessageCount(int id){
+    public int queryFolderMessageCount(int id,int email_id){
         FolderDao folderDao = new FolderDao(mContext);
-        return folderDao.queryFolderMessageCount(id);
+        return folderDao.queryFolderMessageCount(id,email_id);
     }
 
 

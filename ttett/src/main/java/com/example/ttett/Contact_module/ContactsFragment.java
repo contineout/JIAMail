@@ -124,9 +124,10 @@ public class ContactsFragment extends Fragment {
      * 切换邮箱
      * @param messageEvent
      */
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
     public void SwitchContact(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("Switch_Email")){
+        if (messageEvent.getMessage().equals("Switch_Email")
+                ||messageEvent.getMessage().equals("new_Email")){
             email = messageEvent.getEmail();
             initContacts();
         }
@@ -157,6 +158,9 @@ public class ContactsFragment extends Fragment {
                     }
                 }
             }
+        }else {
+            contacts.clear();
+            contactsAdapter.notifyDataSetChanged();
         }
     }
 

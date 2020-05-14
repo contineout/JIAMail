@@ -52,15 +52,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="130dp">
-    <ImageView
+    <com.example.ttett.util.CircleTextImage.CircleTextImage
         android:id="@+id/iv_avatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src = "@mipmap/c_avatar"
         android:layout_centerVertical="true"
         android:layout_marginLeft="30dp"
         />
         <TextView
+            android:id="@+id/flagtext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="新建联系人"

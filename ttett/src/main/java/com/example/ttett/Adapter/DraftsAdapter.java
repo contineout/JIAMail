@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
 import com.example.ttett.WriteLetterActivity;
@@ -22,10 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.InboxViewHolder> {
     private List<EmailMessage> mEmailMessages ;
     private Context mContext;
+    private Email email;
 
-    public DraftsAdapter(Context context, List<EmailMessage> emailMessages){
+    public DraftsAdapter(Context context, List<EmailMessage> emailMessages,Email email){
         this.mContext = context;
         this.mEmailMessages = emailMessages;
+        this.email = email;
     }
     @NonNull
     @Override
@@ -43,6 +46,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.InboxViewH
                 Intent intent = new Intent(mContext, WriteLetterActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("emailMessage",emailMessage);
+                bundle.putParcelable("email",email);
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
             }

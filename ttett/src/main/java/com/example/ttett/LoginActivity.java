@@ -56,9 +56,12 @@ private TextView TvRegister;
 
             String address = ServletConstants.LoginServlet;
             HttpConnection.sendOkHttpRequest(address, user, new okhttp3.Callback(){
+
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    Looper.prepare();
                     ToastUtil.showTextToas(LoginActivity.this,"连接失败");
+                    Looper.loop();
                 }
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {

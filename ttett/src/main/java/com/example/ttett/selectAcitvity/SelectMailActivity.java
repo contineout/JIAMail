@@ -12,6 +12,7 @@ import com.example.ttett.Adapter.SelectAdapter;
 import com.example.ttett.CustomDialog.DeleteDialogFragment;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.Folder_module.SelectFolderDialogFragment;
 import com.example.ttett.R;
 import com.example.ttett.Service.MailService;
 import com.example.ttett.bean.MessageEvent;

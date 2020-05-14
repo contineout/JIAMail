@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import javax.mail.BodyPart;
 import javax.mail.Flags;
@@ -223,8 +224,23 @@ public class ShowMail {
      *　获得此邮件的Message-ID 　　
      */
     public String getMessageId() throws MessagingException {
-        String messageID = mimeMessage.getMessageID();
-        return messageID;
+        try{
+            String messageID = mimeMessage.getMessageID();
+            return messageID;
+        }catch (Exception e){
+//            return RandomNum();
+        }
+        return null;
+    }
+
+    public String RandomNum()
+    {  int a = 0;
+        for(int i=0;i<20;i++)		 //控制产生的随机数的个数
+        {
+            Random random=new Random();	 //使用Random函数产生随机数；
+            a = random.nextInt(10)+11;	 //random.nextInt(n)为产生的随机数的范围
+        }
+        return String.valueOf(a);
     }
 
     /**

@@ -84,7 +84,9 @@ public class AttachmentFragment extends Fragment {
         if(email!=null){
             if (attachments!= null){
                 attachments.clear();
-                attachments.addAll(attachmentService.queryAllAttachment(email.getEmail_id()));
+                if(attachmentService.queryAllAttachment(email.getEmail_id())!=null){
+                    attachments.addAll(attachmentService.queryAllAttachment(email.getEmail_id()));
+                }
                 attachmentAdapter.notifyDataSetChanged();
             }else {
                 attachments = attachmentService.queryAllAttachment(email.getEmail_id());
@@ -93,7 +95,15 @@ public class AttachmentFragment extends Fragment {
                     attachmentAdapter = new AttachmentAdapter(getContext(),attachments);
                     attachmentAdapter.setATTACHMENT_FRAG();
                     AttachmentRv.setAdapter(attachmentAdapter);
+                }else{
+                    attachments.clear();
+                    attachmentAdapter.notifyDataSetChanged();
                 }
+            }
+        }else{
+            if(attachments!=null){
+                attachments.clear();
+                attachmentAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -116,9 +126,10 @@ public class AttachmentFragment extends Fragment {
      * 切换邮箱
      * @param messageEvent
      */
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
     public void SwitchAttachment(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("Switch_Email")){
+        if (messageEvent.getMessage().equals("Switch_Email")
+                ||messageEvent.getMessage().equals("new_Email")){
             email = messageEvent.getEmail();
             Log.d(TAG,email.getAddress());
             initAttach();

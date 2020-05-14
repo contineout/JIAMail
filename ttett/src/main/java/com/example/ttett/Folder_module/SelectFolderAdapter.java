@@ -1,4 +1,4 @@
-package com.example.ttett.selectAcitvity;
+package com.example.ttett.Folder_module;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.ttett.Entity.Folder;
-import com.example.ttett.Folder_module.FolderService;
 import com.example.ttett.R;
 import com.example.ttett.bean.MessageEvent;
 

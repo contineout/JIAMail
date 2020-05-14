@@ -77,7 +77,7 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
 
         holder.tvSubject.setText(message.getSubject());
         holder.tvContent.setHtml(message.getContent());
-        holder.tvDate.setText(message.getSendDate());
+        holder.tvDate.setText("最近联系: "+message.getSendDate().substring(5, 16));
 
 //        if(visibleStatus.get(position)){
 

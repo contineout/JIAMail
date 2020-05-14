@@ -6,7 +6,6 @@ import android.content.Context;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
-import com.example.ttett.util.RegularUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,9 +43,6 @@ public class SaveMessage {
      */
     public void saveDraftsMessage(){
         emailMessage.setSendDate(newDate());
-        if(!RegularUtil.checkEmail(emailMessage.getTo())){
-            emailMessage.setTo("");
-        };
         MailDao mailDao = new MailDao(context);
         mailDao.InsertMessages(emailMessage);
     }

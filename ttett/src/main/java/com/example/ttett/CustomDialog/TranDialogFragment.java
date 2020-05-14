@@ -1,4 +1,4 @@
-package com.example.ttett.Contact_module;
+package com.example.ttett.CustomDialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,21 +15,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.example.ttett.Entity.Email;
+import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
-import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.mailUtil.SaveMessage;
 
-import org.greenrobot.eventbus.EventBus;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class ContactsDialogFragment extends DialogFragment implements View.OnClickListener{
-    private TextView TvImport,TvNew;
-    private String TAG = "ContactsDialogFragment";
-    private ContactService contactService ;
-    private Email email;
+public class TranDialogFragment extends DialogFragment implements View.OnClickListener {
+    private TextView TvTran,TvReply;
 
 
     @Nullable
@@ -41,29 +37,16 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
         return super.onCreateView(inflater,container,savedInstanceState);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.add_contacts_dialog,null);
-        TvImport = view.findViewById(R.id.contacts_import);
-        TvNew = view.findViewById(R.id.contacts_new);
-        assert getArguments() != null;
-        try{
-            email = getArguments().getParcelable("email");
-            Log.d(TAG,"email_id" + email.getAddress());
-        }catch (NullPointerException e){
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.tran_message_dialog,null);
+        TvTran = view.findViewById(R.id.message_tran);
+        TvReply = view.findViewById(R.id.message_reply);
 
-        }
-
-        TvImport.setOnClickListener(this);
-        TvNew.setOnClickListener(this);
+        TvTran.setOnClickListener(this);
+        TvReply.setOnClickListener(this);
         builder.setView(view);
         return builder.create();
     }
@@ -71,22 +54,18 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
     @Override
     public void onClick(View v) {
         Intent intent = null;
-        int email_id = email.getEmail_id();
-        Log.d(TAG,"email_id" + email_id);
         switch (v.getId()){
-            case R.id.contacts_import:
-                contactService = new ContactService(getContext());
-                contactService.insertAllMailContact(email);
-                EventBus.getDefault().postSticky(new MessageEvent("import_contact"));
-                dismiss();
+            case R.id.message_tran:
                 break;
-            case R.id.contacts_new:
-                intent = new Intent(getContext(),ContactsActivity.class);
-                intent.putExtra("email_id",email_id);
-                startActivity(intent);
+            case R.id.message_reply:
+                assert getArguments() != null;
+                EmailMessage emailMessage = getArguments().getParcelable("message");
+                SaveMessage saveMessage = new SaveMessage(emailMessage,getContext());
+                saveMessage.saveDraftsMessage();
                 dismiss();
+                Objects.requireNonNull(getActivity()).finish();
                 break;
-                default:
+            default:
         }
     }
 
@@ -105,5 +84,4 @@ public class ContactsDialogFragment extends DialogFragment implements View.OnCli
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         win.setAttributes(params);
     }
-
 }

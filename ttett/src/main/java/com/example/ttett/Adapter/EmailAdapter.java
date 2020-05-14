@@ -20,7 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 //xkdmegyobzcdhggd
 //1272179741@qq.com
 //"d8405717ca1664a2" xl335665873@sina.com
-//    ykqxthnonvynbbeh 1023851233@qq.com
+// xttdkgyodzenbeid 1023851233@qq.com
+// DDXEJJKAJZGDDEDJ WY335665873@163.com
 public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> {
     private List<Email> mEmails;
     private Context mContext;
@@ -57,7 +58,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> 
                 Email email = mEmails.get(position);
                 MessageEvent messageEvent = new MessageEvent();
                 messageEvent.setEmail(email);
-                EventBus.getDefault().post(new MessageEvent("Switch_Email",email));
+                EventBus.getDefault().postSticky(new MessageEvent("Switch_Email",email));
             }
         });
         return holder;

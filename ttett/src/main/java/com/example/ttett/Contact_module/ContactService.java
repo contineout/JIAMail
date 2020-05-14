@@ -7,6 +7,7 @@ import com.example.ttett.Entity.Contact;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.bean.Person;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactService {
@@ -48,28 +49,43 @@ public class ContactService {
      */
     public List<Contact> queryAllEmailContact(Email email){
         ContactDao contactDao = new ContactDao(mContext);
-        return contactDao.QueryAllEmailContact(email);
+        List<String> names = contactDao.QueryAllEmailNames(email);
+        List<String> new_names = new ArrayList<>();
+        for(int i=0;i<names.size();i++) {
+            if (!new_names.contains(names.get(i))) {
+                new_names.add(names.get(i));
+            }
+        }
+        List<Contact> contacts = new ArrayList<>();
+        for(String s: new_names){
+            contacts.add(contactDao.QueryAllEmailContact(email,s));
+        }
+        return contacts;
     }
 
 
     /**
      * 导入邮件联系人
-     * @param email_id
+     * @param email
      * @return
      */
-    public void insertAllMailContact(int email_id){
+    public void insertAllMailContact(Email email){
         ContactDao contactDao = new ContactDao(mContext);
-        Contact contact;
-        List<String> from_mails = contactDao.queryRecipientMailContact(email_id);
-        for(String from_mail:from_mails){
-            String[] str = from_mail.split("[<>]");
-            contact = new Contact();
-            contact.setEmail_id(email_id);
-            contact.setName(str[0]);
-            contact.setEmail(str[1]);
-            contact.setAvatar_color(str[2]);
-            SaveContact(contact,email_id);
+        List<String> names = contactDao.QueryAllEmailNames(email);
+        List<String> new_names = new ArrayList<>();
+        for(int i=0;i<names.size();i++) {
+            if (!new_names.contains(names.get(i))) {
+                new_names.add(names.get(i));
+            }
         }
+        List<Contact> contacts = new ArrayList<>();
+        for(String s: new_names){
+            contacts.add(contactDao.QueryAllEmailContact(email,s));
+        }
+        for(Contact contact:contacts){
+            SaveContact(contact,email.getEmail_id());
+        }
+
     }
 
     /**

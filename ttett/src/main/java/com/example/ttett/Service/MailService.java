@@ -57,9 +57,9 @@ public class MailService {
         return null;
     }
 
-    public List<EmailMessage> queryFolderMessage(int folder_id){
+    public List<EmailMessage> queryFolderMessage(int folder_id,int email_id){
         MailDao mailDao = new MailDao(mContext);
-        return  mailDao.queryFolderMessage(folder_id);
+        return  mailDao.queryFolderMessage(folder_id,email_id);
     }
 
     /**
@@ -87,6 +87,33 @@ public class MailService {
         return null;
     }
 
+    //        List<String> subjetcs = new ArrayList<>();
+//        ShowMail showMail = new ShowMail();
+//        MimeMessage mimeMessage = null;
+//        int i = 0;
+//        String subject = null;
+//        for(Message message:messages){
+//            mimeMessage = (MimeMessage)message;
+//            try {
+//                subject = getSubject(mimeMessage);
+//                Log.d(TAG,subject);
+//                Boolean existMail = mailDao.isExistSubject(subject);
+//                if(existMail){
+//                    i++;
+//                    subjetcs.add(subject);
+//                }
+//            } catch (MessagingException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        SubjectTerm[] messageIDTerm = new SubjectTerm[i];
+//        for(String s:subjetcs){
+//            i--;
+//            messageIDTerm[i] = new SubjectTerm(s);
+//        }
+//
+//        SearchTerm searchTerm = new AndTerm(messageIDTerm);
+//        return searchTerm;
     /**
      * 同步邮件
      * @param email
@@ -94,16 +121,18 @@ public class MailService {
      */
     public void SynchronizeMessage(Email email){
         RecipientMessage recipientMessage = new RecipientMessage(email,mContext);
-        switch (email.getType()){
-            case "sina.com":
-                List<EmailMessage> emailMessages = recipientMessage.SinaRecipient();
-                checkSaveMessage(email,emailMessages);
-                break;
-            case "qq.com":
-                emailMessages = recipientMessage.QQRecipient();
-                checkSaveMessage(email,emailMessages);
-                break;
-        }
+        List<EmailMessage> emailMessages = recipientMessage.recipient();
+        checkSaveMessage(email,emailMessages);
+//        switch (email.getType()){
+//            case "sina.com":
+//                List<EmailMessage> emailMessages = recipientMessage.SinaRecipient();
+//                checkSaveMessage(email,emailMessages);
+//                break;
+//            case "qq.com":
+//                emailMessages = recipientMessage.QQRecipient();
+//                checkSaveMessage(email,emailMessages);
+//                break;
+//        }
     }
 
     public void checkSaveMessage(Email email,List<EmailMessage> emailMessages){
@@ -180,6 +209,14 @@ public class MailService {
                     mailDao.updateUnStar(id);
                 }
             }
+        }
+    }
+    public void updateStar(int id) {
+        MailDao mailDao = new MailDao(mContext);
+        if(mailDao.queryisStar(id) == 0){
+                mailDao.updateStar(id);
+            }else{
+                mailDao.updateUnStar(id);
         }
     }
 
@@ -280,13 +317,28 @@ public class MailService {
         return mailDao.QueryStarMessage(email);
     }
 
+    /**
+     * 查询星标邮件
+     * @param id
+     * @return
+     */
+    public int queryisDelete(int id){
+        MailDao mailDao = new MailDao(mContext);
+        return mailDao.queryisDelete(id);
+    }
+
     public String queryAvatar_color(String from){
         MailDao mailDao = new MailDao(mContext);
-        if(!mailDao.isExistFrom(from).equals("")){
-            return mailDao.isExistFrom(from);
-        }else {
+        try{
+            if(!mailDao.isExistFrom(from).equals("")){
+                return mailDao.isExistFrom(from);
+            }else {
+
+            }
+        }catch (Exception e){
             return getRandColor();
         }
+        return getRandColor();
     }
 
     public String getRandColor() {

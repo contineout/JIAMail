@@ -17,7 +17,10 @@ import android.widget.TextView;
 
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
+import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.util.mailUtil.SaveMessage;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Objects;
 
@@ -65,6 +68,7 @@ public class SaveMessageDialogFragment extends DialogFragment implements View.On
                 EmailMessage emailMessage = getArguments().getParcelable("message");
                 SaveMessage saveMessage = new SaveMessage(emailMessage,getContext());
                 saveMessage.saveDraftsMessage();
+                EventBus.getDefault().postSticky(new MessageEvent("SaveSuccess"));
                 dismiss();
                 Objects.requireNonNull(getActivity()).finish();
                 break;

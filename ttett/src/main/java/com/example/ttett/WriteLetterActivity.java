@@ -71,13 +71,25 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
     private FloatingActionButton fab_attachment,fab_pic,fab_timer;
     private List<Integer> id_item = new ArrayList<>();
     private List<Attachment> attachments = null;
+    private TextView tvSendEmail;
+    private List<Person> people;
+    private int email_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_letter);
         EventBus.getDefault().register(this);
+        email = getIntent().getParcelableExtra("email");
+        emailMessage = getIntent().getParcelableExtra("emailMessage");
+        if(email!=null){
+            email_id = email.getEmail_id();
+        } else if (emailMessage != null) {
+            email_id = emailMessage.getEmail_id();
+        }
+
         initView();
+        entrance();
         IvTrainglemore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,77 +161,26 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
 
         VCC = findViewById(R.id.Vcc);
         VBCC = findViewById(R.id.Vbcc);
-        TextView tvSendEmail = findViewById(R.id.tv_send_email);
+        tvSendEmail = findViewById(R.id.tv_send_email);
         fab = findViewById(R.id.fab_menu);
         fab_attachment = findViewById(R.id.fab_attachment);
         fab_pic = findViewById(R.id.fab_pic);
         fab_timer = findViewById(R.id.fab_timer);
-
-
-
-        //普通进
-        try{
-            email = getIntent().getParcelableExtra("email");
-            Log.d(TAG,"email.address = "+ email.getAddress());
-            tvSendEmail.setText(email.getAddress());
-            tvSendEmail.setVisibility(View.VISIBLE);
-        }catch (Exception e){
-        }
-
-        //联系人点击进
-        try{
-            String recipient_email = getIntent().getStringExtra("Recipient_email");
-            email = getIntent().getParcelableExtra("email");
-            completionViewTO.setText(recipient_email);
-            tvSendEmail.setText(email.getAddress());
-        }catch (Exception e){
-        }
-
-        //草稿箱进
-        try {
-            EmailMessage emailMessage = getIntent().getParcelableExtra("emailMessage");
-            tvSendEmail.setText(emailMessage.getFrom());
-            completionViewTO.setText(emailMessage.getTo());
-            completionViewBCC.setText(emailMessage.getBcc());
-            completionViewCC.setText(emailMessage.getCc());
-            EtSubject.setText(emailMessage.getSubject());
-            EtContent.setHtml(emailMessage.getContent());
-            if (emailMessage.getIsAttachment() != 0) {
-                AttachmentService attachmentService = new AttachmentService(this);
-                String[] ids = emailMessage.getAttachment().split("[&]");
-                for (String id : ids) {
-                    if (!id.equals("")) {
-                        id_item.add(Integer.parseInt(id));
-                    }
-                    attachments = attachmentService.querySelectAttachment(id_item);
-                    if (attachments != null) {
-                        //选择Attachment时,网格布局
-                        writeLtter_Rv.setVisibility(View.VISIBLE);
-                        StaggeredGridLayoutManager layoutManager = new
-                                StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
-                        writeLtter_Rv.setLayoutManager(layoutManager);
-                        WriteAttachmentAdapter adapter = new WriteAttachmentAdapter(this, attachments);
-                        writeLtter_Rv.setAdapter(adapter);
-                    }
-                }
-            }
-        }catch (Exception e){
-        }
-
+        //初始化联系人
         ContactDao dao = new ContactDao(this);
-        List<Person> people = dao.QueryAllPerson(email.getEmail_id());
-        if(people!=null){
-            adapter = new FilteredArrayAdapter<Person>(this, android.R.layout.simple_list_item_1, people) {
-                @Override
-                protected boolean keepObject(Person obj, String mask) {
-                    mask = mask.toLowerCase();
-                    return obj.getName().toLowerCase().startsWith(mask) || obj.getEmail().toLowerCase().startsWith(mask);
-                }
-            };
-            completionViewTO.setAdapter(adapter);
-            completionViewBCC.setAdapter(adapter);
-            completionViewCC.setAdapter(adapter);
-        }
+            people = dao.QueryAllPerson(email_id);
+            if(people!=null){
+                adapter = new FilteredArrayAdapter<Person>(this, android.R.layout.simple_list_item_1, people) {
+                    @Override
+                    protected boolean keepObject(Person obj, String mask) {
+                        mask = mask.toLowerCase();
+                        return obj.getName().toLowerCase().startsWith(mask) || obj.getEmail().toLowerCase().startsWith(mask);
+                    }
+                };
+                completionViewTO.setAdapter(adapter);
+                completionViewBCC.setAdapter(adapter);
+                completionViewCC.setAdapter(adapter);
+            }
 
         completionViewTO.addTextChangedListener(new TextWatcher() {
             @Override
@@ -241,12 +202,12 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                BCC = s.toString();
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                BCC = s.toString();
             }
         });
         completionViewCC.addTextChangedListener(new TextWatcher() {
@@ -263,12 +224,8 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void afterTextChanged(Editable s) {
                 CC = s.toString();
-                Log.d(TAG,TO);
-                Log.d(TAG,CC);
-                Log.d(TAG,BCC);
             }
         });
-
 
         EtContent.setHtml(initContent);
         IvXdelete.setOnClickListener(this);
@@ -283,35 +240,26 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
     }
     @Override
     public void onClick(View v) {
-        Intent intent;
+        Intent intent = null;
         switch (v.getId()){
             case R.id.xdelete:
                 if(EtContent.getHtml().equals(initContent)){
-                    showDialog();
-                }else {
                     finish();
+                }else {
+                    showDialog();
                 }
                 break;
             case R.id.iv_send1:
                 CheckMail();
                 break;
             case R.id.iv_to:
-                intent = new Intent(this, SelectContactActivity.class);
-                intent.putExtra("flag","TO");
-                intent.putExtra("email_id",email.getEmail_id());
-                startActivity(intent);
+                selectContact("TO");
                 break;
             case R.id.iv_cc:
-                intent = new Intent(this, SelectContactActivity.class);
-                intent.putExtra("flag","CC");
-                intent.putExtra("email_id",email.getEmail_id());
-                startActivity(intent);
+                selectContact("CC");
                 break;
             case R.id.iv_bcc:
-                intent = new Intent(this, SelectContactActivity.class);
-                intent.putExtra("flag","BCC");
-                intent.putExtra("email_id",email.getEmail_id());
-                startActivity(intent);
+                selectContact("BCC");
                 break;
             case R.id.fab_attachment:
                 intent = new Intent(this, SelectAttachmentActivity.class);
@@ -329,6 +277,89 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * 选择联系人
+     * @param flag
+     */
+    private void selectContact(String flag){
+        if(people != null){
+            Intent intent = new Intent(this, SelectContactActivity.class);
+            intent.putExtra("flag",flag);
+            intent.putExtra("email_id",email.getEmail_id());
+            startActivity(intent);
+        }else {
+            ToastUtil.showTextToas(this,"暂无联系人");
+        }
+    }
+
+    /**
+     * 入口处
+     */
+    private void entrance(){
+        //普通进
+        try{
+            Log.d(TAG,"email.address = "+ email.getAddress());
+            tvSendEmail.setText(email.getAddress());
+            tvSendEmail.setVisibility(View.VISIBLE);
+        }catch (Exception ignored){
+        }
+
+        //联系人点击进
+        try{
+            String recipient_email = getIntent().getStringExtra("Recipient_email");
+            completionViewTO.setText(recipient_email);
+            tvSendEmail.setText(email.getAddress());
+        }catch (Exception ignored){
+        }
+
+        //草稿箱进
+        try {
+            ContactDao dao = new ContactDao(this);
+            tvSendEmail.setText(emailMessage.getFrom());
+            String[] strTo = emailMessage.getTo().split("[,]");
+            for(int i = 0; i < strTo.length-1;i++){
+                completionViewTO.addObjectAsync(new Person(strTo[i],dao.queryContactName(strTo[i])));
+            }
+            String[] strBCC = emailMessage.getBcc().split("[,]");
+            for(int i = 0; i < strBCC.length-1;i++){
+                Log.d(TAG,dao.queryContactName(strBCC[i])+"dsdsdasa");
+                completionViewBCC.addObjectAsync(new Person(strBCC[i],dao.queryContactName(strBCC[i])));
+            }
+            String[] strCC = emailMessage.getCc().split("[,]");
+            for(int i = 0; i < strCC.length-1;i++){
+                completionViewCC.addObjectAsync(new Person(strCC[i],dao.queryContactName(strCC[i])));
+            }
+            EtSubject.setText(emailMessage.getSubject());
+            try{
+                EtContent.setHtml(emailMessage.getContent());
+            }catch (Exception e){
+            }
+
+            if (emailMessage.getIsAttachment() != 0) {
+                AttachmentService attachmentService = new AttachmentService(this);
+                String[] ids = emailMessage.getAttachment().split("[&]");
+                for (String id : ids) {
+                    if (!id.equals("")) {
+                        id_item.add(Integer.parseInt(id));
+                    }
+                    attachments = attachmentService.querySelectAttachment(id_item);
+                    if (attachments != null) {
+                        //选择Attachment时,网格布局
+                        writeLtter_Rv.setVisibility(View.VISIBLE);
+                        StaggeredGridLayoutManager layoutManager = new
+                                StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+                        writeLtter_Rv.setLayoutManager(layoutManager);
+                        WriteAttachmentAdapter adapter = new WriteAttachmentAdapter(this, attachments);
+                        writeLtter_Rv.setAdapter(adapter);
+                    }
+                }
+            }
+        }catch (Exception ignored){
+        }
+
+        //编辑
+
+    }
 
     /**
      * 检查必要属性,发送，成功保存
@@ -340,15 +371,27 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
             if(isEmptyS(EtSubject).isEmpty()){
                 ToastUtil.showTextToas(this,"JiaMail: 错误! 请输入主题!");
             }else{
-                setEmailMessage();
-                final SendMessage sendMessage = new SendMessage(emailMessage,email,attachments,this);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        sendMessage.SendMessage();
-                        finish();
-                    }
-                }).start();
+                try{
+                    Log.d(TAG,emailMessage.getId()+"ss");
+                    final SendMessage sendMessage = new SendMessage(emailMessage,email,attachments,this);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendMessage.SendMessage();
+                            finish();
+                        }
+                    }).start();
+                }catch (NullPointerException e){
+                    setEmailMessage();
+                    final SendMessage sendMessage = new SendMessage(emailMessage,email,attachments,this);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendMessage.SendMessage();
+                            finish();
+                        }
+                    }).start();
+                }
             }
         }
     }
@@ -356,8 +399,9 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
     /**
      * 显示对话框是否保存到草稿箱
      */
+    private SaveMessageDialogFragment saveMessageDialogFragment;
     private void showDialog(){
-        SaveMessageDialogFragment saveMessageDialogFragment = new SaveMessageDialogFragment();
+        saveMessageDialogFragment = new SaveMessageDialogFragment();
         setEmailMessage();
         emailMessage.setIsSend(0);
         Bundle bundle = new Bundle();
@@ -371,6 +415,9 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
      * set属性到message中
      */
     private void setEmailMessage(){
+        try{
+
+
         emailMessage = new EmailMessage();
         if(email!=null){
             emailMessage.setFrom(email.getAddress());
@@ -381,7 +428,7 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
         emailMessage.setSubject(isEmptyS(EtSubject));
         emailMessage.setCc(CC);
         emailMessage.setBcc(BCC);
-        emailMessage.setContent(EtContent.getHtml());
+        emailMessage.setContent(EtContent.getHtml().toString());
         Log.d(TAG,EtContent.getHtml());
         if(id_item!=null){
             emailMessage.setIsAttachment(1);
@@ -392,6 +439,9 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
             emailMessage.setAttachment(attachments.toString());
         }else {
             emailMessage.setIsAttachment(0);
+        }
+        }catch (Exception e){
+
         }
     }
 
@@ -473,6 +523,12 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(saveMessageDialogFragment!=null){
+            saveMessageDialogFragment.dismiss();
+        }
+        completionViewBCC.refreshDrawableState();
+        completionViewTO.refreshDrawableState();
+        completionViewCC.refreshDrawableState();
         EventBus.getDefault().unregister(this);
     }
 }

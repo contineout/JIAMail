@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.R;
 import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.CircleTextImage.CircleTextImage;
 import com.example.ttett.util.CircleTextImage.CircleTextImageUtil;
 import com.example.ttett.util.RegularUtil;
 import com.example.ttett.util.ToastUtil;
@@ -23,10 +25,12 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private static final String TAG ="ContactsActivity" ;
     private ImageView mExit,mSave;
     private EditText name,remark,birthday,company,department,position,email,iphone,address;
+    private CircleTextImage icon;
     private static String ContactInfo = "ContactInfo";
     private Contact contact = null;
     private ContactService contactService = new ContactService(this);
     private boolean isUpdate = false;
+    private TextView flagText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +48,8 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         address = findViewById(R.id.et_address);
         email = findViewById(R.id.et_mail);
         iphone = findViewById(R.id.et_phone);
+        flagText = findViewById(R.id.flagtext);
+        icon = findViewById(R.id.iv_avatar);
 
         if((contact =getIntent().getParcelableExtra("contact")) != null){
             name.setText(contact.getName());
@@ -55,10 +61,13 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             address.setText(contact.getAddress());
             email.setText(contact.getEmail());
             iphone.setText(contact.getIphone());
+            icon.setText4CircleImage(contact.getName());
+            icon.setCircleColor(contact.getAvatar_color());
         }
         try{
             if(Objects.equals(getIntent().getStringExtra("flag"), "update")){
                 isUpdate = true;
+                flagText.setText("");
             }
         }catch (Exception ignored){
         }

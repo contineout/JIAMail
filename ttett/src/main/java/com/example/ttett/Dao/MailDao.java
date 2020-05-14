@@ -10,7 +10,10 @@ import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.MailSqlite.MyDatabaseHelper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MailDao {
@@ -58,7 +61,7 @@ public class MailDao {
      */
     public List<EmailMessage> QueryAllMessage(Email email){
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isDelete = ? and folder_id = ?",
-                new String[]{("%"+ email.getAddress() + "%"),("0"),("1")},null,null,"to_mail desc",null);
+                new String[]{("%"+ email.getAddress() + "%"),("0"),("1")},null,null,"sendDate desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
 
         return setMessages(cursor);
@@ -76,9 +79,9 @@ public class MailDao {
         return setMessages(cursor);
     }
 
-    public List<EmailMessage> queryFolderMessage(int folder_id){
-        Cursor cursor = db.query("EMAILMESSAGE", null,"folder_id = ?",
-                new String[]{(String.valueOf(folder_id))},null,null,"SendDate desc",null);
+    public List<EmailMessage> queryFolderMessage(int folder_id ,int email_id){
+        Cursor cursor = db.query("EMAILMESSAGE", null,"folder_id = ? and email_id = ?",
+                new String[]{(String.valueOf(folder_id)),String.valueOf(email_id)},null,null,"SendDate desc",null);
         Log.d(TAG,"查询了+"+cursor.getCount());
         return setMessages(cursor);
     }
@@ -103,7 +106,7 @@ public class MailDao {
      */
     public List<EmailMessage> QuerySendedMessage(Email email){
         Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail LIKE ? and isSend = ? and isDelete = ?",
-                new String[]{("%"+ email.getAddress() + "%"),("1"),("0")},null,null,null,null);
+                new String[]{("%"+ email.getAddress() + "%"),("1"),("0")},null,null,"sendDate desc",null);
         return setMessages(cursor);
     }
 
@@ -116,7 +119,7 @@ public class MailDao {
     public List<EmailMessage> QueryDraftMessage(Email email){
         Log.d(TAG,"da"+ email.getAddress());
         Cursor cursor = db.query("EMAILMESSAGE", null,"from_mail = ? or from_mail = ? and isSend = ? ",
-                new String[]{("%"+ email.getAddress() + "%"),(email.getAddress()),("0")},null,null,null,null);
+                new String[]{("%"+ email.getAddress() + "%"),(email.getAddress()),("0")},null,null,"sendDate desc",null);
         Log.d(TAG,"da"+cursor.getCount());
         return setMessages(cursor);
     }
@@ -128,7 +131,7 @@ public class MailDao {
      */
     public List<EmailMessage> QueryUnReadMessage(Email email){
         Cursor cursor = db.query("EMAILMESSAGE", null,"to_mail LIKE ? and isRead = ? and isDelete = ?",
-                new String[]{("%"+ email.getAddress() + "%"),("0"),("0")},null,null,null,null);
+                new String[]{("%"+ email.getAddress() + "%"),("0"),("0")},null,null,"sendDate desc",null);
         return setMessages(cursor);
     }
 
@@ -171,6 +174,17 @@ public class MailDao {
     public Boolean isExistMail(String message_id){
         Cursor cursor = db.query("EMAILMESSAGE", new String[]{"message_id"},"message_id = ?",
                 new String[]{message_id},null,null,null,null);
+        return cursor.moveToFirst();
+    }
+
+    /**
+     * 判断邮件是否存在，同步邮件时
+     * @param subject
+     * @return
+     */
+    public Boolean isExistSubject(String subject){
+        Cursor cursor = db.query("EMAILMESSAGE", new String[]{"message_id"},"subject = ?",
+                new String[]{subject},null,null,null,null);
         return cursor.moveToFirst();
     }
     /**
@@ -216,7 +230,7 @@ public class MailDao {
             values.put("to_mail",emailMessage.getTo());
             values.put("cc",emailMessage.getCc());
             values.put("bcc",emailMessage.getBcc());
-            values.put("content",emailMessage.getMessage_text());
+            values.put("content",emailMessage.getContent());
             values.put("sendDate",emailMessage.getSendDate());
             values.put("isStar",emailMessage.getIsStar());
             values.put("isRead",emailMessage.getIsRead());
@@ -280,6 +294,21 @@ public class MailDao {
         return isStar;
     }
 
+    /**
+     * 查詢isDelete值
+     * @param id isStar
+     */
+    public int queryisDelete(int id){
+        int isDelete = 0;
+        Cursor cursor = db.query("EMAILMESSAGE", null,"id = ?",
+                new String[]{(String.valueOf(id))},null,null,null,null);
+        if(cursor.moveToFirst()){
+            isDelete = cursor.getInt(cursor.getColumnIndex("isDelete"));
+        }
+        cursor.close();
+        return isDelete;
+    }
+
 
 
     /**
@@ -294,12 +323,34 @@ public class MailDao {
     }
 
     /**
+     * 取消删除
+     * @param id
+     */
+    public void updateDelete(int id,int folder_id){
+        ContentValues values = new ContentValues();
+        values.put("isDelete",0);
+        values.put("folder_id",folder_id);
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
+    }
+
+    /**
      * 彻底删除邮件信息
      * @param id
      */
     public void deleteMessage(int id){
         db.delete("EMAILMESSAGE","id = ?",new String[]{String.valueOf(id)});
     }
+    /**
+     * 修改为已读
+     * @param id isRead = 1
+     */
+    public void updateSend(int id){
+        ContentValues values = new ContentValues();
+        values.put("isSend",1);
+        values.put("sendDate",NewDate());
+        db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
+    }
+
 
 
     /**
@@ -368,5 +419,12 @@ public class MailDao {
         }
         cursor.close();
         return null;
+    }
+
+    private String NewDate(){
+        Date date = new Date();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String str = format.format(date);
+        return str;
     }
 }

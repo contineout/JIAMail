@@ -78,30 +78,40 @@ public class FolderFragment extends Fragment{
             if (folders != null) {
                 folders.clear();
                 folders.addAll(folderService.queryAllFolder(email));
-                folderAdapter.notifyDataSetChanged();
             } else {
                 folders = folderService.queryAllFolder(email);
                 if (folders != null) {
                     FolderRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     folderAdapter = new FolderAdapter(getContext(), folders,email);
                     FolderRv.setAdapter(folderAdapter);
+                }else{
+                    folders.clear();
                 }
             }
+        }else {
+            if(folders!=null){
+                folders.clear();
+            }
         }
+        folderAdapter.notifyDataSetChanged();
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void NewFolder(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("New_folder")){
+        if (messageEvent.getMessage().equals("New_folder")||
+                messageEvent.getMessage().equals("dismiss") ){
             initFolder();
         }
     }
 
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
     public void SwitchFolder(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("Switch_Email")){
+        if (messageEvent.getMessage().equals("Switch_Email")
+                ||messageEvent.getMessage().equals("new_Email")
+        ){
             email = messageEvent.getEmail();
+            folderAdapter.email = email;
             initFolder();
         }
     }

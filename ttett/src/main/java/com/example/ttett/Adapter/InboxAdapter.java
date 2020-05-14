@@ -30,7 +30,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     private List<EmailMessage> mEmailMessages ;
     private Context mContext;
     private String mFromFrag;
-    private Email mEmail;
+    public Email mEmail;
     public static String inboxFragment = "inboxFragment";
     public static String sendedFragment = "sendedFragment";
     public static String deleteFragment = "deleteFragment";
@@ -72,21 +72,6 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
                 return true;
             }
         });
-
-//        LongClickUtils.setLongClick(new Handler(), view, 1000, new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                Intent intent = new Intent(mContext, SelectMailActivity.class);
-//                Bundle bundle = new Bundle();
-//                ArrayList<EmailMessage> Messages = (ArrayList<EmailMessage>) mEmailMessages;
-//                bundle.putParcelableArrayList("emailMessages",Messages);
-//                bundle.putString("from_Frag",mFromFrag);
-//                bundle.putParcelable("email",mEmail);
-//                intent.putExtras(bundle);
-//                mContext.startActivity(intent);
-//                return true;
-//            }
-//        });
 
         return holder;
     }
@@ -131,6 +116,8 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         if (mFromFrag.equals(sendedFragment)) {
             String to = message.getTo();
             holder.mName.setText("TO:" + " " + to);
+            holder.Icon.setText4CircleImage(mEmail.getName().substring(0,1));
+            holder.Icon.setCircleColor(mEmail.getAvatar_color());
         } else {
             String[] from = message.getFrom().split("[<>]");
             holder.mName.setText(from[0]);

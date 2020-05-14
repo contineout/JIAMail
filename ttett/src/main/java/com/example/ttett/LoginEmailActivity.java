@@ -9,9 +9,12 @@ import android.widget.EditText;
 
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Service.EmailService;
+import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.util.CircleTextImage.CircleTextImageUtil;
 import com.example.ttett.util.ToastUtil;
 import com.example.ttett.util.mailUtil.EmailProp;
+
+import org.greenrobot.eventbus.EventBus;
 
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -66,6 +69,7 @@ public class LoginEmailActivity extends AppCompatActivity {
                                     intent.putExtra("result",isConnection);
                                     intent.putExtra("address",address);
                                     setResult(RESULT_CODE,intent);
+                                    EventBus.getDefault().postSticky(new MessageEvent("new_Email",email));
                                     finish();
                                 }else {
                                     ToastUtil.showTextToas(LoginEmailActivity.this,"连接失败");

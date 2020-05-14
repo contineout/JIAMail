@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="80.5dp"
+    android:background="@drawable/add_folder_dialog"
+    >
+    <TextView
+        android:id="@+id/message_tran"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="转发"
+        style="@style/popup_style"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/xiahua"/>
+
+    <TextView
+        android:id="@+id/message_reply"
+        android:layout_width="match_parent"
+        style="@style/popup_style"
+        android:layout_height="40dp"
+        android:text="回复"/>
+
+</LinearLayout>

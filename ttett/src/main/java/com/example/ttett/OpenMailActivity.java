@@ -4,14 +4,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ttett.Adapter.AttachmentAdapter;
 import com.example.ttett.Adapter.InboxAdapter;
+import com.example.ttett.CustomDialog.MenuDialogFragment;
+import com.example.ttett.CustomDialog.TranDialogFragment;
 import com.example.ttett.Entity.Attachment;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Service.AttachmentService;
 import com.example.ttett.Service.MailService;
+import com.example.ttett.bean.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +41,7 @@ public class OpenMailActivity extends AppCompatActivity {
 
         MailService mailService = new MailService(this);
         mailService.updateReadMessage(emailMessage.getId());
+        EventBus.getDefault().postSticky(new MessageEvent("update_message"));
 
         RichEditor webView = findViewById(R.id.webView);
         TextView tvSubject = findViewById(R.id.mail_subject);
@@ -45,7 +50,9 @@ public class OpenMailActivity extends AppCompatActivity {
         TextView tvToId = findViewById(R.id.to_id);
         TextView tvToMail = findViewById(R.id.to_mail);
         TextView tvDate = findViewById(R.id.mail_date);
-        ImageView iv_mail = findViewById(R.id.mail_button);
+        ImageView menu = findViewById(R.id.mail_menu);
+        ImageView tran = findViewById(R.id.mail_tran);
+
         RecyclerView attachmentRv = findViewById(R.id.mail_attachment_rv);
         attachmentRv.setVisibility(View.GONE);
 
@@ -92,19 +99,33 @@ public class OpenMailActivity extends AppCompatActivity {
             }
         }
 
-        iv_mail.setOnClickListener(new View.OnClickListener() {
+        menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(OpenMailActivity.this, "mail_button", Toast.LENGTH_SHORT).show();
+                showTranDialog();
+            }
+        });
+        tran.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMenuDialog();
             }
         });
     }
 
-    private String getHtmlData(String bodyHTML) {
-        String head = "<head>" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"> " +
-                "<style>img{max-width: 100%; width:auto; height:auto!important;}</style>" +
-                "</head>";
-        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
+    private void showTranDialog(){
+        MenuDialogFragment fragment = new MenuDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("message",emailMessage);
+        fragment.setArguments(bundle);
+        fragment.show(getSupportFragmentManager(),"MenuDialogFragment");
+    }
+
+    private void showMenuDialog(){
+        TranDialogFragment fragment = new TranDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("message",emailMessage);
+        fragment.setArguments(bundle);
+        fragment.show(getSupportFragmentManager(),"TranDialogFragment");
     }
 }

@@ -76,15 +76,29 @@ public class RecipientMessage{
         props.setProperty("mail.pop3.host", "pop3.sina.com");
         //2、创建定义整个应用程序所需的环境信息的 Session 对象
         Session session = Session.getInstance(props);
-        //设置调试信息在控制台打印出来
-//        session.setDebug(true);
-
 
         try {
             //连接收件人POP3服务器
             store = session.getStore("pop3");
             store.connect("pop3.sina.com", email.getAddress(), email.getAuthorizationCode());
-            Log.d(TAG,"Re"+store.isConnected());
+            //获得用户的邮件账户，注意通过pop3协议获取某个邮件夹的名称只能为inbox
+            folder = store.getFolder("inbox");
+            //设置对邮件账户的访问权限
+            folder.open(Folder.READ_WRITE);
+            //得到邮件账户的所有邮件信息
+            messages = folder.getMessages();
+            System.out.println("邮件数量:　" + messages.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dealMessage(messages);
+    }
+
+    public List<EmailMessage> recipient(){
+
+        try {
+            //连接收件人POP3服务器
+            store = EmailProp.getPOP3Properties(email);
             //获得用户的邮件账户，注意通过pop3协议获取某个邮件夹的名称只能为inbox
             folder = store.getFolder("inbox");
             //设置对邮件账户的访问权限
@@ -128,7 +142,7 @@ public class RecipientMessage{
                     emailMessage.setFolder_id(1);
                     re.getMailContent((Part) temp[i]);
                     String BodyText = "\r\n" + re.getBodyText();
-                    emailMessage.setMessage_text(BodyText);
+                    emailMessage.setContent(BodyText);
                     MessageList.add(emailMessage);
                     if(re.isContainAttach(messages[i])){
                         emailMessage.setIsAttachment(1);
@@ -156,5 +170,6 @@ public class RecipientMessage{
         }
         return MessageList;
     }
+
 
 }
