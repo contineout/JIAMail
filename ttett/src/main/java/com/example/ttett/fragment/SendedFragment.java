@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.ttett.Adapter.InboxAdapter;
 import com.example.ttett.Entity.Email;
@@ -76,7 +74,6 @@ public class SendedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initEmailMessage();
     }
 
     /**
@@ -97,9 +94,6 @@ public class SendedFragment extends Fragment {
                     SendedRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.sendedFragment,email);
                     SendedRv.setAdapter(inboxAdapter);
-                }else{
-                    emailMessages.clear();
-                    inboxAdapter.notifyDataSetChanged();
                 }
             }
         }else {
@@ -137,12 +131,7 @@ public class SendedFragment extends Fragment {
 //        super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.sended_find)
-            Toast.makeText(getContext(),"你点击了已发送搜索",Toast.LENGTH_SHORT).show();
-        return super.onOptionsItemSelected(item);
-    }
+
 
     @Override
     public void onDestroy() {

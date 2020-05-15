@@ -184,7 +184,8 @@
             <RelativeLayout
                 android:id="@+id/nav_spam"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="50dp"
+                android:visibility="gone">
             <ImageView
                 android:id="@+id/qq"
                 android:layout_width="25dp"

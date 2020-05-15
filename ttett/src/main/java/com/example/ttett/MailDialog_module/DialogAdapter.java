@@ -58,7 +58,7 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 ((ContactViewHolder) holder).dialog_icon.setCircleColor(contact.getAvatar_color());
             }catch (Exception ignored){
             }
-            ((ContactViewHolder) holder).dialog_date.setText(contact.getLast_date());
+            ((ContactViewHolder) holder).dialog_date.setText("最近联系: "+contact.getLast_date().substring(5, 16));
             ((ContactViewHolder) holder).dialog_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

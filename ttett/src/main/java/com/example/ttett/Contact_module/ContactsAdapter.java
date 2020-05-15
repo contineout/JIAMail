@@ -12,13 +12,19 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.ttett.Entity.Contact;
 import com.example.ttett.R;
+import com.example.ttett.Service.EmailService;
+import com.example.ttett.WriteLetterActivity;
+import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.util.CircleTextImage.CircleTextImage;
 import com.example.ttett.util.ToastUtil;
 import com.example.ttett.util.charsort.SortUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.example.ttett.util.charsort.SortUtils.characterList;
@@ -28,10 +34,12 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolde
     private LayoutInflater mLayoutInflater;
     private List<Contact> mContacts ;
     private Context mContext;
+    private FragmentManager fragmentManager;
 
-    public ContactsAdapter(Context context,List<Contact> contacts){
+    public ContactsAdapter(Context context, List<Contact> contacts, FragmentManager fragmentManager){
         this.mContext = context;
         this.mContacts = contacts;
+        this.fragmentManager = fragmentManager;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -65,14 +73,24 @@ public class ContactsAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolde
                 public void onClick(View v) {
                     ContactService contactService = new ContactService(mContext);
                     if(contactService.deleteContact(contact.getContact_id()));{
-                        ToastUtil.showTextToas(mContext,"联系人"+contact.getName()+"删除成功");
+                        if(contactService.deleteContact(contact.getContact_id())){
+                            ToastUtil.showTextToas(mContext,contact.getName()+"已经删除");
+                            removeData(position);
+                            EventBus.getDefault().postSticky(new MessageEvent("deleteContact"));
+                        }
                     }
                 }
             });
             ((ContactViewHolder) holder).contact_item.findViewById(R.id.contact_swipe_send).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastUtil.showTextToas(mContext,"发送");
+                    Intent intent = null;
+                    intent = new Intent(mContext, WriteLetterActivity.class);
+                    EmailService service = new EmailService(mContext);
+                    intent.putExtra("Recipient_person",contact.getName());
+                    intent.putExtra("Recipient_email",contact.getEmail());
+                    intent.putExtra("email",service.queryEmail(contact.getEmail_id()));
+                    mContext.startActivity(intent);
                 }
             });
 

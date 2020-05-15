@@ -66,7 +66,7 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
         }catch (Exception ignored){
         }
 
-        holder.dialog_date.setText(message.getSendDate());
+        holder.dialog_date.setText(message.getSendDate().substring(5, 16));
         holder.dialog_content.setText(message.getSubject());
         try{
             holder.dialog_icon.setCircleColor(message.getAvatar_color());
@@ -77,7 +77,7 @@ public class MailDialogAdapter extends RecyclerView.Adapter<MailDialogAdapter.Co
 
         holder.tvSubject.setText(message.getSubject());
         holder.tvContent.setHtml(message.getContent());
-        holder.tvDate.setText("最近联系: "+message.getSendDate().substring(5, 16));
+        holder.tvDate.setText(message.getSendDate());
 
 //        if(visibleStatus.get(position)){
 

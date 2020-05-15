@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.ttett.Entity.Attachment;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.EmailMessage;
+import com.example.ttett.WriteLetterActivity;
 import com.example.ttett.bean.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,11 +50,22 @@ public class SendMessage {
         EmailProp emailProp = new EmailProp();
         Session session = emailProp.getSTMPSession(email);
         try {
-            Message msg = createMimeMessage(session);
+            Message msg = null;
+            try{
+                if(WriteLetterActivity.flag.equals("tran")){
+                    msg = createTranMimeMessage(session);
+                }else{
+                    msg = createMimeMessage(session);
+                }
+            }catch (NullPointerException e){
+                msg = createMimeMessage(session);
+            }
+
             msg.saveChanges();
+
             Transport transport = session.getTransport();
-            Log.d(TAG,email.getAddress()+"dddd" + email.getAuthorizationCode());
             transport.connect(email.getAddress(), email.getAuthorizationCode());
+
             transport.sendMessage(msg, msg.getAllRecipients());
             transport.close();
             EventBus.getDefault().postSticky(new MessageEvent("SendSuccess",email,emailMessage));
@@ -126,6 +138,65 @@ public class SendMessage {
 
         return msg;
     }
+
+    private MimeMessage createTranMimeMessage(Session session) throws Exception {
+
+        MimeMessage msg = new MimeMessage(session);
+        //发件人
+        msg.setFrom(new InternetAddress(emailMessage.getFrom(), email.getName(), "UTF-8"));
+        //接收人
+        if(!emailMessage.getTo().isEmpty()){
+            String[] toList = emailMessage.getTo().split("[,]");
+            for (int i = 0;i < toList.length -1;i++){
+                msg.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress(toList[i], email.getName(), "UTF-8"));
+            }
+        }
+
+        //密送
+        if(!emailMessage.getBcc().isEmpty()){
+            String[] bccList = emailMessage.getBcc().split("[,]");
+            for (int i = 0;i < bccList.length -1;i++){
+                msg.addRecipient(MimeMessage.RecipientType.BCC,new InternetAddress(bccList[i],email.getName(),"UTF-8"));
+            }
+        }
+        //抄送
+        if(!emailMessage.getCc().isEmpty()){
+            String[] ccList = emailMessage.getCc().split("[,]");
+            for (int i = 0;i < ccList.length -1;i++){
+                msg.addRecipient(MimeMessage.RecipientType.CC,new InternetAddress(ccList[i],email.getName(),"UTF-8"));
+            }
+        }
+        //主题
+        msg.setSubject(emailMessage.getSubject(), "UTF-8");
+
+
+        mimeBodyParts = new ArrayList<>();
+        msg.setContent(emailMessage.getContent(), "text/html;charset=UTF-8");
+
+        //附件根节点
+
+        int i = 0;
+        if(attachments!=null){
+            for(Attachment attachment:attachments){
+                mimeBodyParts.add(i,createAttachment(attachment.getPath()));
+                i+=1;
+            }
+            //合成大节点
+            MimeMultipart mimeMultipart = new MimeMultipart("mixed");
+            for(MimeBodyPart bodyPart:mimeBodyParts){
+                mimeMultipart.addBodyPart(bodyPart);
+            }
+            //内容
+            msg.setContent(mimeMultipart);
+        }
+
+
+        //日期
+        msg.setSentDate(new Date());
+
+        return msg;
+    }
+
     private MimeBodyPart createContent(String content) throws Exception{
         Log.d(TAG,content);
         String[] split = content.split("[<>]");

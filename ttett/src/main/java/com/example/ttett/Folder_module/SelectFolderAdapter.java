@@ -51,6 +51,7 @@ public class SelectFolderAdapter extends RecyclerView.Adapter<SelectFolderAdapte
                 FolderService folderService = new FolderService(mContext);
                 folderService.updateFolder(id_item,folder.getFolder_id());
                 EventBus.getDefault().post(new MessageEvent("dismiss"));
+                EventBus.getDefault().post(new MessageEvent("update_message"));
             }
         });
     }

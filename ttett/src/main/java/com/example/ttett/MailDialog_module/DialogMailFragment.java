@@ -89,14 +89,29 @@ public class DialogMailFragment extends Fragment {
 
     private void initDialog(){
         if(email!=null){
+            if(contacts!=null){
+                contacts.clear();
+                if(contactService.queryAllEmailContact(email)!=null){
+                    contacts.addAll(SortUtils.contactNameSort(contactService.queryAllEmailContact(email)));
+                }
+                dialogAdapter.notifyDataSetChanged();
+            }else{
             contactService = new ContactService(getContext());
-            if(contactService.queryAllEmailContact(email)!=null){
+            if(contactService.queryAllEmailContact(email)!=null) {
                 contacts = SortUtils.contactNameSort(contactService.queryAllEmailContact(email));
                 layoutManager = new LinearLayoutManager(getContext());
                 DialogRv.setLayoutManager(layoutManager);
-                dialogAdapter = new DialogAdapter(getContext(),contacts);
+                dialogAdapter = new DialogAdapter(getContext(), contacts);
                 DialogRv.setAdapter(dialogAdapter);
+            }else{
+                if(contacts!=null){
+                    contacts.clear();
+                }
             }
+            }
+        }else {
+            contacts.clear();
+            dialogAdapter.notifyDataSetChanged();
         }
     }
 
@@ -107,32 +122,8 @@ public class DialogMailFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void SwitchMessage(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("Switch_Email")){
-            if(email!=null){
-                if(!email.getAddress().equals(messageEvent.getEmail())){
-                    email = messageEvent.getEmail();
-                    contacts.clear();
-                    if(contactService.queryAllEmailContact(email)!=null){
-                        contacts.addAll(SortUtils.contactNameSort(contactService.queryAllEmailContact(email)));
-                    }
-                    dialogAdapter.notifyDataSetChanged();
-                }
-            }else{
-                if(messageEvent.getEmail()!=null){
-                    contactService = new ContactService(getContext());
-                    if(contactService.queryAllEmailContact(email)!=null){
-                        contacts = SortUtils.contactNameSort(contactService.queryAllEmailContact(email));;
-                        DialogRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                        dialogAdapter = new DialogAdapter(getContext(),contacts);
-                        DialogRv.setAdapter(dialogAdapter);
-                    }else{
-                        contacts.clear();
-                        dialogAdapter.notifyDataSetChanged();
-                    }
-                }else{
-                    contacts.clear();
-                    dialogAdapter.notifyDataSetChanged();
-                }
-            }
+            email = messageEvent.getEmail();
+            initDialog();
         }
     }
 

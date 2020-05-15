@@ -15,11 +15,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.example.ttett.Dao.EmailDao;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.R;
-import com.example.ttett.util.mailUtil.SaveMessage;
-
-import java.util.Objects;
+import com.example.ttett.WriteLetterActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,17 +52,30 @@ public class TranDialogFragment extends DialogFragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        EmailMessage emailMessage = getArguments().getParcelable("message");
+        EmailDao dao = new EmailDao(getContext());
         Intent intent = null;
+        Bundle bundle = null;
         switch (v.getId()){
             case R.id.message_tran:
+                intent = new Intent(getContext(), WriteLetterActivity.class);
+                bundle = new Bundle();
+
+                bundle.putParcelable("emailMessage",emailMessage);
+                bundle.putParcelable("email",dao.QueryNewEmail(emailMessage.getEmail_id()));
+                bundle.putString("flag","tran");
+                intent.putExtras(bundle);
+                getContext().startActivity(intent);
+                dismiss();
                 break;
             case R.id.message_reply:
-                assert getArguments() != null;
-                EmailMessage emailMessage = getArguments().getParcelable("message");
-                SaveMessage saveMessage = new SaveMessage(emailMessage,getContext());
-                saveMessage.saveDraftsMessage();
-                dismiss();
-                Objects.requireNonNull(getActivity()).finish();
+                intent = new Intent(getContext(), WriteLetterActivity.class);
+                bundle = new Bundle();
+                bundle.putParcelable("emailMessage",emailMessage);
+                bundle.putParcelable("email",dao.QueryNewEmail(emailMessage.getEmail_id()));
+                bundle.putString("flag","reply");
+                intent.putExtras(bundle);
+                getContext().startActivity(intent);
                 break;
             default:
         }

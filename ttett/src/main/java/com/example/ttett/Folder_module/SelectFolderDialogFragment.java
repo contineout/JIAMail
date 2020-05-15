@@ -18,7 +18,12 @@ import android.widget.TextView;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
 import com.example.ttett.R;
+import com.example.ttett.bean.MessageEvent;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -37,7 +42,10 @@ public class SelectFolderDialogFragment extends DialogFragment implements View.O
     private String TAG = "SelectFolderDialogFragment";
     private RecyclerView Rv;
     private SelectFolderAdapter adapter;
-    private List<Integer> id_item;
+    private List<Integer> id_item = new ArrayList<>();
+    private int id;
+    private int email_id;
+    List<Folder> folders;
 
 
 
@@ -56,19 +64,28 @@ public class SelectFolderDialogFragment extends DialogFragment implements View.O
         View view = LayoutInflater.from(getContext()).inflate(R.layout.select_folder_dialog,null);
 
         TvCancel = view.findViewById(R.id.cancel);
-        try{
-            email = getArguments().getParcelable("email");
-            id_item = getArguments().getIntegerArrayList("id_item");
-        }catch (Exception e){
-        }
-
         TvCancel.setOnClickListener(this);
         Rv = view.findViewById(R.id.select_folder_rv);
         Rv.setLayoutManager(new LinearLayoutManager(getContext()));
         folderService = new FolderService(getContext());
-        List<Folder> folders = folderService.queryAllFolder(email);
-        adapter = new SelectFolderAdapter(getContext(),folders,id_item);
-        Rv.setAdapter(adapter);
+        try{
+            email = getArguments().getParcelable("email");
+            id_item = getArguments().getIntegerArrayList("id_item");
+            folders = folderService.queryAllFolder(email);
+            adapter = new SelectFolderAdapter(getContext(),folders,id_item);
+            Rv.setAdapter(adapter);
+        }catch (Exception ignored){
+        }
+
+        try{
+            id = getArguments().getInt("id");
+            id_item.add(id);
+            email_id = getArguments().getInt("email_id");
+            folders = folderService.queryAllFolder(email_id);
+            adapter = new SelectFolderAdapter(getContext(),folders,id_item);
+            Rv.setAdapter(adapter);
+        }catch (Exception ignored){
+        }
 
         builder.setView(view);
         return builder.create();
@@ -82,6 +99,17 @@ public class SelectFolderDialogFragment extends DialogFragment implements View.O
                     break;
                     default:
          }
+    }
+
+    /**
+     * 更改inbox
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void switchMessage(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("dismiss")){
+            dismiss();
+        }
     }
 
 

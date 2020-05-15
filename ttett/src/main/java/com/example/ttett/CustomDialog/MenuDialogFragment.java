@@ -14,10 +14,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.ttett.Dao.EmailDao;
 import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Folder_module.SelectFolderDialogFragment;
 import com.example.ttett.R;
 import com.example.ttett.Service.MailService;
+import com.example.ttett.WriteLetterActivity;
 import com.example.ttett.bean.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,19 +68,29 @@ public class MenuDialogFragment extends DialogFragment implements View.OnClickLi
     public void onClick(View v) {
         int id = emailMessage.getId();
         Intent intent = null;
+        Bundle bundle = null;
         MailService mailService = new MailService(getContext());
         switch (v.getId()){
             case R.id.edit:
-
+                intent = new Intent(getContext(), WriteLetterActivity.class);
+                bundle = new Bundle();
+                EmailDao dao = new EmailDao(getContext());
+                bundle.putParcelable("emailMessage",emailMessage);
+                bundle.putParcelable("email",dao.QueryNewEmail(emailMessage.getEmail_id()));
+                bundle.putString("flag","edit");
+                intent.putExtras(bundle);
+                getContext().startActivity(intent);
+                dismiss();
                 break;
             case R.id.star:
                 mailService.updateStar(id);
                 EventBus.getDefault().postSticky(new MessageEvent("update_message"));
+                dismiss();
                 break;
             case R.id.delete:
                 if(mailService.queryisDelete(id)==1){
                     DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
-                    Bundle bundle = new Bundle();
+                    bundle = new Bundle();
                     bundle.putInt("id", id);
                     deleteDialogFragment.setArguments(bundle);
                     deleteDialogFragment.show(getFragmentManager(),"deleteDialogFragment");
@@ -86,13 +98,16 @@ public class MenuDialogFragment extends DialogFragment implements View.OnClickLi
                     mailService.updateisDelete(id);
                     EventBus.getDefault().postSticky(new MessageEvent("update_message"));
                 }
+                dismiss();
                 break;
             case R.id.tran:
                 SelectFolderDialogFragment dialogFragment = new SelectFolderDialogFragment ();
-                Bundle bundle = new Bundle();
+                bundle = new Bundle();
                 bundle.putInt("id",id);
+                bundle.putInt("email_id",emailMessage.getEmail_id());
                 dialogFragment.setArguments(bundle);
                 dialogFragment.show(getFragmentManager(),"SelectFolderDialogFragment");
+                dismiss();
                 break;
             default:
         }

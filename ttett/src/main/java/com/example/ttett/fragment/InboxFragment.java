@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,9 +161,12 @@ public class InboxFragment extends Fragment {
             email = messageEvent.getEmail();
             if(emailMessages!=null){
                 emailMessages.clear();
+                inboxAdapter.notifyDataSetChanged();
+            }else{
+                refreshMessage(email);
             }
-            inboxAdapter.notifyDataSetChanged();
-            refreshMessage(email);
+
+
         }
     }
 
@@ -175,8 +176,7 @@ public class InboxFragment extends Fragment {
      */
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void updateMessage(MessageEvent messageEvent){
-        if (messageEvent.getMessage().equals("update_message")||
-                messageEvent.getMessage().equals("Switch_Email")){
+        if (messageEvent.getMessage().equals("update_message")){
             initEmailMessage();
         }
     }
@@ -214,9 +214,6 @@ public class InboxFragment extends Fragment {
                     InboxRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.inboxFragment,email);
                     InboxRv.setAdapter(inboxAdapter);
-                }else{
-                    emailMessages.clear();
-                    inboxAdapter.notifyDataSetChanged();
                 }
             }
         }else {
@@ -245,11 +242,7 @@ public class InboxFragment extends Fragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.toobar_inbox_item,menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

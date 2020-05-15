@@ -63,7 +63,7 @@ public class OpenMailActivity extends AppCompatActivity {
                 tvFromId.setText(from[0]);
                 tvFromMail.setText(from[1]);
                 tvToId.setText(to[0]);
-                tvToMail.setText(to[1]);
+                tvToMail.setText(to[1].trim());
             }
         }catch (Exception e){
 

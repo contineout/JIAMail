@@ -78,11 +78,12 @@ public class FolderFragment extends Fragment{
             if (folders != null) {
                 folders.clear();
                 folders.addAll(folderService.queryAllFolder(email));
+                folderAdapter.notifyDataSetChanged();
             } else {
                 folders = folderService.queryAllFolder(email);
                 if (folders != null) {
                     FolderRv.setLayoutManager(new LinearLayoutManager(getContext()));
-                    folderAdapter = new FolderAdapter(getContext(), folders,email);
+                    folderAdapter = new FolderAdapter(getContext(), folders,email, getFragmentManager());
                     FolderRv.setAdapter(folderAdapter);
                 }else{
                     folders.clear();
@@ -99,7 +100,8 @@ public class FolderFragment extends Fragment{
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void NewFolder(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("New_folder")||
-                messageEvent.getMessage().equals("dismiss") ){
+                messageEvent.getMessage().equals("dismiss") ||
+                messageEvent.getMessage().equals("updateFolder")){
             initFolder();
         }
     }
@@ -129,6 +131,12 @@ public class FolderFragment extends Fragment{
         Bundle bundle = new Bundle();
         bundle.putParcelable("email",email);
         folderDialogFragment.setArguments(bundle);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initFolder();
     }
 
     @Override

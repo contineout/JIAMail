@@ -21,7 +21,7 @@ public class FolderDao {
     private String TAG = "FolderDAO";
     private SQLiteDatabase db;
 
-    FolderDao(Context context) {
+    public FolderDao(Context context) {
         db = SQLiteDatabaseUtil.getInstance(context).getWritableDatabase();
     }
     /**
@@ -95,7 +95,23 @@ public class FolderDao {
         return cursor.getCount();
     }
 
+    /**
+     * 更改文件夹名
+     * @param folder_id
+     */
+    void updateFolderName(int folder_id,String name){
+        ContentValues values = new ContentValues();
+        values.put("folder_name",name);
+        db.update("FOLDER",values,"id = ?",new String[]{String.valueOf(folder_id)});
+    }
 
+    /**
+     * 彻底删除文件夹
+     * @param id
+     */
+    public void deleteFolder(int id){
+        db.delete("FOLDER","id = ?",new String[]{String.valueOf(id)});
+    }
 
     private String NewDate(){
         Date date = new Date();

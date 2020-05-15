@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -172,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 initEmail();
                                 if(!address.isEmpty()){
                                     final Email email = emailService.queryEmail(address);
-                                    EventBus.getDefault().post(new MessageEvent("New_Email",address));
+                                    EventBus.getDefault().post(new MessageEvent("new_Email",email));
                                     initPara(email);
                                 }
                             }
@@ -308,35 +307,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void SendResult(MessageEvent messageEvent){
         if (messageEvent.getMessage().equals("SendSuccess")){
-            try {
-                int id = messageEvent.getEmailMessage().getId();
-                MailDao dao = new MailDao(this);
-                dao.updateSend(id);
+            try{
+                if(messageEvent.getEmailMessage().getId()!=0){
+                    MailDao dao = new MailDao(this);
+                    dao.updateSend(messageEvent.getEmailMessage().getId());
+                    ToastUtil.showTextToas(this,"发送成功");
+                }else{
+                    SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
+                    saveMessage.saveSendMessage();
+                    ToastUtil.showTextToas(this,"发送成功");
+                }
             }catch (NullPointerException e){
                 SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
                 saveMessage.saveSendMessage();
-                Looper.prepare();
                 ToastUtil.showTextToas(this,"发送成功");
-                Looper.loop();
             }
+            EventBus.getDefault().postSticky(new MessageEvent("SendSuccess"));
         }
         if (messageEvent.getMessage().equals("SendError")){
             try {
                 int id = messageEvent.getEmailMessage().getId();
                 Log.d(TAG,id+"ddd");
-                Looper.prepare();
                 ToastUtil.showTextToas(this,"发送失败");
-                Looper.loop();
             }catch (NullPointerException e){
                 SaveMessage saveMessage = new SaveMessage(messageEvent.getEmailMessage(),this,messageEvent.getEmail());
                 saveMessage.saveDraftsMessage();
-                Looper.prepare();
                 ToastUtil.showTextToas(this,"发送失败");
-                Looper.loop();
             }
+            EventBus.getDefault().postSticky(new MessageEvent("SendError"));
         }
     }
     /**

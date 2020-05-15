@@ -28,6 +28,7 @@ import com.example.ttett.Entity.EmailMessage;
 import com.example.ttett.Service.AttachmentService;
 import com.example.ttett.bean.MessageEvent;
 import com.example.ttett.bean.Person;
+import com.example.ttett.bean.Topmenu;
 import com.example.ttett.selectAcitvity.SelectAttachmentActivity;
 import com.example.ttett.selectAcitvity.SelectContactActivity;
 import com.example.ttett.util.ToastUtil;
@@ -74,6 +75,7 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
     private TextView tvSendEmail;
     private List<Person> people;
     private int email_id;
+    public static String flag = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
 
         initView();
         entrance();
+
         IvTrainglemore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,7 +301,6 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
     private void entrance(){
         //普通进
         try{
-            Log.d(TAG,"email.address = "+ email.getAddress());
             tvSendEmail.setText(email.getAddress());
             tvSendEmail.setVisibility(View.VISIBLE);
         }catch (Exception ignored){
@@ -357,7 +359,39 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
         }catch (Exception ignored){
         }
 
+        //转发
+        try{
+            flag = getIntent().getStringExtra("flag");
+            if(flag.equals("tran")){
+                EtContent.setHtml(emailMessage.getContent());
+                EtSubject.setText(emailMessage.getSubject());
+                tvSendEmail.setText(email.getAddress());
+                emailMessage = new EmailMessage();
+            }
+        }catch (Exception ignored){
+        }
         //编辑
+        try{
+            flag = getIntent().getStringExtra("flag");
+            if(flag.equals("edit")){
+                tvSendEmail.setText(email.getAddress());
+                emailMessage = new EmailMessage();
+
+            }
+        }catch (Exception ignored){
+        }
+        //回复
+        try{
+            flag = getIntent().getStringExtra("flag");
+            if(flag.equals("reply")){
+                EtSubject.setText("reply:"+emailMessage.getSubject());
+                String[] str = emailMessage.getFrom().split("[<>]");
+                completionViewTO.addObjectAsync(new Person(str[0],str[1]));
+                tvSendEmail.setText(email.getAddress());
+                emailMessage = new EmailMessage();
+            }
+        }catch (Exception ignored){
+        }
 
     }
 
@@ -373,14 +407,20 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
             }else{
                 try{
                     Log.d(TAG,emailMessage.getId()+"ss");
-                    final SendMessage sendMessage = new SendMessage(emailMessage,email,attachments,this);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendMessage.SendMessage();
-                            finish();
-                        }
-                    }).start();
+                    if(emailMessage.getId() != 0){
+                        final SendMessage sendMessage = new SendMessage(emailMessage,email,attachments,this);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendMessage.SendMessage();
+                                finish();
+                            }
+                        }).start();
+                    }else{
+                        Topmenu a = null;
+                        Log.d(TAG,a.getText());
+                    }
+
                 }catch (NullPointerException e){
                     setEmailMessage();
                     final SendMessage sendMessage = new SendMessage(emailMessage,email,attachments,this);
@@ -523,12 +563,9 @@ public class WriteLetterActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EtContent.setHtml("");
         if(saveMessageDialogFragment!=null){
             saveMessageDialogFragment.dismiss();
         }
-        completionViewBCC.refreshDrawableState();
-        completionViewTO.refreshDrawableState();
-        completionViewCC.refreshDrawableState();
-        EventBus.getDefault().unregister(this);
     }
 }

@@ -284,7 +284,7 @@ public class ContactDao {
      */
     public List<String> QueryAllEmailNames(Email email){
         Cursor cursor = db.query("EMAILMESSAGE", new String[]{("distinct from_mail")},"email_id = ? and not from_mail = ?",
-                new String[]{String.valueOf(email.getEmail_id()),(email.getAddress())},"from_mail",null,"id DESC");
+                new String[]{String.valueOf(email.getEmail_id()),(email.getAddress())},null,null,null);
 
         List<String> names = new ArrayList<>();
         if(cursor.moveToFirst()){

@@ -1,4 +1,4 @@
-package com.example.ttett.CustomDialog;
+package com.example.ttett.Folder_module;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,25 +12,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.ttett.R;
-import com.example.ttett.Service.MailService;
 import com.example.ttett.bean.MessageEvent;
+import com.example.ttett.util.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class DeleteDialogFragment extends DialogFragment implements View.OnClickListener{
+public class FolderUpdateFragment extends DialogFragment implements View.OnClickListener{
     private TextView TvConfirm,TvCancel;
-    private String TAG = "DeleteDialogFragment";
-    private List<Integer> id_item;
-
+    private EditText EtName;
+    private int id;
+    private String folder_name;
+    private String TAG = "FolderDialogFragment";
 
 
 
@@ -45,14 +45,15 @@ public class DeleteDialogFragment extends DialogFragment implements View.OnClick
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.delete_dialog,null);
-        TvConfirm = view.findViewById(R.id.delete_dialog_confirm);
-        TvCancel = view.findViewById(R.id.delete_dialog_cancel);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.update_folder_dialog,null);
+        TvConfirm = view.findViewById(R.id.add_folder_dialog_confirm);
+        TvCancel = view.findViewById(R.id.add_folder_dialog_cancel);
+        EtName = view.findViewById(R.id.add_folder_dialog_name);
         try{
-            id_item = getArguments().getIntegerArrayList("id_item");
-
+            id = getArguments().getInt("id");
         }catch (Exception e){
         }
+
 
         TvConfirm.setOnClickListener(this);
         TvCancel.setOnClickListener(this);
@@ -63,26 +64,25 @@ public class DeleteDialogFragment extends DialogFragment implements View.OnClick
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.delete_dialog_confirm:
-                deleteMessage();
-                getActivity().finish();
+            case R.id.add_folder_dialog_confirm:
+                folder_name = EtName.getText().toString();
+                if(folder_name.equals("")){
+                    ToastUtil.showTextToas(getContext(),"请输入文件名");
+                }else{
+                    FolderDao dao = new FolderDao(getContext());
+                    dao.updateFolderName(id,folder_name);
+                    EventBus.getDefault().post(new MessageEvent("updateFolder"));
+                }
+                dismiss();
                 break;
-                case R.id.delete_dialog_cancel:
+                case R.id.add_folder_dialog_cancel:
                     dismiss();
                     break;
                     default:
          }
     }
 
-    private void deleteMessage(){
-        MailService mailService = new MailService(getContext());
-        if(id_item!=null){
-            for(int id:id_item){
-                mailService.deleteMessage(id);
-                EventBus.getDefault().postSticky(new MessageEvent("deleteFolder"));
-            }
-        }
-    }
+
 
     @Override
     public void onStart() {

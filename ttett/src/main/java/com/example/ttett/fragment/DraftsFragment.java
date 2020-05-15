@@ -90,9 +90,6 @@ public class DraftsFragment extends Fragment {
                     DraftsRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     draftsAdapter = new DraftsAdapter(getContext(),emailMessages,email);
                     DraftsRv.setAdapter(draftsAdapter);
-                }else{
-                    emailMessages.clear();
-                    draftsAdapter.notifyDataSetChanged();
                 }
             }
         }else {

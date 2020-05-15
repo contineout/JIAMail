@@ -87,6 +87,27 @@ public class MailDao {
     }
 
     /**
+     *
+     * @param folder_id
+     * @param email_id
+     * @return
+     */
+    public List<Integer> queryFolderMessageId(int folder_id , int email_id){
+        Cursor cursor = db.query("EMAILMESSAGE", null,"folder_id = ? and email_id = ?",
+                new String[]{(String.valueOf(folder_id)),String.valueOf(email_id)},null,null,"SendDate desc",null);
+        Log.d(TAG,"查询了+"+cursor.getCount());
+        List<Integer> integers =new ArrayList<>();
+        if(cursor.moveToFirst()) {
+            do {
+                integers.add(cursor.getInt((cursor.getColumnIndex("id"))));
+            } while (cursor.moveToNext());
+            cursor.close();
+            return integers;
+        }
+        return null;
+    }
+
+    /**
      * 是否有对话邮件
      * @param address
      * @return
@@ -319,6 +340,7 @@ public class MailDao {
         ContentValues values = new ContentValues();
         values.put("isDelete",1);
         values.put("isStar",0);
+        values.put("folder_id",1);
         db.update("EMAILMESSAGE",values,"id = ?",new String[]{String.valueOf(id)});
     }
 
@@ -396,7 +418,12 @@ public class MailDao {
             do {
                 message = new EmailMessage();
                 message.setId(cursor.getInt((cursor.getColumnIndex("id"))));
-                message.setMessage_id(cursor.getString(cursor.getColumnIndex("message_id")));
+                try{
+                    message.setMessage_id(cursor.getString(cursor.getColumnIndex("message_id")));
+                }catch (Exception ignored){
+
+                }
+                message.setEmail_id(cursor.getInt(cursor.getColumnIndex("email_id")));
                 message.setSubject(cursor.getString(cursor.getColumnIndex("subject")));
                 message.setFolder_id(cursor.getInt(cursor.getColumnIndex("folder_id")));
                 message.setFrom(cursor.getString(cursor.getColumnIndex("from_mail")));

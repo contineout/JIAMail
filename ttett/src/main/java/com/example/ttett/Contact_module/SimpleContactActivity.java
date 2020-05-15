@@ -81,6 +81,9 @@ public class SimpleContactActivity extends AppCompatActivity implements View.OnC
     }
 
     public void setContactInfo(){
+        if(contact.getName()!=null){
+            remark.setText(contact.getName());
+        }
         if(contact.getRemark()!=null){
             remark.setText(contact.getRemark());
         }

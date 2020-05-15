@@ -112,10 +112,10 @@ public class ContactsFragment extends Fragment {
      * 新加入的联系人进行刷新
      * @param messageEvent
      */
-    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void ImportContact(MessageEvent messageEvent) {
         if (messageEvent.getMessage().equals("import_contact")||messageEvent.getMessage().equals("new_contact")||
-                messageEvent.getMessage().equals("updateContact")) {
+                messageEvent.getMessage().equals("updateContact")||messageEvent.getMessage().equals("deleteContact")) {
             initContacts();
         }
     }
@@ -143,14 +143,15 @@ public class ContactsFragment extends Fragment {
                 contacts.clear();
                 if(contactService.queryAllContact(email.getEmail_id())!=null){
                     contacts.addAll(SortUtils.contactNameSort(contactService.queryAllContact(email.getEmail_id())));
+                    contactsAdapter.notifyDataSetChanged();
                 }
-                contactsAdapter.notifyDataSetChanged();
+
             }else{
                 if(contactService.queryAllContact(email.getEmail_id())!=null){
                     contacts = SortUtils.contactNameSort(contactService.queryAllContact(email.getEmail_id()));
                     layoutManager = new LinearLayoutManager(getContext());
                     ContactRv.setLayoutManager(layoutManager);
-                    contactsAdapter = new ContactsAdapter(getContext(),contacts);
+                    contactsAdapter = new ContactsAdapter(getContext(),contacts,getFragmentManager());
                     ContactRv.setAdapter(contactsAdapter);
                 }else{
                     if(contacts!=null){

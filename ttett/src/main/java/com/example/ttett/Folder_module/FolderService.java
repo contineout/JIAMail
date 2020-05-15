@@ -3,6 +3,7 @@ package com.example.ttett.Folder_module;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.ttett.Dao.EmailDao;
 import com.example.ttett.Dao.MailDao;
 import com.example.ttett.Entity.Email;
 import com.example.ttett.Entity.Folder;
@@ -33,6 +34,23 @@ public class FolderService {
     }
 
     /**
+     * 判断又没有同名文件夹,若没有则新建文件夹
+     * @param email_id
+     * @return
+     */
+    public void deleteFolder(int folder_id,int email_id) {
+        FolderDao folderDao = new FolderDao(mContext);
+        MailDao mailDao = new MailDao(mContext);
+        folderDao.deleteFolder(folder_id);
+        List<Integer> id_item = mailDao.queryFolderMessageId(folder_id,email_id);
+        if (id_item != null){
+            for(int id:id_item){
+                mailDao.updateisDelete(id);
+            }
+        }
+    }
+
+    /**
      * 查询所有文件夹
      * @param email
      * @return
@@ -42,6 +60,18 @@ public class FolderService {
         Log.d(TAG,"f"+email.getEmail_id());
         return folderDao.QueryAllFolder(email);
     }
+
+    /**
+     * 查询所有文件夹
+     * @param id
+     * @return
+     */
+    public List<Folder> queryAllFolder(int id){
+        FolderDao folderDao = new FolderDao(mContext);
+        EmailDao emailDao = new EmailDao(mContext);
+        return folderDao.QueryAllFolder(emailDao.QueryNewEmail(id));
+    }
+
 
     /**
      * 更改文件夹

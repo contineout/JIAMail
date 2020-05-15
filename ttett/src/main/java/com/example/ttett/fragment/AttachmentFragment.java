@@ -3,8 +3,6 @@ package com.example.ttett.fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,11 +71,7 @@ public class AttachmentFragment extends Fragment {
 
         return view;
     }
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.toobar_attachment_item,menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-    }
+
 
     public void initAttach(){
         attachmentService = new AttachmentService(getContext());
@@ -95,9 +89,6 @@ public class AttachmentFragment extends Fragment {
                     attachmentAdapter = new AttachmentAdapter(getContext(),attachments);
                     attachmentAdapter.setATTACHMENT_FRAG();
                     AttachmentRv.setAdapter(attachmentAdapter);
-                }else{
-                    attachments.clear();
-                    attachmentAdapter.notifyDataSetChanged();
                 }
             }
         }else{

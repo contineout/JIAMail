@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.ttett.Adapter.InboxAdapter;
 import com.example.ttett.Entity.Email;
@@ -84,10 +82,9 @@ public class DeletedFragment extends Fragment {
             if(emailMessages!=null){
                 if(mailService.queryDeleteMessage(email)!=null){
                     emailMessages.clear();
-                    emailMessages.addAll(mailService.queryDeleteMessage(email));
-                    inboxAdapter.notifyDataSetChanged();
-                }else{
-                    emailMessages.clear();
+                    if(mailService.queryDeleteMessage(email)!=null){
+                        emailMessages.addAll(mailService.queryDeleteMessage(email));
+                    }
                     inboxAdapter.notifyDataSetChanged();
                 }
             }else{
@@ -96,9 +93,6 @@ public class DeletedFragment extends Fragment {
                     DeletedRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     inboxAdapter = new InboxAdapter(getContext(),emailMessages,InboxAdapter.deleteFragment,email);
                     DeletedRv.setAdapter(inboxAdapter);
-                }else{
-                    emailMessages.clear();
-                    inboxAdapter.notifyDataSetChanged();
                 }
             }
         }else {
@@ -123,6 +117,18 @@ public class DeletedFragment extends Fragment {
         }
     }
 
+    /**
+     * 接送更改Deleted
+     * @param messageEvent
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING,sticky = true)
+    public void updateMessage(MessageEvent messageEvent){
+        if (messageEvent.getMessage().equals("deleteMail")||
+                messageEvent.getMessage().equals("deleteFolder")){
+            initEmailMessage();
+        }
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -130,12 +136,6 @@ public class DeletedFragment extends Fragment {
 //        super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.trash_find)
-            Toast.makeText(getContext(),"你点击了已删除搜索",Toast.LENGTH_SHORT).show();
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onDestroy() {
