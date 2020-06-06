@@ -17,11 +17,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-//xkdmegyobzcdhggd
-//1272179741@qq.com
-//"d8405717ca1664a2" xl335665873@sina.com
-// xttdkgyodzenbeid 1023851233@qq.com wujia335665@foxmail.com
-// DDXEJJKAJZGDDEDJ WY335665873@163.com
 public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> {
     private List<Email> mEmails;
     private Context mContext;

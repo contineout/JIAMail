@@ -113,11 +113,12 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     if(isEmptyS(iphone).equals("")){
                         contact.setIphone(isEmptyS(iphone));
                     }else {
-                        if(!RegularUtil.checkIphoneNumber(iphone.getText().toString())){
-                            ToastUtil.showTextToas(this,"错误! 手机号码格式不对!");
-                        }else{
+                        if (!RegularUtil.checkIphoneNumber(iphone.getText().toString())) {
+                            ToastUtil.showTextToas(this, "错误! 手机号码格式不对!");
+                        } else {
                             contact.setIphone(isEmptyS(iphone));
                         }
+                    }{
                         contact.setRemark(isEmptyS(remark));
                         contact.setBirthday(isEmptyS(birthday));
                         contact.setCompany(isEmptyS(company));

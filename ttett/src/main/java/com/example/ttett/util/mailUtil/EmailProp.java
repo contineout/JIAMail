@@ -8,6 +8,7 @@ import javax.mail.Session;
 import javax.mail.Store;
 
 public class EmailProp {
+    //发送
     public static Session getSTMPSession(Email email) {
         String account[] = email.getAddress().split("@");
         String mailTpye = "";
@@ -72,7 +73,7 @@ public class EmailProp {
         session = Session.getInstance(prop);
         return session;
     }
-
+    //接收
     public static Store getPOP3Properties(Email email) {
         String account[] = email.getAddress().split("@");
         String mailTpye = "";
